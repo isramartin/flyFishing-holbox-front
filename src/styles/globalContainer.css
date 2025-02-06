@@ -1,0 +1,11 @@
+.home-container {
+    width: 90%;
+    min-height: 100vh;
+    margin: 10px auto; /* Centra el contenido horizontalmente */
+    /* border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+    margin-top: 40px; /* Añade espacio superior para separar de otros componentes */
+    margin-bottom: 1px;
+  }
+
+

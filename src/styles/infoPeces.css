@@ -1,0 +1,57 @@
+.info-peces-container {
+    padding: 10px;
+    margin: 0 auto;
+    width: 100%; /* Asegura que ocupe todo el ancho de la pantalla */
+    max-width: 100%; /* Evita que el contenedor se quede más pequeño que el 100% */
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+  }
+  
+  .info-title {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #0077b6;
+    text-align: left;
+  }
+  
+  .peces-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 columnas en una fila en pantallas grandes */
+    gap: 110px;
+    justify-items:left;
+    margin: 0 auto;
+  }
+  
+  .pez-card {
+    background: #badefe;
+    border-radius: 10px;
+    padding: 15px;
+    width: 100%;
+    max-width: 250px;
+    text-align: center;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .pez-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .pez-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .pez-name {
+    font-size: 1.5rem;
+    margin-top: 10px;
+    color: #033372;
+  }
+  
+  .pez-description {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 5px;
+  }
+  
