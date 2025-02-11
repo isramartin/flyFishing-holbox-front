@@ -2,19 +2,27 @@
 .review-container {
     display: flex;
     gap: 20px;
-    max-width: 1000px;
-    margin: 100px auto;
+    width: 100%;
+    height: 100%;
+    /* margin: 100px auto; */
     font-family: "Arial", sans-serif;
+    margin: 1 50%;
+    position: absolute;
+    /* left: 40%; */
+    background: #ffffff !important;
   }
   
   /* Formulario de reseña */
   .review-box {
-    width: 60%;
-    padding: 25px;
+    margin-top: 100PX;
+    width: 28%;
+    height: 68%;
+    padding: 28px;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     text-align: left;
+    margin-left: 45%;
   }
   
   .review-box h2 {
@@ -115,13 +123,17 @@
   
   /* Panel de reseñas */
   .reviews-panel {
-    width: 40%;
-    background: #f9f9f9;
+    margin-top: 90px;
+    position:absolute;
+    max-width: 95%;
+    background: #ffffff;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    max-height: 1000px;
+    overflow-y:auto;
+    height: 75vh;
+    right: 20px !important;
+    left: 48px;
   }
   
   .reviews-panel h3 {
@@ -131,11 +143,13 @@
   }
   
   .review-item {
-    background: white;
+    position: absolute;
+    background: rgb(255, 255, 255);
     padding: 12px;
+    border: 1px solid #468cdc;
     border-radius: 8px;
-    margin-bottom: 10px;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+    width: 300px;
+    box-shadow: 0px 2px 8px rgba(19, 18, 18, 0.08);
   }
   
   .review-item h4 {
@@ -159,3 +173,32 @@
     color: #777;
   }
   
+  .add-review-btn {
+    position: absolute;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    transition: background 0.3s;
+    width: 200px;
+    height: 50px;
+    margin-top: 820px;
+    left: 50px;
+  }
+  
+  .add-review-btn:hover {
+    background-color: #004494;
+  }
+  
+  .red-container {
+    top: 100px;
+    position: absolute;
+    width: 300px;
+    height: 69%;
+    background-color: rgb(249, 249, 249);
+    margin-left: 550px;
+  }
