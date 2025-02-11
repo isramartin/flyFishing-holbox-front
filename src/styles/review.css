@@ -1,0 +1,161 @@
+/* Contenedor principal */
+.review-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1000px;
+    margin: 100px auto;
+    font-family: "Arial", sans-serif;
+  }
+  
+  /* Formulario de reseña */
+  .review-box {
+    width: 60%;
+    padding: 25px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+  
+  .review-box h2 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 15px;
+  }
+  
+  /* Estrellas */
+  .star-rating {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .star {
+    font-size: 30px;
+    cursor: pointer;
+    color: #ccc;
+    transition: transform 0.2s ease, color 0.3s ease;
+  }
+  
+  .star.selected {
+    color: #01bdd6;
+  }
+  
+  .star:hover {
+    transform: scale(1.2);
+    color: #01bdd6;
+  }
+
+  .rating-text {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #000000;
+    margin-left: 5px;
+  }
+  
+  /* Select y botones */
+  select, input, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 10px;
+  }
+  
+  textarea {
+    min-height: 100px;
+    resize: none;
+  }
+  
+  .group-selection {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .group-selection button {
+    padding: 8px 12px;
+    color: #01bdd6;
+    border: 2px solid #01bdd6;
+    background: rgb(255, 255, 255);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+  }
+  
+  .group-selection button.selected {
+    border: 2px solid #0282bd;
+    background: #0282bd;
+    color: rgb(255, 255, 255);
+  }
+  
+  button {
+    width: 100%;
+    background: #01bdd6;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+  
+  button:hover {
+    border: 2px solid #0282bd;
+    background: #0282bd;
+    color: #ffffff;
+    transform: scale(1.05);
+  }
+  
+  /* Panel de reseñas */
+  .reviews-panel {
+    width: 40%;
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: 1000px;
+  }
+  
+  .reviews-panel h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .review-item {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .review-item h4 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .review-meta {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+  }
+  
+  .stars {
+    color: #0282bd;
+    font-size: 18px;
+  }
+  
+  .no-reviews {
+    font-style: italic;
+    color: #777;
+  }
+  

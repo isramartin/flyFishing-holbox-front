@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Menu from './components/menu';  // Importamos el menú
 import Home from './views/home'; // Ya tienes este componente de Home
 import Reservaciones from './views/reservaciones';
+import Review from './views/reviewBox';
+import Gallery from './views/galeria';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -14,9 +16,11 @@ function App() {
       <div className="App">
         <Menu />  {/* Agregamos el menú global */}
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/reservaciones" element={<Reservaciones />} />
-          <Route path="/contacto" element={<div>Contacto</div>} />
+          <Route path="/galerias" element={<Gallery/>} />
+          <Route path="/reseña" element={<Review/>} />
         </Routes>
       </div>
     </Router>

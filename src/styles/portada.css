@@ -1,150 +1,168 @@
+/* Sección Hero con imagen de fondo */
+.hero {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  /* Sección Hero con imagen de fondo */
-  .hero {
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .hero-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-  
-  /* Capa de fondo oscura para mejorar legibilidad */
-  .hero-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: white;
-    background: rgba(0, 0, 0, 0.6); /* Más oscuro para mejorar contraste */
-    padding: 45px;
-    border-radius: 10px;
-    z-index: 1;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .hero-overlay h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-  }
-  
-  .hero-overlay h2 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-  }
-  
-  /* Botón de reservar */
-  .btn-reservar {
-    display: inline-block;
-    padding: 12px 24px;
-    background-color: #ea5f34;
-    color: white;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-decoration: none;  /* Elimina la línea debajo del enlace */
-    border-radius: 8px;
-    transition: background 0.3s ease-in-out;
-  }
-  .btn-reservar:hover {
-    background-color: #c94a24; /* Un tono más oscuro del botón */
-    transform: scale(1.05); /* Efecto de agrandamiento */
-    transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
-  }
- 
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
-  /* Galería de imágenes */
-  .photo-frames {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-top: -80px; /* Para que flote un poco sobre la portada */
-    padding: 40px 20px;
-  }
-  
-  .frame img {
-    width: 350px;
-    height: 250px;
-    border-radius: 10px;
-    object-fit: cover;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .frame img:hover {
-    transform: scale(1.05);
-  }
+/* Capa de fondo oscura para mejorar legibilidad */
+.hero-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  background: rgba(0, 0, 0, 0.6); /* Más oscuro para mejorar contraste */
+  padding: 45px;
+  z-index: 1;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
+.hero-overlay h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 10rem; /* Tamaño grande */
+  font-weight: 700; /* Negrita */
+  color: #fafafa; /* Color oscuro para un buen contraste */
+  margin-bottom: 500px; /* Espacio debajo del título */
+  text-transform: uppercase; /* Mayúsculas para darle énfasis */
+  letter-spacing: 2px; /* Espaciado entre letras */
+  text-align: center; /* Centrado */
+}
 
-  /* Cuadros sobre la imagen de portada */
-  .hero-boxes {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    display: flex;
-    gap: 20px;
+.hero-overlay h2 {
+  margin-top: 100px !important;
+  font-family: "Audiowide", cursive;
+  font-size: 2.5rem; /* Un tamaño más pequeño que h1 */
+  font-weight: 400; /* Normal */
+  color: #fefefe; /* Un tono más suave para el texto */
+  line-height: 1.6; /* Espaciado entre líneas */
+  text-align: center; /* Centrado */
+  margin-top: 0; /* Sin margen superior */
+  margin-bottom: 30px; /* Margen inferior para separación */
+  max-width: 80%; /* Limitar el ancho para mejorar la legibilidad */
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+}
+
+/* Botón de reservar */
+.btn-reservar {
+  margin-top: 350px;
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #ea5f34;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-decoration: none; /* Elimina la línea debajo del enlace */
+  border-radius: 8px;
+  transition: background 0.3s ease-in-out;
+  position: absolute;
+}
+.btn-reservar:hover {
+  background-color: #c94a24; /* Un tono más oscuro del botón */
+  transform: scale(1.05); /* Efecto de agrandamiento */
+  transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Galería de imágenes */
+.photo-frames {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: -80px; /* Para que flote un poco sobre la portada */
+  padding: 40px 20px;
+}
+
+.frame img {
+  width: 350px;
+  height: 250px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease-in-out;
+}
+
+.frame img:hover {
+  transform: scale(1.05);
+}
+
+/* Cuadros sobre la imagen de portada */
+.hero-boxes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  gap: 20px;
 }
 
 /* Estilos generales de los cuadros */
 .box {
-    width: 200px;
-    height: 200px;
-    background: rgba(0, 0, 0, 0.64);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-    position: absolute;
-    border: 5px solid #4bafe8;
-    overflow: hidden;
+  width: 220px;
+  height: 220px;
+  background: rgba(0, 0, 0, 0.64);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  border: 5px solid #4bafe8;
+  overflow: hidden;
+  z-index: 3;
 }
 
 .fade {
-    opacity: 0;
+  opacity: 0;
 }
 
 /* Posicionamiento de cada cuadro */
 .top-left {
-    top: 100px;
-    left: 50px;
+  bottom: 20px;
+  right: 1050px;
 }
 
 .top-right {
-    top: 100px;
-    right: 50px;
+  bottom: 20px;
+  right: 580px;
 }
 
 .bottom-left {
-    bottom: 20px;
-    left: 50px;
+  bottom: 20px;
+  left: 50px;
 }
 
 .bottom-right {
-    bottom: 20px;
-    right: 50px;
+  bottom: 20px;
+  right: 50px;
 }
 
 /* Ajuste para que las imágenes ocupen el espacio dentro de los cuadros */
 .box img {
-    width: 100%;
-    height: 100%;
-    border-radius: 5px;
-    object-fit: cover;
-    transition: opacity 0.15s ease-in-out;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  object-fit: cover;
+  transition: opacity 0.15s ease-in-out;
 }
