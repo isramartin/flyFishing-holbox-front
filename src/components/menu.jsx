@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom'; // Importa useLocation
 import '../styles/menu.css';
 
 const Menu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const location = useLocation(); // Obtén la ubicación actual
 
   const handleToggle = () => {
     if (menuOpen) {
@@ -19,6 +20,17 @@ const Menu = () => {
       setMenuOpen(true);
     }
   };
+
+  // Cierra el menú cuando la ruta cambia
+  useEffect(() => {
+    if (menuOpen) {
+      setIsClosing(true);
+      setTimeout(() => {
+        setMenuOpen(false);
+        setIsClosing(false);
+      }, 300); // Duración de la animación de salida (0.3s)
+    }
+  }, [location]); // Se ejecuta cada vez que la ruta cambia
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light fixed-top w-100">
