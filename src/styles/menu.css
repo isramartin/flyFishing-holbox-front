@@ -1,21 +1,91 @@
 .navbar {
-  position: fixed; /* Fija el navbar en la parte superior */
-  top: 0; /* Ubícalo en la parte superior */
-  left: 0; /* Alinea a la izquierda */
-  right: 0; /* Alinea a la derecha */
-  z-index: 1000; /* Asegura que esté encima de otros elementos */
-  padding: 10px 20px; /* Puedes ajustar el padding si es necesario */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 10px 20px;
   background-color: rgb(16, 187, 239) !important;
 }
 
+/* Mejorar la visibilidad del menú en móviles */
+.navbar-toggler {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Ajustes en enlaces */
 .navbar-brand,
 .nav-link {
   font-weight: bold !important;
-  color: rgb(255, 255, 255) !important;
-  text-align: left !important;
+  color: white !important;
 }
 
 .navbar-brand:hover,
 .nav-link:hover {
   color: #001df8 !important;
+}
+
+@media (max-width: 991px) {
+  .collapse.navbar-collapse {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Menú oculto a la izquierda inicialmente */
+    width: 250px;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.449);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: left 0.3s ease-in-out; /* Transición para mover el menú */
+    padding-top: 20px;
+  }
+
+  /* Cuando el menú está abierto */
+  .collapse.navbar-collapse.show {
+    left: 0; /* El menú se mueve a la posición 0 (a la vista) */
+    top: 70px;
+  }
+
+  /* Estilo para los elementos del menú */
+  .navbar-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 20px;
+  }
+
+  .nav-item {
+    margin: 10px 0;
+    opacity: 0; /* Inicialmente invisibles */
+    transform: translateX(-250px); /* Inicialmente desplazados hacia la izquierda */
+    transition: transform 0.3s ease, opacity 0.3s ease; /* Transición suave para el movimiento y la opacidad */
+  }
+
+  /* Cuando el menú está abierto, los ítems se desplazan desde la izquierda hacia su lugar */
+  .collapse.navbar-collapse.show .nav-item {
+    transform: translateX(0); /* Los ítems se mueven a su posición original */
+    opacity: 1; /* Se hacen visibles */
+  }
+
+  /* Animación de entrada del menú */
+  @keyframes slideIn {
+    from {
+      transform: translateX(-250px);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .collapse.navbar-collapse.closing {
+    left: -250px; /* Mueve el menú fuera de la pantalla */
+  }
+
+  .collapse.navbar-collapse.show {
+    animation: slideIn 0.3s ease-in-out;
+  }
+
+  /* Aplicar la animación de salida cuando el menú se cierra */
+  .collapse.navbar-collapse:not(.show) {
+    animation: slideOut 0.3s ease-in-out;
+  }
 }
