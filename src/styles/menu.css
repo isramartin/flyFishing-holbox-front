@@ -33,7 +33,7 @@
     left: -250px; /* Menú oculto a la izquierda inicialmente */
     width: 250px;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.449);
+    background-color: rgba(0, 0, 0, 0.834);
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
     transition: left 0.3s ease-in-out; /* Transición para mover el menú */
     padding-top: 20px;
