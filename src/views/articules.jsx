@@ -23,12 +23,49 @@ const articles = [
       description: "Reducen reflejos en el agua, permitiéndote ver mejor a los peces y protegiendo tus ojos del sol y anzuelos.",
       image: articulo3,
     },
+    {
+        id: 4,
+        title: "🔹 Caña de Pesca",
+        description: "Específica para lanzar líneas ligeras con precisión. Su flexibilidad y tamaño varían según el tipo de pesca y pez objetivo.",
+        image: articulo1,
+      },
+      {
+        id: 5,
+        title: "🔹  Chaleco de Pesca",
+        description: "Diseñado con múltiples bolsillos para llevar moscas, herramientas y accesorios sin necesidad de cargar una mochila.",
+        image: articulo2,
+      },
+      {
+        id: 6,
+        title: "🔹 Gafas de Sol Polarizadas",
+        description: "Reducen reflejos en el agua, permitiéndote ver mejor a los peces y protegiendo tus ojos del sol y anzuelos.",
+        image: articulo3,
+      },
+      {
+        id: 7,
+        title: "🔹 Caña de Pesca",
+        description: "Específica para lanzar líneas ligeras con precisión. Su flexibilidad y tamaño varían según el tipo de pesca y pez objetivo.",
+        image: articulo1,
+      },
+      {
+        id: 8,
+        title: "🔹  Chaleco de Pesca",
+        description: "Diseñado con múltiples bolsillos para llevar moscas, herramientas y accesorios sin necesidad de cargar una mochila.",
+        image: articulo2,
+      },
+      {
+        id: 9,
+        title: "🔹 Gafas de Sol Polarizadas",
+        description: "Reducen reflejos en el agua, permitiéndote ver mejor a los peces y protegiendo tus ojos del sol y anzuelos.",
+        image: articulo3,
+      },
+     
   ];
 
 
  const Articles =()=>{
     return (
-        <div>
+        <div className="articles-container">
           <ArticleList articles={articles} />
         </div>
       );

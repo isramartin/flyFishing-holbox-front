@@ -114,12 +114,6 @@
     transition: background 0.3s ease, transform 0.2s ease;
   }
   
-  button:hover {
-    border: 2px solid #0282bd;
-    background: #0282bd;
-    color: #ffffff;
-    transform: scale(1.05);
-  }
   
   /* Panel de reseñas */
   .reviews-panel {

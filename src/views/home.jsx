@@ -16,8 +16,7 @@ const Home = () => {
     
 
 
-    <div><InfoPeces /></div>
-        
+      
     
 
     </div>

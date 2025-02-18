@@ -7,6 +7,7 @@ import Reservaciones from './views/reservaciones';
 import Review from './views/reviewBox';
 import Gallery from './views/galeria';
 import Articles from './views/articules';
+import Footer from './components/footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap/dist/js/bootstrap.bundle.min"; 
 
@@ -25,7 +26,9 @@ function App() {
           <Route path="/galerias" element={<Gallery/>} />
           <Route path="/reseña" element={<Review/>} />
         </Routes>
+      
       </div>
+      <Footer />
     </Router>
   );
 }

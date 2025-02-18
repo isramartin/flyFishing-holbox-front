@@ -1,31 +1,132 @@
-/* Estilo para las imágenes en la galería */
+.gallery-container {
+  max-width: 100%;
+  min-height: 95vh;
+  margin-top: 50px;
+  margin-bottom: 3px;
+  padding: 1px;
+  box-sizing: border-box;
+}
+
 .gallery-image {
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.gallery-image:hover {
+  transform: scale(1.05);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.modal-dialog {
+  max-width: 80% !important;
+  z-index: 999999 !important;
+}
+
+.modal-body img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+}
+
+.gallery-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4); /* Oscurece todo, incluyendo el menú */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050; /* Asegura que el modal esté sobre el menú */
+}
+
+.modal-content {
+  position: relative;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 90%;
+  max-height: 70vh;
+  z-index: 1100; /* Asegura que el modal esté por encima del fondo */
+}
+
+.arrow-left {
+  position: absolute;
+  top: 50%;
+  left: -500px; /* Mueve la flecha fuera del contenedor */
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 30px;
+}
+
+.arrow-right {
+  position: absolute;
+  top: 50%;
+  right: -500px; /* Mueve la flecha fuera del contenedor */
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 30px;
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+}
+
+.thumbnail-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.thumbnail.active {
+  opacity: 1; /* Resalta la imagen activa */
+}
+
+.thumbnail.inactive {
+  opacity: 0.5; /* Opacidad para las imágenes no activas */
+}
+
+
+@media (max-width: 768px) {
+  .arrow-left {
+    position: absolute;
+    left: -225px; /* Ajusta la posición de la flecha izquierda */
+    right: 0px; /* Ajusta la posición de la flecha derecha */
+    font-size: 24px; /* Disminuye el tamaño de las flechas para pantallas pequeñas */
+    top: 50%;
+    transform: translateY(-100%);
   }
-  
-  .gallery-image:hover {
-    transform: scale(1.05);
+
+  .arrow-right {
+    position: absolute;
+    left: 225px; /* Ajusta la posición de la flecha izquierda */
+    right: 0px; /* Ajusta la posición de la flecha derecha */
+    font-size: 24px; /* Disminuye el tamaño de las flechas para pantallas pequeñas */
+    top: 50%;
+    transform: translateY(-100%);
   }
-  
-  /* Estilo para las flechas del carrusel */
-  .carousel-control-prev-icon,
-  .carousel-control-next-icon {
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    padding: 10px;
-  }
-  
-  /* Asegúrate de que el modal y la imagen estén correctamente visibles */
-  .modal-dialog {
-    max-width: 80% !important; /* Ajusta el tamaño máximo del modal */
-    z-index:999999  !important;
-  }
-  
-  .modal-body img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    max-height: 70vh; /* Limita la altura de la imagen */
-    object-fit: contain; /* Mantiene la relación de aspecto */
-  }
+}

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import PhotoGallery from '../components/photoGallery';
+import '../styles/photoGallery.css'
 
 const Gallery = () => {
 
 return(
-
-    <PhotoGallery/>
+<div className='gallery-container'>
+<PhotoGallery/>
+</div>
+    
 );
 
 }
