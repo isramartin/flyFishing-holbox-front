@@ -14,7 +14,7 @@ const ReviewForm = ({ onSubmit }) => {
 
 
 
-  const groups = ["Negocios", "Parejas", "Familia", "Amigos", "Solo"];
+  const groups = [ "Parejas", "Familia", "Amigos", "Solo"];
   const ratingLabels = ["Pésimo", "Malo", "Bueno", "Muy bueno", "Excelente"];
 
   const handleRating = (index) => {
@@ -45,14 +45,7 @@ const ReviewForm = ({ onSubmit }) => {
   };
 
   return (
-    <div className="review-container">
-         <div className="red-container">
-            <h1>Cuéntanos: ¿cómo te fue en tu visita? </h1>
-            {/* <img src={imagen1} alt="" /> */}
-
-
-
-         </div>
+  
       <div className="review-box">
         <h2>¿Cómo calificarías tu experiencia?</h2>
         <div className="star-rating">
@@ -111,7 +104,6 @@ const ReviewForm = ({ onSubmit }) => {
         <button onClick={handleSubmit}>Enviar Reseña</button>
       </div>
      
-    </div>
   );
 };
 

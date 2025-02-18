@@ -1,198 +1,217 @@
-/* Contenedor principal */
 .review-container {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    height: 100%;
-    /* margin: 100px auto; */
-    font-family: "Arial", sans-serif;
-    margin: 1 50%;
-    position: absolute;
-    /* left: 40%; */
-    background: #ffffff !important;
-  }
-  
-  /* Formulario de reseña */
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  min-height: 100%; /* Asegura que el contenedor sea flexible si hay más contenido */
+  font-family: "Arial", sans-serif;
+  position: relative; /* Cambié de absolute a relative para mantener la posición flexible */
+  background: #ffffff;
+  margin: 0; /* Elimino márgenes que podrían generar problemas en el ajuste */
+  padding: 20px; /* Añadí un pequeño padding para evitar que el contenido toque los bordes */
+  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
+}
+
+
+.review-box {
+  margin-top: 100px;
+  width: 35%;
+  height: 80%;
+  padding: 30px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  margin-left: 35%;
+  position: absolute;
+}
+
+.review-box h2 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 15px;
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+  flex-direction: row;
+}
+
+.star {
+  font-size: 30px;
+  cursor: pointer;
+  color: #ccc;
+  transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.star.selected {
+  color: #01bdd6;
+}
+
+.star:hover {
+  transform: scale(1.2);
+  color: #01bdd6;
+}
+
+.rating-text {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #000000;
+  margin-left: 5px;
+}
+
+select,
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+textarea {
+  min-height: 100px;
+  resize: none;
+}
+
+.group-selection {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.group-selection button {
+  flex: 1 1 30%;
+  padding: 8px 12px;
+  color: #01bdd6;
+  border: 2px solid #01bdd6;
+  background: rgb(255, 255, 255);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.group-selection button.selected {
+  border: 2px solid #0282bd;
+  background: #0282bd;
+  color: rgb(255, 255, 255);
+}
+
+button {
+  width: 100%;
+  background: #01bdd6;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.reviews-panel {
+  margin-top: 90px;
+  position: absolute;
+  max-width: 95%;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  height: 75vh;
+  right: 20px !important;
+  left: 48px;
+}
+
+.reviews-panel h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.review-item {
+  position: absolute;
+  background: rgb(255, 255, 255);
+  padding: 12px;
+  border: 1px solid #468cdc;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0px 2px 8px rgba(19, 18, 18, 0.08);
+}
+
+.review-item h4 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.review-meta {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.stars {
+  color: #0282bd;
+  font-size: 18px;
+}
+
+.no-reviews {
+  font-style: italic;
+  color: #777;
+}
+
+.add-review-btn {
+  position: absolute;
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  transition: background 0.3s;
+  width: 200px;
+  height: 50px;
+  margin-top: 820px;
+  left: 50px;
+}
+
+.add-review-btn:hover {
+  background-color: #004494;
+}
+
+
+@media (max-width: 768px) {
+
   .review-box {
-    margin-top: 100PX;
-    width: 28%;
-    height: 68%;
-    padding: 28px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    text-align: left;
-    margin-left: 45%;
+    width: 95%; /* Asegura que ocupe todo el ancho disponible */
+    padding: 35px;
+    margin-left: 0;
+    
   }
-  
-  .review-box h2 {
-    font-size: 22px;
-    font-weight: bold;
-    color: #222;
-    margin-bottom: 15px;
-  }
-  
-  /* Estrellas */
+
   .star-rating {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 15px;
-  }
-  
-  .star {
-    font-size: 30px;
-    cursor: pointer;
-    color: #ccc;
-    transition: transform 0.2s ease, color 0.3s ease;
-  }
-  
-  .star.selected {
-    color: #01bdd6;
-  }
-  
-  .star:hover {
-    transform: scale(1.2);
-    color: #01bdd6;
+    align-items: center;
+    flex-direction: row;
   }
 
   .rating-text {
-    margin-top: 15px;
     font-size: 12px;
-    color: #000000;
-    margin-left: 5px;
   }
-  
-  /* Select y botones */
-  select, input, textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-    outline: none;
-    margin-bottom: 10px;
-  }
-  
-  textarea {
-    min-height: 100px;
-    resize: none;
-  }
-  
-  .group-selection {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-  
+
   .group-selection button {
-    padding: 8px 12px;
-    color: #01bdd6;
-    border: 2px solid #01bdd6;
-    background: rgb(255, 255, 255);
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background 0.3s ease;
+    flex: 1 1 35%; /* En pantallas pequeñas, los botones ocupan el 45% del ancho */
+    margin-bottom: 8px; /* Ajusta el margen inferior */
+ 
   }
-  
-  .group-selection button.selected {
-    border: 2px solid #0282bd;
-    background: #0282bd;
-    color: rgb(255, 255, 255);
-  }
-  
-  button {
-    width: 100%;
-    background: #01bdd6;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 12px;
-    transition: background 0.3s ease, transform 0.2s ease;
-  }
-  
-  
-  /* Panel de reseñas */
-  .reviews-panel {
-    margin-top: 90px;
-    position:absolute;
-    max-width: 95%;
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    overflow-y:auto;
-    height: 75vh;
-    right: 20px !important;
-    left: 48px;
-  }
-  
-  .reviews-panel h3 {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
-  
-  .review-item {
-    position: absolute;
-    background: rgb(255, 255, 255);
-    padding: 12px;
-    border: 1px solid #468cdc;
-    border-radius: 8px;
-    width: 300px;
-    box-shadow: 0px 2px 8px rgba(19, 18, 18, 0.08);
-  }
-  
-  .review-item h4 {
-    font-size: 16px;
-    font-weight: bold;
-  }
-  
-  .review-meta {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 8px;
-  }
-  
-  .stars {
-    color: #0282bd;
-    font-size: 18px;
-  }
-  
-  .no-reviews {
-    font-style: italic;
-    color: #777;
-  }
-  
-  .add-review-btn {
-    position: absolute;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    transition: background 0.3s;
-    width: 200px;
-    height: 50px;
-    margin-top: 820px;
-    left: 50px;
-  }
-  
-  .add-review-btn:hover {
-    background-color: #004494;
-  }
-  
-  .red-container {
-    top: 100px;
-    position: absolute;
-    width: 300px;
-    height: 69%;
-    background-color: rgb(249, 249, 249);
-    margin-left: 550px;
-  }
+
+}
