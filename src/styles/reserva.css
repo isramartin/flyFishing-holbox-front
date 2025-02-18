@@ -166,3 +166,73 @@
 .reservation-form button:last-of-type:hover {
   background: #b02a37;
 }
+
+@media (max-width: 768px) {
+  .reservation-container {
+    padding: 20% 5%;
+  }
+
+  .react-calendar {
+    max-width: 100%;
+    padding: 10px;
+    margin: 20px auto;
+  }
+
+  .react-calendar__navigation button {
+    font-size: 14px;
+    width: 7vh;
+  }
+
+  .react-calendar__tile {
+    font-size: 10px;
+    height: 35px;
+  }
+
+  .reservation-form {
+    max-width: 90%;
+    padding: 15px;
+  }
+
+  .reservation-form input {
+    padding: 12px;
+  }
+
+  .reservation-form button {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .reservation-container {
+    padding: 20% 1%;
+  }
+
+  .react-calendar {
+    max-width: 100%;
+  }
+
+  .react-calendar__navigation button {
+    font-size: 12px;
+    width: 7vh;
+  }
+
+  .react-calendar__tile {
+    font-size: 10px;
+    height: 30px;
+  }
+
+  .reservation-form {
+    max-width: 95%;
+    padding: 10px;
+  }
+
+  .reservation-form input {
+    padding: 10px;
+  }
+
+  .reservation-form button {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+}

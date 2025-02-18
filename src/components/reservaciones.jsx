@@ -19,8 +19,21 @@ const Reservaciones = ({ onReserve }) => {
   const handleReserve = (name) => {
     setReservations([...reservations, selectedDate]);
     setIsFormOpen(false);
-    if (onReserve) onReserve(name, selectedDate);  // Llamada a una función de callback (opcional)
+    if (onReserve) onReserve(name, selectedDate);
   };
+
+  // Función para formatear el encabezado del calendario
+  const formatMonthYear = (date, locale = 'es-ES') => {
+    // Obtener el nombre del mes usando Intl.DateTimeFormat
+    const nombreMes = new Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
+    // Capitalizar la primera letra del mes (opcional, dependiendo del locale)
+    const mesCapitalizado = nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
+    // Devolver el formato "Mes Año"
+    console.log(mesCapitalizado);
+    
+    return `${mesCapitalizado} ${date.getFullYear()}`;
+  };
+  
 
   return (
     <div className="reservation-container">
@@ -28,10 +41,9 @@ const Reservaciones = ({ onReserve }) => {
       <Calendar
         onClickDay={handleDateClick}
         tileClassName={({ date }) =>
-          reservations.includes(date.toISOString().split('T')[0])
-            ? 'reserved'
-            : ''
+          reservations.includes(date.toISOString().split('T')[0]) ? 'reserved' : ''
         }
+        formatMonthYear={(locale, date) => formatMonthYear(date)}
       />
       {isFormOpen && (
         <>

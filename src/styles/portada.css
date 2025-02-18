@@ -180,12 +180,13 @@
 
   
   .hero-overlay h1 {
-    font-size: 3rem; /* Tamaño más pequeño para móviles */
+    font-size: 2rem; /* Tamaño más pequeño para móviles */
     margin-bottom: 10px;
     height: 20vh; 
   }
 
   .hero-overlay h2 {
+    font-family: "Audiowide", cursive;
     font-size: 1rem; /* Tamaño más pequeño para móviles */
     margin-bottom: 80px;
   }
@@ -207,8 +208,11 @@
   }
 
   .top-left {
+    width: 9vh;
+    height: 9vh;
     bottom: 61vh;
     right: 10px;
+    top: 28vh;
   }
   
   .top-right {
@@ -216,8 +220,11 @@
   }
   
   .bottom-left {
+    width: 9vh;
+    height: 9vh;
     bottom: 61vh;
     left: 10px;
+    top: 28vh;
   }
   
   .bottom-right {
@@ -226,19 +233,3 @@
   
 }
 
-/* Media Queries para pantallas medianas */
-@media (min-width: 769px) and (max-width: 1024px) {
-  
-  .hero-overlay h1 {
-    font-size: 5rem; /* Tamaño intermedio para tablets */
-  }
-
-  .hero-overlay h2 {
-    font-size: 2rem; /* Tamaño intermedio para tablets */
-  }
-
-  .box {
-    width: 180px; /* Tamaño intermedio para tablets */
-    height: 180px;
-  }
-}
