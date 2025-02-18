@@ -42,11 +42,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4); /* Oscurece todo, incluyendo el menú */
+  background-color: rgba(0, 0, 0, 0.4); 
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1050; /* Asegura que el modal esté sobre el menú */
+  z-index: 1050; 
 }
 
 .modal-content {
@@ -55,13 +55,13 @@
   border-radius: 10px;
   max-width: 90%;
   max-height: 70vh;
-  z-index: 1100; /* Asegura que el modal esté por encima del fondo */
+  z-index: 1100; 
 }
 
 .arrow-left {
   position: absolute;
   top: 50%;
-  left: -500px; /* Mueve la flecha fuera del contenedor */
+  left: -500px; 
   transform: translateY(-50%);
   background-color: transparent;
   border: none;
@@ -72,7 +72,7 @@
 .arrow-right {
   position: absolute;
   top: 50%;
-  right: -500px; /* Mueve la flecha fuera del contenedor */
+  right: -500px; 
   transform: translateY(-50%);
   background-color: transparent;
   border: none;
@@ -103,30 +103,60 @@
 }
 
 .thumbnail.active {
-  opacity: 1; /* Resalta la imagen activa */
+  opacity: 1; 
 }
 
 .thumbnail.inactive {
-  opacity: 0.5; /* Opacidad para las imágenes no activas */
+  opacity: 0.5; 
 }
 
 
 @media (max-width: 768px) {
   .arrow-left {
     position: absolute;
-    left: -225px; /* Ajusta la posición de la flecha izquierda */
-    right: 0px; /* Ajusta la posición de la flecha derecha */
-    font-size: 24px; /* Disminuye el tamaño de las flechas para pantallas pequeñas */
+    left: -225px; 
+    right: 0px; 
+    font-size: 24px; 
     top: 50%;
     transform: translateY(-100%);
   }
 
   .arrow-right {
     position: absolute;
-    left: 225px; /* Ajusta la posición de la flecha izquierda */
-    right: 0px; /* Ajusta la posición de la flecha derecha */
-    font-size: 24px; /* Disminuye el tamaño de las flechas para pantallas pequeñas */
+    left: 225px; 
+    right: 0px; 
+    font-size: 24px; 
     top: 50%;
     transform: translateY(-100%);
+  }
+}
+
+@media (max-width: 480px) {
+  .arrow-left {
+    position: absolute;
+    left: -180px; 
+    right: 0px; 
+    font-size: 24px; 
+    top: 50%;
+    transform: translateY(-100%);
+  }
+
+  .arrow-right {
+    position: absolute;
+    left: 180px; 
+    right: 0px; 
+    font-size: 24px; 
+    top: 50%;
+    transform: translateY(-100%);
+  }
+
+  .thumbnail {
+    width: 4vh;
+    height: 4vh;
+    object-fit: cover;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.3s ease-in-out;
   }
 }
