@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Menu from './components/menu';  // Importamos el menú
 import Home from './views/home'; // Ya tienes este componente de Home
 import Reservaciones from './views/reservaciones';
+import ReservacionesForm from './components/reservacionesForm';
 import Review from './views/reviewBox';
 import Gallery from './views/galeria';
 import Articles from './views/articules';
@@ -23,6 +24,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/pesca" element={<Articles/>} />
           <Route path="/reservaciones" element={<Reservaciones />} />
+          <Route path="/reservaciones/reservaForm" element={<ReservacionesForm />} />
           <Route path="/galerias" element={<Gallery/>} />
           <Route path="/reseña" element={<Review/>} />
         </Routes>

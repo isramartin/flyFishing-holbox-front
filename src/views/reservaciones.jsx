@@ -12,7 +12,10 @@ const Reserva = () => {
         <div >
 <Reservaciones onReserve={handleReservation} />
 
+
+
         </div>
+
 
     );
 };
