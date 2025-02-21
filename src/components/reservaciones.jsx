@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation  } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/reserva.css';
@@ -8,6 +8,13 @@ const Reservaciones = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [reservations, setReservations] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.fechaReservada) {
+      setReservations((prevReservations) => [...prevReservations, location.state.fechaReservada]);
+    }
+  }, [location.state]);
 
   const handleDateClick = (date) => {
     const dateString = date.toISOString().split('T')[0];

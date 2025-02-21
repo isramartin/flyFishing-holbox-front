@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Ship, MapPin, Clock, Phone, LifeBuoy, Smile,  GlassWater, Bus,BusFront,Contact,PhoneCall ,Lightbulb,  ArrowLeftToLine} from 'lucide-react';
+import { Ship, MapPin, Clock, Phone, LifeBuoy, Smile,  GlassWater, Bus,BusFront,Contact,PhoneCall,  User, Mail,  Users} from 'lucide-react';
 
 import '../styles/reservaForm.css';
 
@@ -9,11 +9,29 @@ const ReservacionesForm = () => {
   const location = useLocation();
   const selectedDate = location.state?.selectedDate; // Obtener la fecha seleccionada
 
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString + "T12:00:00"); // Asegura que la hora no cause desfase
+    console.log("Fecha original:", dateString);
+  console.log("Fecha interpretada por JavaScript:", date);
+    return date.toLocaleDateString("es-ES", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+  
+  
+  
+
+  
+
   const [formData, setFormData] = useState({
     nombreCompleto: '',
     correo: '',
     telefono: '',
-    numeroPersonas: 1,
+    numeroPersonas: '',
     informacionAdicional: '',
   });
 
@@ -29,21 +47,22 @@ const ReservacionesForm = () => {
     e.preventDefault();
     // Aquí puedes manejar el envío del formulario (por ejemplo, enviar a una API)
     console.log('Datos del formulario:', { ...formData, fecha: selectedDate });
-
-    // Redirigir a una página de confirmación o al calendario
-    navigate('/reservaciones', { state: { reservaExitosa: true } });
+  
+    // Redirigir a la página de reservaciones con la fecha reservada
+    navigate('/reservaciones', { state: { reservaExitosa: true, fechaReservada: selectedDate } });
   };
 
   return (
     <div className='rf-container'>
       <div className="rf-form">
-        <h2 className="rf-title">Reserva para {selectedDate}</h2>
+        <h2 className="rf-title">Reserva para <br/>{formatDate(selectedDate)}</h2>
         <form onSubmit={handleSubmit}>
           <div className="rf-form-group">
-            <label className="rf-label">Nombre completo:</label>
+            <label className="rf-label"> <User className='icon-style'/> Nombre completo:</label>
             <input
               type="text"
               name="nombreCompleto"
+              placeholder='Nombre Completo'
               value={formData.nombreCompleto}
               onChange={handleChange}
               className="rf-input"
@@ -52,10 +71,11 @@ const ReservacionesForm = () => {
           </div>
 
           <div className="rf-form-group">
-            <label className="rf-label">Correo electrónico:</label>
+            <label className="rf-label"><Mail className='icon-style'/> Correo electrónico:</label>
             <input
               type="email"
               name="correo"
+              placeholder='Correo'
               value={formData.correo}
               onChange={handleChange}
               className="rf-input"
@@ -64,10 +84,11 @@ const ReservacionesForm = () => {
           </div>
 
           <div className="rf-form-group">
-            <label className="rf-label">Teléfono:</label>
+            <label className="rf-label"><Phone className='icon-style'/> Teléfono:</label>
             <input
               type="tel"
               name="telefono"
+              placeholder='Telefono'
               value={formData.telefono}
               onChange={handleChange}
               className="rf-input"
@@ -76,9 +97,10 @@ const ReservacionesForm = () => {
           </div>
 
           <div className="rf-form-group">
-            <label className="rf-label">Número de personas:</label>
+            <label className="rf-label"> <Users className='icon-style'/> Número de personas:</label>
             <select
               name="numeroPersonas"
+              placeholder='numeroPersonas'
               value={formData.numeroPersonas}
               onChange={handleChange}
               className="rf-input"
