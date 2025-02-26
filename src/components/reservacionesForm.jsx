@@ -22,11 +22,6 @@ const ReservacionesForm = () => {
     });
   };
   
-  
-  
-
-  
-
   const [formData, setFormData] = useState({
     nombreCompleto: '',
     correo: '',
