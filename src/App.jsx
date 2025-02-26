@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, AuthContext } from "./context/AuthContext.jsx"; // Importa el contexto
 import Menu from "./components/menu"; // Importamos el menú
 import Home from "./views/home"; // Ya tienes este componente de Home
@@ -25,13 +25,15 @@ function App() {
 }
 
 const AppContent = () => {
-  const { isAuthenticated } = useContext(AuthContext); // Corregido: isAuthenticated (sin la "i" adicional)
+  const { isAuthenticated } = useContext(AuthContext); // Estado de autenticación
+  const location = useLocation(); // Obtiene la ruta actual
 
-  console.log("Estado de autenticación:", isAuthenticated); // Debug: Verificar el estado de autenticación
+  // Ocultar el menú solo en la página de login
+  const showMenuAndFooter = location.pathname !== "/login";
 
   return (
     <div className="App">
-      {isAuthenticated && <Menu />} {/* Mostrar el menú solo si el usuario está autenticado */}
+      {showMenuAndFooter && <Menu />} {/* Mostrar el menú solo si no estamos en /login */}
 
       <Routes>
         <Route path="/login" element={<LoginForm />} />
@@ -51,7 +53,7 @@ const AppContent = () => {
         <Route path="*" element={<Navigate to="/" />} /> {/* Ruta por defecto */}
       </Routes>
 
-      {isAuthenticated && <Footer />}
+      {showMenuAndFooter && <Footer />} {/* Mostrar el footer solo si el usuario está autenticado */}
     </div>
   );
 };
