@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import "../styles/login.css"; // Archivo CSS personalizado
 import { AuthContext } from "../context/AuthContext"; // Importa el contexto
 import mockData from "../assets/mockdata/mockdata.json"; // Importa el JSON directamente
+import { Mail, KeyRound } from "lucide-react";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -37,7 +38,7 @@ const LoginForm = () => {
         <form className="login-form" onSubmit={handleSubmit}>
           {/* Campo de Email */}
           <div className="form-group">
-            <label htmlFor="email" className="form-label">
+            <label htmlFor="email" className="form-label"> <Mail className='icon-style' />
               Correo Electrónico
             </label>
             <input
@@ -53,7 +54,7 @@ const LoginForm = () => {
 
           {/* Campo de Contraseña */}
           <div className="form-group">
-            <label htmlFor="password" className="form-label">
+            <label htmlFor="password" className="form-label"> <KeyRound className='icon-style'/>
               Contraseña
             </label>
             <input
