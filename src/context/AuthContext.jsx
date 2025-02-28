@@ -5,19 +5,22 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState(null)
 
-  const login = () => {
-    console.log("Usuario autenticado"); // Debug: Verificar que se llama esta función
+  const login = (role) => {
+    console.log("Usuario autenticado :: role", role); // Debug: Verificar que se llama esta función
     setIsAuthenticated(true);
+    setUserRole(role)
   };
 
   const logout = () => {
     console.log("Usuario cerró sesión"); // Debug: Verificar que se llama esta función
     setIsAuthenticated(false);
+    setUserRole(null)
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, userRole, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

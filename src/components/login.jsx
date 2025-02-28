@@ -22,7 +22,7 @@ const LoginForm = () => {
 
     if (user) {
       console.log("Usuario encontrado:", user); // Debug: Verificar que se encontró el usuario
-      authLogin(); // Llama a la función login del contexto
+      authLogin(user.role); // Llama a la función login del contexto
       setError(""); // Limpiar el mensaje de error
       navigate("/admin/reservaciones"); // Redirigir a /admin/reservaciones
     } else {
