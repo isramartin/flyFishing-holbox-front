@@ -7,7 +7,7 @@ const Menu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const location = useLocation(); // Obtén la ubicación actual
-  const {isAuthenticated, userRole} = useContext(AuthContext)
+  const {isAuthenticated, userRole, logout} = useContext(AuthContext)
 
   const handleToggle = () => {
     if (menuOpen) {
@@ -21,6 +21,25 @@ const Menu = () => {
       // Si el menú está cerrado, lo abrimos
       setMenuOpen(true);
     }
+  };
+
+  const handleLogout = () => {
+    console.log("Rol del usuario al cerrar sesión:", userRole); // Debug: Verificar el rol
+    logout(); // Cierra la sesión
+
+    // Redirige según el rol después de un pequeño retraso
+    setTimeout(() => {
+      if (userRole === 'admin') {
+        console.log("Redirigiendo a /login"); // Debug: Verificar redirección
+        navigate('/login'); // Redirige al login si es admin
+      } else if (userRole === 'user') {
+        console.log("Redirigiendo a /home"); // Debug: Verificar redirección
+        navigate('/home'); // Redirige al home si es user
+      } else {
+        console.log("Redirigiendo a /home por defecto"); // Debug: Verificar redirección
+        navigate('/home'); // Redirige al home por defecto
+      }
+    }, 100); // Pequeño retraso para asegurar que el estado se actualice
   };
 
   // Cierra el menú cuando la ruta cambia
@@ -40,7 +59,6 @@ const Menu = () => {
     { path: '/pesca', label: 'Pesca', roles: ['user','guest'] },
     { path: '/reservaciones', label: 'Reservaciones', roles: [ 'user','guest'] },
     { path: '/galerias', label: 'Galerías', roles: [ 'user','guest'] },
-    { path: '/reseña', label: 'Reseñas', roles: ['user','guest'] },
     { path: '/reseña', label: 'Reseñas', roles: ['user','guest'] },
     { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['admin'] }, // Solo para admin
     { path: '/login', label: 'Login', roles: ['guest'] }, // Solo para invitados
@@ -83,6 +101,14 @@ const Menu = () => {
                 <Link className="nav-link" to={item.path}>{item.label}</Link>
               </li>
             ))}
+
+{isAuthenticated && (
+              <li className="nav-item">
+                <button className="nav-link btn btn-link" onClick={handleLogout}>
+                  Cerrar Sesión
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>

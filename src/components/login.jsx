@@ -80,6 +80,9 @@ const LoginForm = () => {
           <p className="forgot-password">
             ¿Olvidaste tu contraseña? <a href="/recover">Recupérala aquí</a>
           </p>
+          <p className="forgot-password">
+            ¿No tienes una cuenta? <a href="/register">Regístrate aquí</a>
+          </p>
         </form>
       </div>
     </div>

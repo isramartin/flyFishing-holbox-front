@@ -13,6 +13,8 @@ import AdminReservations from "./components/admin/adminReservation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import LoginForm from "./components/login";
+import ProtectedRoute from "./utils/ProtectedRoute.jsx";
+import RegisterForm from "./components/registro.jsx";
 
 function App() {
   return (
@@ -29,7 +31,7 @@ const AppContent = () => {
   const location = useLocation(); // Obtiene la ruta actual
 
   // Ocultar el menú solo en la página de login
-  const showMenuAndFooter = location.pathname !== "/login";
+  const showMenuAndFooter = location.pathname !== "/login" && location.pathname !== "/register";
 
   return (
     <div className="App">
@@ -37,6 +39,7 @@ const AppContent = () => {
 
       <Routes>
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegisterForm/>} />
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/pesca" element={<Articles />} />
@@ -47,7 +50,9 @@ const AppContent = () => {
         <Route
           path="/admin/reservaciones"
           element={
-            isAuthenticated ? <AdminReservations /> : <Navigate to="/login" /> // Proteger la ruta
+            <ProtectedRoute requiredRole="admin">
+            <AdminReservations />
+          </ProtectedRoute>
           }
         />
         <Route path="*" element={<Navigate to="/" />} /> {/* Ruta por defecto */}
