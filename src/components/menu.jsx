@@ -73,6 +73,9 @@ const Menu = () => {
             <li className="nav-item">
               <Link className="nav-link" to="/reseña">Reseñas</Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/login">login</Link>
+            </li>
           </ul>
         </div>
       </div>
