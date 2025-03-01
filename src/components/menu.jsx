@@ -62,12 +62,13 @@ const Menu = () => {
     { path: '/reseña', label: 'Reseñas', roles: ['user','guest'] },
     { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['admin'] }, // Solo para admin
     { path: '/login', label: 'Login', roles: ['guest'] }, // Solo para invitados
+    { path: '/register', label: 'registro', roles: ['guest'] }, // Solo para invitados
   ];
 
   // Filtra las opciones del menú según el rol del usuario
   const filteredMenuItems = menuItems.filter(item => {
     if (!isAuthenticated) {
-      return item.roles.includes('guest'); // Si no está autenticado, muestra solo las opciones para invitados
+      return item.roles.includes('guest') && item.path !== '/register';; // Si no está autenticado, muestra solo las opciones para invitados
     }
     return item.roles.includes(userRole); // Filtra según el rol del usuario
   });
