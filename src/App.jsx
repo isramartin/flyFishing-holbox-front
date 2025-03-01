@@ -14,7 +14,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import LoginForm from "./components/login";
 import ProtectedRoute from "./utils/ProtectedRoute.jsx";
-import RegisterForm from "./components/registro.jsx";
+import RegisterForm from "./components/registro";
 
 function App() {
   return (
