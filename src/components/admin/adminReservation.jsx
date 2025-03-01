@@ -30,7 +30,7 @@ const AdminReservations = () => {
         notes: "Cumpleaños",
       },
       {
-        id: "R002",
+        id: "R003",
         name: "María García",
         email: "maria@ejemplo.com",
         phone: "555-987-6543",
@@ -41,7 +41,7 @@ const AdminReservations = () => {
         notes: "Cumpleaños",
       },
       {
-        id: "R002",
+        id: "R004",
         name: "María García",
         email: "maria@ejemplo.com",
         phone: "555-987-6543",
@@ -52,7 +52,7 @@ const AdminReservations = () => {
         notes: "Cumpleaños",
       },
       {
-        id: "R002",
+        id: "R005",
         name: "María García",
         email: "maria@ejemplo.com",
         phone: "555-987-6543",
@@ -63,7 +63,7 @@ const AdminReservations = () => {
         notes: "Cumpleaños",
       },
       {
-        id: "R002",
+        id: "R006",
         name: "María García",
         email: "maria@ejemplo.com",
         phone: "555-987-6543",
@@ -74,7 +74,7 @@ const AdminReservations = () => {
         notes: "Cumpleaños",
       },
       {
-        id: "R002",
+        id: "R007",
         name: "María García",
         email: "maria@ejemplo.com",
         phone: "555-987-6543",
@@ -84,7 +84,28 @@ const AdminReservations = () => {
         status: "cancelada",
         notes: "Cumpleaños",
       },
-      
+      {
+        id: "R006",
+        name: "María García",
+        email: "maria@ejemplo.com",
+        phone: "555-987-6543",
+        people: 4,
+        date: "2023-10-16",
+        time: "20:30",
+        status: "pendiente",
+        notes: "Cumpleaños",
+      },
+      {
+        id: "R007",
+        name: "María García",
+        email: "maria@ejemplo.com",
+        phone: "555-987-6543",
+        people: 4,
+        date: "2023-10-16",
+        time: "20:30",
+        status: "pendiente",
+        notes: "Cumpleaños",
+      },
     ];
 
     const getStatusColor = (status) => {

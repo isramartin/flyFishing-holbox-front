@@ -88,28 +88,35 @@ const Menu = () => {
         </div>
 
         <div className="ms-3">
-          <Link className="navbar-brand" to="/home">Mi App de Reservaciones</Link>
+          <Link className="navbar-brand" to="/home">
+            Mi App de Reservaciones
+          </Link>
         </div>
 
         <div
-          className={`collapse navbar-collapse ${menuOpen ? 'show' : ''} ${isClosing ? 'closing' : ''}`}
+          className={`collapse navbar-collapse ${menuOpen ? "show" : ""} ${isClosing ? "closing" : ""}`}
           id="navbarNav"
         >
           <ul className="navbar-nav">
             {filteredMenuItems.map((item, index) => (
               <li className="nav-item" key={index}>
-                <Link className="nav-link" to={item.path}>{item.label}</Link>
+                <Link className="nav-link" to={item.path} onClick={() => setMenuOpen(false)}>
+                  {item.label}
+                </Link>
               </li>
             ))}
-
-{isAuthenticated && (
-              <li className="nav-item">
-                <button className="nav-link btn btn-link" onClick={handleLogout}>
+            
+          </ul>
+          <ul className="closse-session">{isAuthenticated && (
+            
+                <button
+                  className="nav-link btn btn-link"
+                  onClick={handleLogout}
+                >
                   Cerrar Sesión
                 </button>
-              </li>
-            )}
-          </ul>
+              
+            )}</ul>
         </div>
       </div>
     </nav>

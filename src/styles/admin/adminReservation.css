@@ -65,7 +65,7 @@ h2 {
 }
 
 .reservation-table th {
-  background: #0067d5;
+  background: #0b79cd;
   color: white;
   font-weight: 600;
 }
@@ -100,22 +100,6 @@ h2 {
 .reservation-table button svg {
   color: #ffffff;
   font-size: 18px;
-}
-
-
-.confirm {
-  background-color: #28a745;
-  color: white;
-}
-
-.cancel {
-  background-color: #ffc107;
-  color: black;
-}
-
-.delete {
-  background-color: #dc3545;
-  color: white;
 }
 
 .action-button {
@@ -174,6 +158,12 @@ h2 {
   transform: translatex(50%);
 }
 
+.status-badge {
+  background: none;
+  transform: translatex(-10%);
+  text-align:right;
+  justify-content:flex-start; 
+}
 
 .modal-overlay {
   position: fixed;
