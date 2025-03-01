@@ -26,7 +26,7 @@ const AdminReservations = () => {
         people: 4,
         date: "2023-10-16",
         time: "20:30",
-        status: "pendiente",
+        status: "confirmada",
         notes: "Cumpleaños",
       },
       {
@@ -37,7 +37,7 @@ const AdminReservations = () => {
         people: 4,
         date: "2023-10-16",
         time: "20:30",
-        status: "cancelada",
+        status: "pendiente",
         notes: "Cumpleaños",
       },
       {
@@ -81,11 +81,11 @@ const AdminReservations = () => {
         people: 4,
         date: "2023-10-16",
         time: "20:30",
-        status: "cancelada",
+        status: "pendiente",
         notes: "Cumpleaños",
       },
       {
-        id: "R006",
+        id: "R008",
         name: "María García",
         email: "maria@ejemplo.com",
         phone: "555-987-6543",
@@ -96,7 +96,7 @@ const AdminReservations = () => {
         notes: "Cumpleaños",
       },
       {
-        id: "R007",
+        id: "R009",
         name: "María García",
         email: "maria@ejemplo.com",
         phone: "555-987-6543",
