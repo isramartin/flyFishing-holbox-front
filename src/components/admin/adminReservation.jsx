@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Eye } from "lucide-react";
 import '../../styles/admin/adminReservation.css'
 
 const AdminReservations = () => {
@@ -39,6 +40,51 @@ const AdminReservations = () => {
         status: "cancelada",
         notes: "Cumpleaños",
       },
+      {
+        id: "R002",
+        name: "María García",
+        email: "maria@ejemplo.com",
+        phone: "555-987-6543",
+        people: 4,
+        date: "2023-10-16",
+        time: "20:30",
+        status: "cancelada",
+        notes: "Cumpleaños",
+      },
+      {
+        id: "R002",
+        name: "María García",
+        email: "maria@ejemplo.com",
+        phone: "555-987-6543",
+        people: 4,
+        date: "2023-10-16",
+        time: "20:30",
+        status: "cancelada",
+        notes: "Cumpleaños",
+      },
+      {
+        id: "R002",
+        name: "María García",
+        email: "maria@ejemplo.com",
+        phone: "555-987-6543",
+        people: 4,
+        date: "2023-10-16",
+        time: "20:30",
+        status: "cancelada",
+        notes: "Cumpleaños",
+      },
+      {
+        id: "R002",
+        name: "María García",
+        email: "maria@ejemplo.com",
+        phone: "555-987-6543",
+        people: 4,
+        date: "2023-10-16",
+        time: "20:30",
+        status: "cancelada",
+        notes: "Cumpleaños",
+      },
+      
     ];
 
     const getStatusColor = (status) => {
@@ -90,9 +136,12 @@ const AdminReservations = () => {
                 <td>{res.date}</td>
                 <td>{res.time}</td>
                 <td>{res.people}</td>
-                <td className={res.status}>{res.status}</td>
+                {/* <td className={res.status}>{res.status}</td> */}
                 <td>
-                  <button onClick={() => setSelectedReservation(res)}>👁️</button>
+                      <span className={res.status}>{res.status}</span>
+                    </td>
+                <td>
+                  <button onClick={() => setSelectedReservation(res)}> <Eye size={18} />  </button>
                 </td>
               </tr>
             ))}

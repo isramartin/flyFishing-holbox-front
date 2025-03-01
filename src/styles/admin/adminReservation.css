@@ -1,195 +1,256 @@
+
 .admin-reservations-container {
-    width: 90%;
-    min-height: 100vh;
-    margin: 10px auto; 
-    margin-top: 49px;
-    margin-bottom: 1px;
-  }
+  width: 90%;
+  min-height: 100vh;
+  margin: 10px auto;
+  margin-top: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
 
 .admin-reservations {
-    margin-top: 10px;
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  h2 {
-    text-align: center;
-    color: #333;
-  }
-  
-  .filters {
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .filters label {
-    font-weight: bold;
-  }
-  
-  .filters select {
-    padding: 5px;
-    border-radius: 5px;
-  }
-  
-  .reservation-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-  }
-  
-  .reservation-table th, .reservation-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-  }
-  
-  .reservation-table th {
-    background-color: #f4f4f4;
-  }
-  
-  button {
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    margin: 2px;
-    border-radius: 5px;
-  }
-  
-  .confirm {
-    background-color: #28a745;
-    color: white;
-  }
-  
-  .cancel {
-    background-color: #ffc107;
-    color: black;
-  }
-  
-  .delete {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  .pendiente {
-    color: orange;
-    font-weight: bold;
-  }
-  
-  .confirmada {
-    color: green;
-    font-weight: bold;
-  }
-  
-  .cancelada {
-    color: red;
-    font-weight: bold;
-  }
-  
-  /* Botón de acción */
+  width: 100%;
+  max-width: 120vh;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 30px;
+}
+
+h2 {
+  text-align: center;
+  color: #343a40;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filters label {
+  font-weight: 600;
+  color: #495057;
+}
+
+.filters select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  outline: none;
+  background: #fff;
+  cursor: pointer;
+}
+
+
+.reservation-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.reservation-table th, .reservation-table td {
+  border: 1px solid #dee2e6;
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.reservation-table th {
+  background: #0067d5;
+  color: white;
+  font-weight: 600;
+}
+
+.reservation-table tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.reservation-table tr:hover {
+  background: #e9ecef;
+}
+
+
+.reservation-table button {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  background: #063f72;
+  transition: background 0.3s ease;
+  margin: 0 auto;
+}
+
+.reservation-table button:hover {
+  background: #0056b3;
+}
+
+.reservation-table button svg {
+  color: #ffffff;
+  font-size: 18px;
+}
+
+
+.confirm {
+  background-color: #28a745;
+  color: white;
+}
+
+.cancel {
+  background-color: #ffc107;
+  color: black;
+}
+
+.delete {
+  background-color: #dc3545;
+  color: white;
+}
+
 .action-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-  }
-  
-  /* Estilos del modal */
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #007bff;
+  transition: color 0.3s ease;
+}
+
+.action-button:hover {
+  color: #0056b3;
+}
+
+
+.pendiente {
+  background-color: #faebb9;
+  color: #c69604;
+   font-weight: bold;
+  border-radius: 50px; 
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  width: 100px; 
+  height: 25px; 
+  padding: 5px 10px; 
+  transform: translatex(50%);
+}
+
+.confirmada {
+  background-color: #abf3bc;
+  color: #10902b;
+  font-weight: bold;
+  border-radius: 50px; 
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  width: 100px; 
+  height: 25px; 
+  padding: 5px 10px; 
+  transform: translatex(50%);
+}
+
+.cancelada {
+  background-color: #f8d7da;
+  color: #c82333;
+  font-weight: bold;
+  border-radius: 50px; 
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  width: 100px; 
+  height: 25px; 
+  padding: 5px 10px; 
+  transform: translatex(50%);
+}
+
 
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modal-container {
-    background-color: #fff;
-    border-radius: 8px;
-    width: 500px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .modal-header h3 {
-    margin: 0;
-    font-size: 20px;
-    color: #333;
-  }
-  
-  .close-button {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: #888;
-    position: absolute;
-    left: 220px;
-  }
-  
-  .close-button:hover {
-    color: #555;
-  }
-  
-  .modal-body {
-    padding: 16px;
-  }
-  
-  .details-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  
-  .detail-item {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .detail-label {
-    font-weight: bold;
-    color: #555;
-    font-size: 14px;
-    margin-bottom: 4px;
-  }
-  
-  .detail-value {
-    color: #333;
-    font-size: 14px;
-  }
-  
-  .status-badge {
-    font-size: 14px;
-    font-weight: bold;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
-    display: inline-block;
-  }
-  
-  .status-badge.confirmada {
-    color: rgb(3, 154, 18);
-  }
-  
-  .status-badge.pendiente {
+.modal-container {
+  background-color: #fff;
+  border-radius: 8px;
+  width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-    color: #ffc107;
-  }
-  
-  .status-badge.cancelada {
-    color: #dc3545;
-  }
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #ddd;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+  position: absolute;
+  left: 220px;
+}
+
+.close-button:hover {
+  color: #555;
+}
+
+.modal-body {
+  padding: 16px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.detail-value {
+  color: #212529;
+  font-size: 14px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
