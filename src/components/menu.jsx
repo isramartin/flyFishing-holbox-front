@@ -62,7 +62,6 @@ const Menu = () => {
     { path: '/reseña', label: 'Reseñas', roles: ['user','guest'] },
     { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['admin'] }, // Solo para admin
     { path: '/login', label: 'Login', roles: ['guest'] }, // Solo para invitados
-    { path: '/register', label: 'Login', roles: ['guest'] },
   ];
 
   // Filtra las opciones del menú según el rol del usuario

@@ -36,9 +36,9 @@ const LoginForm = () => {
     <div className="login-container">
       <div className="login-card">
         <h2 className="login-title">Iniciar Sesión</h2>
-        <p className="forgot-password">
+        {/* <p className="forgot-password">
             ¿No tienes una cuenta? <a href="/register">Regístrate aquí</a>
-          </p>
+          </p> */}
         <form className="login-form" onSubmit={handleSubmit}>
           {/* Campo de Email */}
           <div className="form-group">
@@ -89,7 +89,7 @@ const LoginForm = () => {
 
           {/* Enlace para recuperar contraseña */}
           <p className="forgot-password">
-            ¿Olvidaste tu contraseña? <a href="/recover">Recupérala aquí</a>
+            ¿Olvidaste tu contraseña? <a href="/register">Recupérala aquí</a>
           </p>
           
         </form>
