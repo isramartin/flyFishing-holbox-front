@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { Link, useNavigate } from "react-router-dom"; // Importa useNavigate
 import "../styles/login.css"; // Archivo CSS personalizado
 import { AuthContext } from "../context/AuthContext"; // Importa el contexto
 import mockData from "../assets/mockdata/mockdata.json"; // Importa el JSON directamente
@@ -37,8 +37,8 @@ const LoginForm = () => {
       <div className="login-card">
         <h2 className="login-title">Iniciar Sesión</h2>
         <p className="forgot-password">
-            ¿No tienes una cuenta? <a href="/register">Regístrate aquí</a>
-          </p>
+  ¿No tienes una cuenta? <Link to="/register">Regístrate aquí</Link>
+</p>
         <form className="login-form" onSubmit={handleSubmit}>
           {/* Campo de Email */}
           <div className="form-group">
