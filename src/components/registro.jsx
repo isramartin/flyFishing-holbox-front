@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/login.css"; // Reutiliza el mismo archivo CSS
 import { Mail, KeyRound, User } from "lucide-react";
 
@@ -92,7 +92,7 @@ const RegisterForm = () => {
 
           {/* Enlace para iniciar sesión */}
           <p className="forgot-password">
-            ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
+            ¿Ya tienes una cuenta? <Link href="/login">Inicia sesión aquí</Link>
           </p>
         </form>
       </div>
