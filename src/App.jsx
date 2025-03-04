@@ -10,6 +10,7 @@ import Gallery from "./views/galeria";
 import Articles from "./views/articules";
 import Footer from "./components/footer";
 import AdminReservations from "./components/admin/adminReservation";
+import ImageUploadPanel from "./components/admin/imageUploadGallery";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import LoginForm from "./components/login";
@@ -55,6 +56,16 @@ const AppContent = () => {
           </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/admin/imageUploadGallery"
+          element={
+            <ProtectedRoute requiredRole="admin">
+            <ImageUploadPanel />
+          </ProtectedRoute>
+          }
+        />\
+
         <Route path="*" element={<Navigate to="/" />} /> {/* Ruta por defecto */}
       </Routes>
 

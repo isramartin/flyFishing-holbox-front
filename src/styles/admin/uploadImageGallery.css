@@ -1,0 +1,249 @@
+.image-upload-gallery-container {
+  width: 90%;
+  min-height: 100vh;
+  margin: 10px auto;
+  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.image-upload-gallery {
+  width: 100%;
+  max-width: 120vh;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 30px;
+}
+
+.drag-drop-area {
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.3s ease-in-out;
+  width: 100%;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.drag-drop-area.has-preview {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.drag-drop-area:hover {
+  border-color: #0056b3;
+  background-color: #e9f5ff;
+}
+
+.drag-drop-area p {
+  margin: 0;
+  font-size: 1rem;
+  color: #007bff;
+}
+
+.drag-drop-area span {
+  display: block;
+  margin: 10px 0;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.select-image-button {
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.select-image-button:hover {
+  background-color: #0056b3;
+}
+
+.file-input {
+  display: none;
+}
+
+.gallery-container-preview {
+  margin-top: 30px;
+  width: 100%;
+  max-width: 120vh;
+}
+
+.gallery-container-preview .img-fluid {
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-container-preview .img-fluid:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-container-preview .text-muted {
+  font-size: 1rem;
+  color: #6c757d;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.preview-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.preview-container h4 {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.remove-image-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #dc3545;
+  border: none;
+  color: white;
+
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.remove-image-button:hover {
+  background: #c82333;
+}
+
+.upload-button {
+  background: black;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.preview-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.preview-buttons .btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.preview-buttons .btn-success {
+  background-color: #28a745;
+  border: none;
+  color: #ffffff;
+}
+
+.preview-buttons .btn-success:hover {
+  background-color: #218838;
+}
+
+.preview-buttons .btn-danger {
+  background-color: #dc3545;
+  border: none;
+  color: #ffffff;
+}
+
+.preview-buttons .btn-danger:hover {
+  background-color: #c82333;
+}
+
+.image-card {
+  position: relative;
+  overflow: hidden; /* Asegura que todo lo que está fuera de la card no sea visible */
+}
+
+.image-card img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: opacity 0.5s ease;
+}
+
+.image-card:hover img {
+  opacity: 0.4; /* Reducir opacidad al hacer hover */
+}
+
+.image-card:hover {
+  background-color: rgba(0, 0, 0, 0.9); /* Fondo oscuro al hacer hover */
+  transition: background-color 0.4s ease;
+}
+
+.image-info {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background-color: rgb(19, 88, 237);
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: calc(100% - 20px);
+  justify-content: center;
+  align-items: center;
+}
+
+.image-info button {
+  background-color: #c82333;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  display: none;
+  width: 12%;
+  top: -150px;
+  right: auto;
+}
+
+.image-card:hover .image-info button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

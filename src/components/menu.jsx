@@ -60,9 +60,11 @@ const Menu = () => {
     { path: '/reservaciones', label: 'Reservaciones', roles: [ 'user','guest'] },
     { path: '/galerias', label: 'Galerías', roles: [ 'user','guest'] },
     { path: '/reseña', label: 'Reseñas', roles: ['user','guest'] },
-    { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['admin'] }, // Solo para admin
     { path: '/login', label: 'Login', roles: ['guest'] }, // Solo para invitados
     { path: '/register', label: 'registro', roles: ['guest'] }, // Solo para invitados
+
+    { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['admin'] }, // Solo para admin
+    { path: '/admin/imageUploadGallery', label: 'Upload Gallery', roles: ['admin'] }, // Solo para admin
   ];
 
   // Filtra las opciones del menú según el rol del usuario
