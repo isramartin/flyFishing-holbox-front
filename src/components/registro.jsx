@@ -92,7 +92,7 @@ const RegisterForm = () => {
 
           {/* Enlace para iniciar sesión */}
           <p className="forgot-password">
-            ¿Ya tienes una cuenta? <Link href="/login">Inicia sesión aquí</Link>
+            ¿Ya tienes una cuenta? <Link to="/login">Inicia sesión aquí</Link>
           </p>
         </form>
       </div>
