@@ -62,6 +62,7 @@ const Menu = () => {
     { path: '/reseña', label: 'Reseñas', roles: ['user','guest'] },
     { path: '/login', label: 'Login', roles: ['guest'] }, // Solo para invitados
     { path: '/register', label: 'registro', roles: ['guest'] }, // Solo para invitados
+    { path: '/prueba', label: 'pruba', roles: ['guest'] },
 
     { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['admin'] }, // Solo para admin
     { path: '/admin/imageUploadGallery', label: 'Upload Gallery', roles: ['admin'] }, // Solo para admin

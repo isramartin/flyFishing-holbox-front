@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import '@fontsource/montserrat';
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, AuthContext } from "./context/AuthContext.jsx"; // Importa el contexto
 import Menu from "./components/menu"; // Importamos el menú
@@ -16,6 +17,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import LoginForm from "./components/login";
 import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 import RegisterForm from "./components/registro";
+import Review2 from "./components/review";
 
 function App() {
   return (
@@ -39,6 +41,7 @@ const AppContent = () => {
       {showMenuAndFooter && <Menu />} {/* Mostrar el menú solo si no estamos en /login */}
 
       <Routes>
+      <Route path="/prueba" element={<Review2 />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/" element={<Home />} />

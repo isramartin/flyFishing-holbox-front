@@ -12,7 +12,6 @@
   box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
 }
 
-
 .review-box {
   margin-top: 100px;
   width: 30%;
@@ -259,3 +258,6 @@ button {
   }
 
 }
+
+
+/* ------------------------otros estilos */
