@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import imagen1 from '../assets/image/image1.png';
-import "../styles/review.css";
+// import "../styles/review.css";
 
 
 

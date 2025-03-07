@@ -7,20 +7,22 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  margin-bottom: 50px;
 }
 
 .opiniones-container {
   background: linear-gradient(to right, #4484c4, #10004a);
   padding: 40px;
   border-radius: 15px !important;
-  width: 80%; /* Ajusta el ancho según necesidad */
+  width: 80%;
   height: 40vh;
-  margin: 0 auto; /* Centra horizontalmente */
+  margin: 0 auto;
 }
 
 .titulo {
-  background: linear-gradient(to right, #e9dfaa, #09ffb5); /* Dos colores */
-  -webkit-background-clip: text; /* Aplica el gradiente solo al texto */
+  background: linear-gradient(to right, #e9dfaa, #09ffb5);
+  background-clip: text;
+  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: bold;
   font-size: 40px;
@@ -38,24 +40,27 @@
 }
 
 .valorP {
-  background: linear-gradient(to right, #cc01ff, #59eabf); /* Dos colores */
-  -webkit-background-clip: text; /* Aplica el gradiente solo al texto */
+  background: linear-gradient(to right, #cc01ff, #59eabf);
+  background-clip: text;
+  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 3rem;
   font-weight: bold;
 }
 
 .valorC {
-  background: linear-gradient(to right, #b9fef8, #04cc9a); /* Dos colores */
-  -webkit-background-clip: text; /* Aplica el gradiente solo al texto */
+  background: linear-gradient(to right, #b9fef8, #04cc9a);
+  background-clip: text;
+  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 3rem;
   font-weight: bold;
 }
 
 .valorR {
-  background: linear-gradient(to right, #211bb9, #04dddd); /* Dos colores */
-  -webkit-background-clip: text; /* Aplica el gradiente solo al texto */
+  background: linear-gradient(to right, #211bb9, #04dddd);
+  background-clip: text;
+  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 3rem;
   font-weight: bold;
@@ -97,85 +102,381 @@
   transition: transform 0.3s ease;
 }
 
-.tab-content {
-  margin-top: 30px;
-  background: #04dddd;
-  color: #211bb9 !important;
-  /* left: 25px; */
+.op-container {
   position: relative;
+  max-height: 4vh;
+  display: inline-flex;
+  background: #e1e2ea;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 20px;
+  justify-content: flex-start;
+  margin-right: 940px !important;
+  width: auto;
 }
 
-.op-container {
-    position: relative;
-    max-height: 4vh; /* Altura máxima */
-    display: inline-flex; /* Ajusta el tamaño al contenido */
-    background: #e1e2ea; /* Fondo gris claro */
-    border-radius: 5px; /* Bordes redondeados */
-    padding: 5px; /* Reducir el padding para que no se desborde */
-    margin-top: 20px; /* Espacio entre el contenedor de arriba y las pestañas */
-    justify-content: flex-start; /* Alinea las pestañas a la izquierda */
-    margin-right: 940px !important; /* Asegura que no haya margen izquierdo adicional */
-    width: auto; /* Ajusta el ancho al contenido */
-  }
-
 .nav {
-  gap: 1px; /* Espacio entre las pestañas */
-  margin: 0; /* Elimina el margen predeterminado */
-  padding: 0; /* Elimina el padding predeterminado */
+  gap: 1px;
+  margin: 0;
+  padding: 0;
   top: 1px;
 }
 
 .tab-op {
   margin-top: 0;
-  color: #55555e !important; /* Color del texto de las pestañas */
-  background: transparent; /* Fondo transparente */
-  border: none; /* Sin bordes */
-  padding: 1px 10px; /* Reducir el padding para que quepa en el contenedor */
-  border-radius: 5px; /* Bordes redondeados */
-  font-weight: bold; /* Texto en negrita */
-  font-size: 0.9rem; /* Reducir el tamaño de la fuente si es necesario */
-  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+  color: #606060 !important;
+  background: transparent;
+  border: none;
+  padding: 1px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .tab-op.active {
-  background: #ffffff; /* Fondo blanco para la pestaña activa */
-  color: #0321e0 !important; /* Color del texto de la pestaña activa */
+  background: #ffffff;
+  color: #000000 !important;
+}
+
+.tab-op:hover {
+  color: #0f0091 !important;
+}
+
+.tab-content {
+  margin-top: 30px;
+  background: transparent;
+  position: relative;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 10px;
+  border: none;
+  padding: 20px;
+  margin: 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.card-grid-container .card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background-color: var(--status-color);
+}
+
+.card-list-container .card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background-color: var(--status-color);
+}
+
+.card-user-badge {
+  margin-left: auto;
+  background-color: var(--status-color);
+  color: rgb(255, 255, 255);
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.card-grid-container .card:hover {
+  box-shadow: 4px 4px 10px 0 var(--status-color-opacity);
+}
+
+.card-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 0;
+}
+
+.card-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0;
+}
+
+.card-list-container .card {
+  width: 100%;
+}
+
+.card-user {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.card-user img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.card-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-user-name {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #333;
+}
+
+.card-user-date {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.card-stars {
+  color: #ffc107;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.card-content {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.card-read-more {
+  color: #0321e0;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.card-read-more:hover {
+  text-decoration: underline;
 }
 
 
-/* cards */
 
-/* Estilos base para las cards */
-.card {
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Estilos para el diseño de mosaico (grid) */
-  .card-grid-container {
+
+.review-box {
+    width: 100%;
+    height: 70%;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: left;
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columnas por fila */
-    gap: 20px; /* Espacio entre las cards */
-    padding: 20px;
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px; 
   }
   
-  /* Estilos para el diseño de lista */
-  .card-list-container {
+  .review-box h2 {
+    font-size: 22px;
+    font-weight: bold;
+    background: linear-gradient(to right, #1d18c0, #01f7f7);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 15px;
+    grid-column: 1 / -1; 
+    text-align: center; 
+  }
+  
+  .star-rating {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+    flex-direction: row;
+  }
+  
+  .star {
+    font-size: 30px;
+    cursor: pointer;
+    color: #ccc;
+    transition: transform 0.2s ease, color 0.3s ease;
+  }
+  
+  .star.selected {
+    color: #01bdd6;
+  }
+  
+  .star:hover {
+    transform: scale(1.2);
+    color: #01bdd6;
+  }
+  
+  .rating-text {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #000000;
+    margin-left: 5px;
+  }
+  
+  select,
+  input,
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 10px;
+  }
+  
+  textarea {
+    min-height: 100px;
+    resize: none;
+  }
+  
+  .group-selection {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .group-selection button {
+    flex: 1 1 30%;
+    padding: 8px 12px;
+    color: #01bdd6;
+    border: 2px solid #01bdd6;
+    background: rgb(255, 255, 255);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+  }
+  
+  .group-selection button.selected {
+    border: 2px solid #0282bd;
+    background: #0282bd;
+    color: rgb(255, 255, 255);
+  }
+
+  .button-container {
+    grid-column: 1 / -1; 
+    display: flex;
+    justify-content: center; 
+    margin-top: 12px;
+  }
+  
+  button[type="submit"] {
+    width: 20%;
+    background: #01bdd6;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    grid-column: 1 / -1; 
+    text-align: center; 
+  }
+  
+  
+  .left-column {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Espacio entre las cards */
-    padding: 20px;
+    gap: 15px;
   }
   
-  .card-list-container .card {
-    width: 100%; /* Ocupa todo el ancho disponible */
+  
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
   }
+  
+  @media (max-width: 768px) {
+  
+    .review-box {
+      position: relative;
+      width: 100%; 
+      height: 65vh;
+      padding: 30px;
+      margin-left: 0;
+      margin-right: .1vh;
+      margin-bottom: 5vh;
+    }
+  
+    .star-rating {
+      align-items: center;
+      flex-direction: row;
+    }
+  
+    .rating-text {
+      font-size: 12px;
+    }
+  
+    .group-selection button {
+      flex: 1 1 35%; 
+      margin-bottom: 8px; 
+   
+    }
+  
+    .reviews-panel {
+      left: 25px;
+    }
+  
+  }
+  
+  @media (max-width: 480px) {
+    .reviews-panel {
+      left: 25px;
+    }
+  
+    .add-review-btn {
+      margin-top: 710px;
+      left: 25px;
+    }
+    
+  
+    .review-box {
+      position: relative;
+      width: 100%; 
+      height: 80vh;
+      padding: 20px;
+      margin-left: 0;
+      margin-right: .1vh;
+    }
+  
+    .star-rating {
+      align-items: center;
+      flex-direction: row;
+    }
+  
+    .rating-text {
+      font-size: 12px;
+    }
+  
+    .group-selection button {
+      flex: 1 1 35%; 
+      margin-bottom: 8px; 
+   
+    }
+  
+  }
+  
+  
+  
+  

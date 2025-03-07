@@ -6,19 +6,178 @@ import { AlignJustify, LayoutGrid, CirclePlus } from "lucide-react"; // Importa 
 const Review2 = () => {
   const [activeTab, setActiveTab] = useState("Mosaico");
 
+   const [rating, setRating] = useState(0);
+    const [hover, setHover] = useState(0);
+    const [review, setReview] = useState("");
+    const [title, setTitle] = useState("");
+    const [date, setDate] = useState("");
+    const [group, setGroup] = useState(null);
+  
+  
+  
+    const groups = [ "Parejas", "Familia", "Amigos", "Solo"];
+    const ratingLabels = ["Pésimo", "Malo", "Bueno", "Muy bueno", "Excelente"];
+  
+    const handleRating = (index) => {
+      setRating(index + 1);
+    };
+  
+    const handleSubmit = () => {
+      if (!review.trim() || !title.trim() || !date || !group) {
+        alert("Por favor completa todos los campos.");
+        return;
+      }
+  
+      const newReview = {
+        rating,
+        title,
+        review,
+        date,
+        group,
+      };
+  
+      onSubmit(newReview);
+  
+      setRating(0);
+      setReview("");
+      setTitle("");
+      setDate("");
+      setGroup(null);
+    };
   // Datos de ejemplo para las cards
   const cardsData = [
-    { id: 1, title: "Card 1", content: "Contenido de la card 1" },
-    { id: 2, title: "Card 2", content: "Contenido de la card 2" },
-    { id: 3, title: "Card 3", content: "Contenido de la card 3" },
-    { id: 4, title: "Card 4", content: "Contenido de la card 4" },
-    { id: 5, title: "Card 5", content: "Contenido de la card 5" },
-    { id: 1, title: "Card 1", content: "Contenido de la card 1" },
-    { id: 2, title: "Card 2", content: "Contenido de la card 2" },
-    { id: 3, title: "Card 3", content: "Contenido de la card 3" },
-    { id: 4, title: "Card 4", content: "Contenido de la card 4" },
-    { id: 5, title: "Card 5", content: "Contenido de la card 5" },
+    {
+      id: 1,
+      user: {
+        name: "Maria García",
+        date: "Hace 2 días",
+        role: "Soporte Técnico",
+        image: "https://via.placeholder.com/40", // Imagen de perfil
+        badge: "24", // Distintivo
+      },
+      rating: 5, // Número de estrellas
+      title: "Excelente",
+      content:
+        "La atención al cliente fue impecable. El equipo resolvió mi problema en tiempo récord y con una amabilidad que no esperaba. Definitivamente volveré a confiar en ellos...",
+      status: "excelente", // Estado para la línea de color
+    },
+    {
+      id: 2,
+      user: {
+        name: "Juan Pérez",
+        date: "Hace 5 días",
+        role: "Cliente",
+        image: "https://via.placeholder.com/40", // Imagen de perfil
+        badge: "12", // Distintivo
+      },
+      rating: 4,
+      title: "Muy bueno",
+      content:
+        "El servicio fue muy bueno, aunque hubo un pequeño retraso en la entrega. En general, estoy satisfecho con la experiencia.",
+      status: "bueno", // Estado para la línea de color
+    },
+    {
+      id: 3,
+      user: {
+        name: "Maria García",
+        date: "Hace 2 días",
+        role: "Soporte Técnico",
+        image: "https://via.placeholder.com/40", // Imagen de perfil
+        badge: "24", // Distintivo
+      },
+      rating: 5, // Número de estrellas
+      title: "Excelente",
+      content:
+        "La atención al cliente fue impecable. El equipo resolvió mi problema en tiempo récord y con una amabilidad que no esperaba. Definitivamente volveré a confiar en ellos...",
+      status: "malo", // Estado para la línea de color
+    },
+    {
+      id: 4,
+      user: {
+        name: "Maria García",
+        date: "Hace 2 días",
+        role: "Soporte Técnico",
+        image: "https://via.placeholder.com/40", // Imagen de perfil
+        badge: "24", // Distintivo
+      },
+      rating: 5, // Número de estrellas
+      title: "Excelente",
+      content:
+        "La atención al cliente fue impecable. El equipo resolvió mi problema en tiempo récord y con una amabilidad que no esperaba. Definitivamente volveré a confiar en ellos...",
+      status: "regular", // Estado para la línea de color
+    },
+    {
+      id: 5,
+      user: {
+        name: "Maria García",
+        date: "Hace 2 días",
+        role: "Soporte Técnico",
+        image: "https://via.placeholder.com/40", // Imagen de perfil
+        badge: "24", // Distintivo
+      },
+      rating: 5, // Número de estrellas
+      title: "Excelente",
+      content:
+        "La atención al cliente fue impecable. El equipo resolvió mi problema en tiempo récord y con una amabilidad que no esperaba. Definitivamente volveré a confiar en ellos...",
+      status: "excelente", // Estado para la línea de color
+    },
+    {
+      id: 6,
+      user: {
+        name: "Maria García",
+        date: "Hace 2 días",
+        role: "Soporte Técnico",
+        image: "https://via.placeholder.com/40", // Imagen de perfil
+        badge: "24", // Distintivo
+      },
+      rating: 5, // Número de estrellas
+      title: "Excelente",
+      content:
+        "La atención al cliente fue impecable. El equipo resolvió mi problema en tiempo récord y con una amabilidad que no esperaba. Definitivamente volveré a confiar en ellos...",
+      status: "excelente", // Estado para la línea de color
+    },
+    {
+      id: 7,
+      user: {
+        name: "Maria García",
+        date: "Hace 2 días",
+        role: "Soporte Técnico",
+        image: "https://via.placeholder.com/40", // Imagen de perfil
+        badge: "24", // Distintivo
+      },
+      rating: 5, // Número de estrellas
+      title: "Excelente",
+      content:
+        "La atención al cliente fue impecable. El equipo resolvió mi problema en tiempo récord y con una amabilidad que no esperaba. Definitivamente volveré a confiar en ellos...",
+      status: "excelente", // Estado para la línea de color
+    },
+    // Agrega más datos de ejemplo aquí...
   ];
+
+  // Función para obtener el color de la línea según el estado
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "excelente":
+        return "#4caf50"; // Verde
+      case "bueno":
+        return "#ffc107"; // Amarillo
+      case "regular":
+        return "#ff9800"; // Naranja
+      case "malo":
+        return "#f44336"; // Rojo
+      default:
+        return "#4caf50"; // Verde por defecto
+    }
+  };
+
+  // Función para agregar transparencia al color
+const getStatusColorWithOpacity = (status, opacity = 0.5) => {
+  const color = getStatusColor(status); // Obtiene el color base
+  const r = parseInt(color.slice(1, 3), 16); // Extrae el componente rojo
+  const g = parseInt(color.slice(3, 5), 16); // Extrae el componente verde
+  const b = parseInt(color.slice(5, 7), 16); // Extrae el componente azul
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`; // Convierte a rgba con transparencia
+};
 
   return (
     <div className="prueba-container d-flex align-items-center flex-column">
@@ -52,7 +211,7 @@ const Review2 = () => {
       </div>
 
       {/* Pestañas */}
-      <div className="op-container ">
+      <div className="op-container">
         <ul className="nav justify-content-start">
           <li className="nav-item">
             <button
@@ -86,9 +245,27 @@ const Review2 = () => {
         {activeTab === "Mosaico" && (
           <div className="card-grid-container">
             {cardsData.map((card) => (
-              <div key={card.id} className="card">
-                <h3>{card.title}</h3>
-                <p>{card.content}</p>
+              <div
+                key={card.id}
+                className="card"
+                style={{ "--status-color": getStatusColor(card.status), "--status-color-opacity": getStatusColorWithOpacity(card.status, 0.3), }} // Color de la línea
+              >
+                <div className="card-user">
+                  <img src={card.user.image} alt={card.user.name} />
+                  <div className="card-user-info">
+                    <span className="card-user-name">{card.user.name}</span>
+                    <span className="card-user-date">
+                      {card.user.date} · {card.user.role}
+                    </span>
+                  </div>
+                  <span className="card-user-badge">{card.status}</span> {/* Distintivo */}
+                </div>
+                <div className="card-stars">
+                  {"★".repeat(card.rating)}{"☆".repeat(5 - card.rating)}
+                </div>
+                <h3 className="card-title">{card.title}</h3>
+                <p className="card-content">{card.content}</p>
+                <a className="card-read-more">Leer más →</a>
               </div>
             ))}
           </div>
@@ -96,17 +273,107 @@ const Review2 = () => {
         {activeTab === "Lista" && (
           <div className="card-list-container">
             {cardsData.map((card) => (
-              <div key={card.id} className="card">
-                <h3>{card.title}</h3>
-                <p>{card.content}</p>
+              <div
+                key={card.id}
+                className="card"
+                style={{ "--status-color": getStatusColor(card.status) }} // Color de la línea
+              >
+                <div className="card-user">
+                  <img src={card.user.image} alt={card.user.name} />
+                  <div className="card-user-info">
+                    <span className="card-user-name">{card.user.name}</span>
+                    <span className="card-user-date">
+                      {card.user.date} · {card.user.role}
+                    </span>
+                  </div>
+                  <span className="card-user-badge">{card.status}</span> {/* Distintivo */}
+                </div>
+                <div className="card-stars">
+                  {"★".repeat(card.rating)}{"☆".repeat(5 - card.rating)}
+                </div>
+                <h3 className="card-title">{card.title}</h3>
+                <p className="card-content">{card.content}</p>
+                <a className="card-read-more">Leer más →</a>
               </div>
             ))}
           </div>
         )}
         {activeTab === "Agregar Reseña" && (
-          <div>
-            <p>Formulario para Agregar Reseña...</p>
-          </div>
+         
+         <div className="review-box">
+         <h2>¿Cómo calificarías tu experiencia?</h2>
+   
+         {/* Columna izquierda */}
+         <div className="left-column">
+           <div className="star-rating">
+             {[...Array(5)].map((_, index) => (
+               <span
+                 key={index}
+                 className={index < (hover || rating) ? "star selected" : "star"}
+                 onClick={() => handleRating(index)}
+                 onMouseEnter={() => setHover(index + 1)}
+                 onMouseLeave={() => setHover(0)}
+               >
+                 ★
+               </span>
+             ))}
+             <p className="rating-text">
+               {hover > 0
+                 ? ratingLabels[hover - 1]
+                 : rating > 0
+                 ? ratingLabels[rating - 1]
+                 : "Selecciona una calificación"}
+             </p>
+           </div>
+   
+           <label>¿Cuándo fuiste?</label>
+           <select value={date} onChange={(e) => setDate(e.target.value)}>
+             <option value="">Seleccione una opción</option>
+             <option value="Enero">Enero</option>
+             <option value="Febrero">Febrero</option>
+             <option value="Marzo">Marzo</option>
+           </select>
+   
+           <label>¿Con quién fuiste?</label>
+           <div className="group-selection">
+             {groups.map((g) => (
+               <button
+                 key={g}
+                 className={group === g ? "selected" : ""}
+                 onClick={() => setGroup(g)}
+               >
+                 {g}
+               </button>
+             ))}
+           </div>
+         </div>
+   
+         {/* Columna derecha */}
+         <div className="right-column">
+           <label>Título de tu opinión</label>
+           <input
+             type="text"
+             placeholder="Cuéntanos un poco sobre tu experiencia"
+             value={title}
+             onChange={(e) => setTitle(e.target.value)}
+           />
+   
+           <label>Escribe tu opinión</label>
+           <textarea
+             placeholder="Escribe tu reseña..."
+             value={review}
+             onChange={(e) => setReview(e.target.value)}
+           ></textarea>
+         </div>
+   
+         {/* Botón de enviar */}
+         <div className="button-container">
+        <button type="submit" onClick={handleSubmit}>
+          Enviar Reseña
+        </button>
+      </div>
+       </div>
+         
         )}
       </div>
     </div>

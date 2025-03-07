@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReviewForm from "../components/reviewForm";
 import ReviewsPanel from "../components/reviewPanel";
-import "../styles/review.css";
+// import "../styles/review.css";
 
 const Review = () => {
   const [reviews, setReviews] = useState([]);
