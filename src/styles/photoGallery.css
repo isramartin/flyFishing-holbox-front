@@ -1,20 +1,115 @@
+/* Contenedor principal */
 .gallery-container {
   max-width: 100%;
   min-height: 95vh;
   margin-top: 50px;
-  margin-bottom: 3px;
   padding: 1px;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
 }
 
+/* Masonry Grid */
+.gallery-masonry {
+  column-count: 4; /* Ajustable */
+  column-gap: 15px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+/* Imagen con efecto Masonry */
+.gallery-item {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 15px;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagen dentro de la galería */
 .gallery-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
 }
 
-.gallery-image:hover {
+.gallery-item:hover .gallery-image {
   transform: scale(1.05);
 }
+
+/* Overlay con gradiente */
+.gallery-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 15px;
+  color: white;
+  border-radius: 8px;
+}
+
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+
+/* Botones de acción */
+.gallery-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gallery-actions button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.gallery-actions button:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Información del texto */
+.gallery-info {
+  font-size: 14px;
+}
+
+.gallery-info h3 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.gallery-info p {
+  font-size: 12px;
+}
+
+.gallery-location {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 4px 8px;
+  border-radius: 5px;
+  display: inline-block;
+  font-size: 12px;
+}
+
+/* Modal */
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
@@ -42,11 +137,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4); 
+  background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1050; 
+  z-index: 1050;
 }
 
 .modal-content {
@@ -55,29 +150,7 @@
   border-radius: 10px;
   max-width: 90%;
   max-height: 70vh;
-  z-index: 1100; 
-}
-
-.arrow-left {
-  position: absolute;
-  top: 50%;
-  left: -500px; 
-  transform: translateY(-50%);
-  background-color: transparent;
-  border: none;
-  color: white;
-  font-size: 30px;
-}
-
-.arrow-right {
-  position: absolute;
-  top: 50%;
-  right: -500px; 
-  transform: translateY(-50%);
-  background-color: transparent;
-  border: none;
-  color: white;
-  font-size: 30px;
+  z-index: 1100;
 }
 
 .modal-image {
@@ -85,7 +158,27 @@
   max-height: 60vh;
   object-fit: contain;
 }
+/* Flechas de navegación */
+.arrow-left,
+.arrow-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 30px;
+}
 
+.arrow-left {
+  left: 350px;
+}
+
+.arrow-right {
+  right: 350px;
+}
+
+/* Miniaturas */
 .thumbnail-container {
   display: flex;
   justify-content: center;
@@ -103,60 +196,43 @@
 }
 
 .thumbnail.active {
-  opacity: 1; 
+  opacity: 1;
 }
 
 .thumbnail.inactive {
-  opacity: 0.5; 
+  opacity: 0.5;
 }
 
+/* Responsividad */
+@media (max-width: 1024px) {
+  .gallery-masonry {
+    column-count: 3;
+  }
+}
 
 @media (max-width: 768px) {
-  .arrow-left {
-    position: absolute;
-    left: -225px; 
-    right: 0px; 
-    font-size: 24px; 
-    top: 50%;
-    transform: translateY(-100%);
+  .gallery-masonry {
+    column-count: 2;
   }
 
+  .arrow-left,
   .arrow-right {
-    position: absolute;
-    left: 225px; 
-    right: 0px; 
-    font-size: 24px; 
-    top: 50%;
-    transform: translateY(-100%);
+    font-size: 24px;
   }
 }
 
 @media (max-width: 480px) {
-  .arrow-left {
-    position: absolute;
-    left: -180px; 
-    right: 0px; 
-    font-size: 24px; 
-    top: 50%;
-    transform: translateY(-100%);
+  .gallery-masonry {
+    column-count: 1;
   }
 
+  .arrow-left,
   .arrow-right {
-    position: absolute;
-    left: 180px; 
-    right: 0px; 
-    font-size: 24px; 
-    top: 50%;
-    transform: translateY(-100%);
+    font-size: 20px;
   }
 
   .thumbnail {
-    width: 4vh;
-    height: 4vh;
-    object-fit: cover;
-    margin: 0 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: opacity 0.3s ease-in-out;
+    width: 40px;
+    height: 40px;
   }
 }

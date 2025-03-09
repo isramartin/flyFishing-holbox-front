@@ -41,7 +41,7 @@ const AppContent = () => {
       {showMenuAndFooter && <Menu />} {/* Mostrar el menú solo si no estamos en /login */}
 
       <Routes>
-      <Route path="/prueba" element={<Review2 />} />
+      <Route path="/reseña" element={<Review2 />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/" element={<Home />} />
@@ -50,7 +50,7 @@ const AppContent = () => {
         <Route path="/reservaciones" element={<Reservaciones />} />
         <Route path="/reservaciones/reservaForm" element={<ReservacionesForm />} />
         <Route path="/galerias" element={<Gallery />} />
-        <Route path="/reseña" element={<Review />} />
+        <Route path="/prueba" element={<Review />} />
         <Route
           path="/admin/reservaciones"
           element={

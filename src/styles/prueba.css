@@ -377,7 +377,7 @@
     margin-top: 12px;
   }
   
-  button[type="submit"] {
+  .button-container button[type="submit"] {
     width: 20%;
     background: #01bdd6;
     color: white;
