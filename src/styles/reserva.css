@@ -1,16 +1,13 @@
-.reservation-container {
+/* .reservation-container {
   position: absolute;
   text-align: center;
   padding: 4.68% 30%; 
   max-width: 100% !important;
-  height: 100% !important; /* Ocupa toda la altura disponible */
+  height: 100% !important; 
   margin: 0 auto;
   background: url("../assets/image/image1.png") no-repeat center center/cover; 
-  /* Ajusta la imagen al contenedor */
-  /* display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; */
+  
+  
 }
 
 .react-calendar {
@@ -19,7 +16,7 @@
   background: rgba(255, 255, 255, 0);
   border: none;
   border-radius: 10px;
-  /* box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15); */
+  
   padding: 20px;
   margin: 55px 90px 0 -160px;
 }
@@ -64,7 +61,7 @@
   list-style: none;
 }
 .react-calendar__month-view__weekdays abbr {
-  text-decoration: none !important; /* Elimina subrayados */
+  text-decoration: none !important; 
 }
 
 
@@ -79,7 +76,7 @@
   font-size: 18px;
   color: rgb(9, 35, 185) !important;
   background: rgba(255, 255, 255, 0.767);
-  border: 2px solid #0a36c6 !important; /* Agrega un borde azul */
+  border: 2px solid #0a36c6 !important; 
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -235,4 +232,4 @@
     padding: 8px;
     font-size: 0.85rem;
   }
-}
+} */

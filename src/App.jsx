@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import '@fontsource/montserrat';
+import '@fontsource/roboto';
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, AuthContext } from "./context/AuthContext.jsx"; // Importa el contexto
 import Menu from "./components/menu"; // Importamos el menú
@@ -18,6 +19,7 @@ import LoginForm from "./components/login";
 import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 import RegisterForm from "./components/registro";
 import Review2 from "./components/review";
+import ReservationStep from "./components/reservationStep.jsx";
 
 function App() {
   return (
@@ -50,7 +52,7 @@ const AppContent = () => {
         <Route path="/reservaciones" element={<Reservaciones />} />
         <Route path="/reservaciones/reservaForm" element={<ReservacionesForm />} />
         <Route path="/galerias" element={<Gallery />} />
-        <Route path="/prueba" element={<Review />} />
+        <Route path="/prueba" element={<ReservationStep />} />
         <Route
           path="/admin/reservaciones"
           element={

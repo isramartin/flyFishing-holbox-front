@@ -1,0 +1,410 @@
+.reserva-container {
+  width: 90%;
+  min-height: 100vh;
+  margin: 10px auto;
+  margin-top: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.title-container {
+  background: linear-gradient(to right, #0ae4f0, #0357ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: "roboto", sans-serif;
+  font-weight: bold;
+}
+
+.subtitle-container {
+  margin: 0 auto;
+  font-family: "montserrat", sans-serif;
+  font-weight: bold;
+}
+
+.reservation-tour {
+  width: 60%;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reserva-container h1 {
+  font-size: 40px;
+  color: #333;
+}
+
+.reserva-container p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.steps-container {
+  width: 60%;
+  margin-bottom: 30px;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.step span {
+  display: block;
+  font-size: 16px;
+  color: #555252;
+  margin: 0 3px;
+}
+
+.step span.active {
+  color: #000000;
+  font-weight: bold;
+}
+
+.step-number {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #cecece;
+  line-height: 40px;
+  color: rgb(255, 255, 255);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.step span.active .step-number {
+  background-color: #027cff;
+}
+
+.step span.completed .step-number {
+  background-color: #05e63a;
+}
+
+.step-title {
+  margin-top: 1px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: normal;
+  color: #8c8c8c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  display: block;
+  text-align: center;
+}
+
+.step-lines {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  top: 1px;
+  z-index: 1;
+}
+
+.step-line {
+  flex: 1;
+  height: 3px;
+  background-color: #d7d7d7;
+  margin: 0 3px;
+  position: relative;
+}
+
+.step-line.active {
+  background-color: #28a745;
+}
+
+.tour-details {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 9px;
+}
+
+.tour-details h2 {
+  font-weight: bold;
+  color: #004b9c;
+  text-align: left;
+}
+
+.tour-option {
+  background: #e3f2fd;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.tour-option h3 {
+  color: #007bff;
+}
+
+.tour-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.calendar-container {
+  flex: 1;
+  padding: 20px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 400px;
+  border: 1px solid #e0e0e0;
+}
+
+.react-calendar {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: "Arial", sans-serif;
+}
+
+.react-calendar__tile {
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  transition: background 0.2s ease-in-out;
+}
+
+.react-calendar__tile:enabled:hover {
+  background: #e3e8fd;
+}
+
+.react-calendar__tile--active {
+  background: #0f0f0f !important ;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+.react-calendar__tile--disabled {
+  color: #b0b0b0;
+  background: #f8f8f8;
+}
+
+.react-calendar__navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.react-calendar__navigation button {
+  background: none !important;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #000000;
+}
+
+.react-calendar__navigation button:hover {
+  color: #0470e3 !important;
+}
+
+.react-calendar__month-view__weekdays {
+  text-transform: uppercase;
+  font-size: 12px;
+  color: #555;
+  font-weight: bold;
+}
+
+.react-calendar__month-view__weekdays abbr {
+  text-decoration: none !important;
+}
+
+.react-calendar__month-view__days {
+  padding-top: 5px;
+}
+
+.react-calendar__tile--now {
+  background: #0071db;
+  color: #ffffff;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+.tour-info {
+  flex: 1;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.selected-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.price-info {
+  font-weight: bold;
+  color: #004b9c;
+}
+
+/* Estilo general del contenedor del formulario */
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+  font-family: "Arial", sans-serif;
+}
+
+/* Estilo de la etiqueta del formulario */
+.form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+  transition: color 0.2s ease-in-out; /* Transición suave para color */
+}
+
+/* Estilo de los campos de entrada y select */
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 15px; /* Aumento del espacio interior */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  color: #333;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Efecto de enfoque para inputs y selects */
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #0071db;
+  background-color: #fff;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.phone-container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+/* Estilos para el mensaje de error */
+.error-message p {
+  color: rgb(255, 0, 0) !important;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+
+.phone-input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.PhoneInputInput {
+  pointer-events: none;
+}
+
+.PhoneInputInput:focus,
+.PhoneInputInput:focus-within {
+  outline: none !important;
+  border: 1px solid #ddd !important;
+  background-color: #f9f9f9 !important;
+  box-shadow: none !important;
+}
+
+.phone-number-input {
+  flex: 7;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.react-phone-number-input__icon img {
+  width: 4px !important;
+  height: 16px !important;
+  border-radius: 3px; /* Opcional: suavizar bordes */
+}
+
+.react-phone-number-input__icon,
+.react-phone-number-input__button {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0;
+}
+
+.step-buttons {
+  display: flex;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.prev-button {
+  margin-right: auto;
+}
+
+.next-button {
+  margin-left: auto;
+}
+
+.prev-button,
+.next-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  min-width: 120px;
+  text-align: center;
+}
+
+.prev-button {
+  background: transparent;
+  border: #e8e8e8 solid 1px;
+  color: #333;
+}
+
+.prev-button:hover {
+  border: #e8e8e8 solid 1px;
+  background: #f2f2f2;
+}
+
+.next-button {
+  background: #007bff;
+  color: white;
+}
+
+.next-button:hover {
+  background: #0056b3;
+}
