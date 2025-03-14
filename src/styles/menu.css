@@ -5,7 +5,8 @@
   right: 0;
   z-index: 1000;
   padding: 10px 20px;
-  background-color: rgb(16, 187, 239) !important;
+  /* background-color: rgb(16, 31, 239) !important; */
+  background: linear-gradient(to right, #0a9cf0, #031d53);
 }
 
 /* Mejorar la visibilidad del menú en móviles */
@@ -23,8 +24,25 @@
 
 .navbar-brand:hover,
 .nav-link:hover {
-  color: #001df8 !important;
+  color: #ffbf00 !important;
+  border-bottom: 2px solid #ffcc00 !important;
 }
+
+.nav-link {
+  color: #333;
+  font-size: 16px;
+  padding: 8px 12px;
+  text-decoration: none;
+  transition: color 0.2s ease, border-bottom 0.2s ease;
+}
+
+/* Cuando el enlace está activo */
+.nav-link.active {
+  color: #ffbf00 !important; /* Color para el enlace activo */
+  font-weight: bold;
+  border-bottom: 2px solid #ffcc00;
+}
+
 
 @media (max-width: 991px) {
   .collapse.navbar-collapse {

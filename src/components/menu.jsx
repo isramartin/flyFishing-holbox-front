@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link, useLocation } from 'react-router-dom'; // Importa useLocation
+import { NavLink,Link, useLocation, useNavigate} from 'react-router-dom'; // Importa useLocation
 import { AuthContext } from '../context/AuthContext';
 import '../styles/menu.css';
 
@@ -7,73 +7,69 @@ const Menu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const location = useLocation(); // Obtén la ubicación actual
-  const {isAuthenticated, userRole, logout} = useContext(AuthContext)
+  const navigate = useNavigate(); // Para redirigir
+  const { isAuthenticated, userRole, logout } = useContext(AuthContext);
 
   const handleToggle = () => {
     if (menuOpen) {
-      // Si el menú está abierto, iniciamos la animación de cierre
       setIsClosing(true);
       setTimeout(() => {
         setMenuOpen(false);
         setIsClosing(false);
-      }, 300); // Duración de la animación de salida (0.3s)
+      }, 300);
     } else {
-      // Si el menú está cerrado, lo abrimos
       setMenuOpen(true);
     }
   };
 
   const handleLogout = () => {
-    console.log("Rol del usuario al cerrar sesión:", userRole); // Debug: Verificar el rol
-    logout(); // Cierra la sesión
+    console.log("Rol del usuario al cerrar sesión:", userRole);
+    logout();
 
-    // Redirige según el rol después de un pequeño retraso
     setTimeout(() => {
       if (userRole === 'admin') {
-        console.log("Redirigiendo a /login"); // Debug: Verificar redirección
-        navigate('/login'); // Redirige al login si es admin
+        console.log("Redirigiendo a /login");
+        navigate('/login');
       } else if (userRole === 'user') {
-        console.log("Redirigiendo a /home"); // Debug: Verificar redirección
-        navigate('/home'); // Redirige al home si es user
+        console.log("Redirigiendo a /home");
+        navigate('/home');
       } else {
-        console.log("Redirigiendo a /home por defecto"); // Debug: Verificar redirección
-        navigate('/home'); // Redirige al home por defecto
+        console.log("Redirigiendo a /home por defecto");
+        navigate('/home');
       }
-    }, 100); // Pequeño retraso para asegurar que el estado se actualice
+    }, 100);
   };
 
-  // Cierra el menú cuando la ruta cambia
   useEffect(() => {
     if (menuOpen) {
       setIsClosing(true);
       setTimeout(() => {
         setMenuOpen(false);
         setIsClosing(false);
-      }, 300); // Duración de la animación de salida (0.3s)
+      }, 300);
     }
-  }, [location]); // Se ejecuta cada vez que la ruta cambia
+  }, [location]);
 
-
- const menuItems = [
+  const menuItems = [
     { path: '/home', label: 'Home', roles: ['user', 'guest'] },
     { path: '/pesca', label: 'Pesca', roles: ['user','guest'] },
     { path: '/reservaciones', label: 'Reservaciones', roles: [ 'user','guest'] },
     { path: '/galerias', label: 'Galerías', roles: [ 'user','guest'] },
     { path: '/reseña', label: 'Reseñas', roles: ['user','guest'] },
-    { path: '/login', label: 'Login', roles: ['guest'] }, // Solo para invitados
-    { path: '/register', label: 'registro', roles: ['guest'] }, // Solo para invitados
-    { path: '/prueba', label: 'pruba', roles: ['guest'] },
-
-    { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['admin'] }, // Solo para admin
-    { path: '/admin/imageUploadGallery', label: 'Upload Gallery', roles: ['admin'] }, // Solo para admin
+    { path: '/login', label: 'Login', roles: ['guest'] },
+    { path: '/register', label: 'Registro', roles: ['guest'] },
+    { path: '/prueba', label: 'Prueba', roles: ['guest'] },
+    
+    { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['admin'] },
+    { path: '/admin/imageUploadGallery', label: 'Upload Gallery', roles: ['admin'] },
   ];
 
   // Filtra las opciones del menú según el rol del usuario
   const filteredMenuItems = menuItems.filter(item => {
     if (!isAuthenticated) {
-      return item.roles.includes('guest') && item.path !== '/register';; // Si no está autenticado, muestra solo las opciones para invitados
+      return item.roles.includes('guest') && item.path !== '/register';
     }
-    return item.roles.includes(userRole); // Filtra según el rol del usuario
+    return item.roles.includes(userRole);
   });
 
   return (
@@ -92,9 +88,9 @@ const Menu = () => {
         </div>
 
         <div className="ms-3">
-          <Link className="navbar-brand" to="/home">
+          <NavLink className="navbar-brand" to="/home">
             Mi App de Reservaciones
-          </Link>
+          </NavLink>
         </div>
 
         <div
@@ -104,23 +100,28 @@ const Menu = () => {
           <ul className="navbar-nav">
             {filteredMenuItems.map((item, index) => (
               <li className="nav-item" key={index}>
-                <Link className="nav-link" to={item.path} onClick={() => setMenuOpen(false)}>
+                <NavLink
+                  to={item.path}
+                  onClick={() => setMenuOpen(false)}
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                >
                   {item.label}
-                </Link>
+                </NavLink>
               </li>
             ))}
-            
           </ul>
-          <ul className="closse-session">{isAuthenticated && (
-            
-                <button
-                  className="nav-link btn btn-link"
-                  onClick={handleLogout}
-                >
-                  Cerrar Sesión
-                </button>
-              
-            )}</ul>
+          <ul className="closse-session">
+            {isAuthenticated && (
+              <button
+                className="nav-link btn btn-link"
+                onClick={handleLogout}
+              >
+                Cerrar Sesión
+              </button>
+            )}
+          </ul>
         </div>
       </div>
     </nav>

@@ -1,4 +1,4 @@
-.rf-container {
+/* .rf-container {
   width: 90%;
   min-height: 100vh;
   margin: 10px auto;
@@ -11,26 +11,26 @@
     position: relative;
     margin-top: 15vh !important;
     margin: 2rem auto;
-    max-width: 500px; /* Ancho máximo más adecuado */
-    width: 90%; /* Ancho relativo para responsividad */
+    max-width: 500px; 
+    width: 90%; 
     padding: 2.5rem;
     background-color: #ffffff;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Sombra más suave */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
     font-family: "Arial", sans-serif;
   }
   
-  /* Título del formulario */
+  
   .rf-title {
     color: #2c3e50;
-    font-size: 1.8rem; /* Tamaño más adecuado */
+    font-size: 1.8rem; 
     margin-bottom: 1.5rem;
     text-align: center;
     font-weight: 600;
     letter-spacing: -0.5px;
   }
   
-  /* Párrafos dentro del contenedor */
+  
   .rf-container p {
     font-size: 1rem;
     color: #34495e;
@@ -38,28 +38,28 @@
     margin-bottom: 2rem;
   }
   
-  /* Contenedor del formulario */
+  
   .reservation-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
   
-  /* Grupos de formulario */
+  
   .rf-form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem; /* Espaciado ligeramente mayor */
+    gap: 0.75rem; 
   }
   
-  /* Etiquetas */
+  
   .rf-label {
-    font-size: 0.9rem; /* Tamaño más pequeño para mejor legibilidad */
+    font-size: 0.9rem; 
     color: #34495e;
     font-weight: 500;
   }
   
-  /* Inputs y selects */
+  
   .rf-input,
   .rf-textarea,
   .rf-input[type="date"],
@@ -85,7 +85,7 @@
     background-color: #fff;
   }
   
-  /* Botones */
+  
   .rf-button {
     padding: 0.85rem 1.75rem;
     border: none;
@@ -98,7 +98,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  /* Botón de enviar */
+  
   .rf-button-submit {
     background-color: #3498db;
     color: white;
@@ -110,7 +110,7 @@
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
   }
   
-  /* Botón de cancelar */
+  
   .rf-button-cancel {
     background-color: #e74c3c;
     color: white;
@@ -122,13 +122,13 @@
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
   }
   
-  /* Efecto al hacer clic */
+  
   .rf-button:active {
     transform: translateY(0);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  /* Botón deshabilitado */
+  
   .rf-button:disabled {
     background-color: #bdc3c7;
     cursor: not-allowed;
@@ -147,7 +147,7 @@
   font-family: "Arial", sans-serif;
   color: #34495e;
   flex-shrink: 0; 
-  align-self: flex-start; /* Alinea en la parte superior */
+  align-self: flex-start; 
 }
 
 .rf-info h3 {
@@ -198,8 +198,8 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     font-family: "Arial", sans-serif;
     color: #34495e;
-    max-width: 25%; /* Mismo ancho que rf-info */
-    align-self: flex-start; /* Alinea en la parte superior */
+    max-width: 25%; 
+    align-self: flex-start; 
   }
   
   .rf-transporte h3 {
@@ -240,21 +240,21 @@
   }
 
   .icon-style {
-    height: 1.1rem;           /* Altura de 1rem (16px) */
-    width: 1.1rem;            /* Ancho de 1rem (16px) */
-    display: inline-block;  /* Comportamiento en línea */
-    margin-right: 0.2rem;   /* Margen derecho de 0.5rem (8px) */
+    height: 1.1rem;           
+    width: 1.1rem;            
+    display: inline-block;  
+    margin-right: 0.2rem;   
   }
 
   .nested-list {
-    margin-top: 0.5rem !important;    /* Espacio superior */
-    margin-left: 1.8rem !important;   /* Sangría para la lista anidada */
-    list-style-type: disc !important; /* Puntos para los elementos de la lista */
+    margin-top: 0.5rem !important;    
+    margin-left: 1.8rem !important;   
+    list-style-type: disc !important; 
   }
   
-  /* Estilos para los elementos de la lista anidada */
+  
   .nested-list li {
-    margin-bottom: 0.25rem !important; /* Espacio entre elementos de la lista */
+    margin-bottom: 0.25rem !important; 
   }
 
 @media (max-width: 768px) {
@@ -275,7 +275,7 @@
   .rf-transporte {
     position: relative;
     max-width: 100% !important; 
-    margin-top: 2vh; /* Espacio entre rf-info y rf-transporte */
+    margin-top: 2vh; 
     right: 2px !important;
   }
-}
+} */

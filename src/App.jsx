@@ -49,10 +49,10 @@ const AppContent = () => {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/pesca" element={<Articles />} />
-        <Route path="/reservaciones" element={<Reservaciones />} />
+        <Route path="/prueba" element={<Reservaciones />} />
         <Route path="/reservaciones/reservaForm" element={<ReservacionesForm />} />
         <Route path="/galerias" element={<Gallery />} />
-        <Route path="/prueba" element={<ReservationStep />} />
+        <Route path="/reservaciones" element={<ReservationStep />} />
         <Route
           path="/admin/reservaciones"
           element={
