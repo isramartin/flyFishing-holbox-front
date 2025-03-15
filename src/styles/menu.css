@@ -15,24 +15,59 @@
   outline: none !important;
 }
 
-/* Ajustes en enlaces */
-.navbar-brand,
-.nav-link {
-  font-weight: bold !important;
-  color: white !important;
-}
 
 .nav-link:hover {
   color: #ffbf00 !important;
-  border-bottom: 2px solid #ffcc00 !important;
+  /* border-bottom: 1px solid #ffcc00 ; */
 }
 
 .nav-link {
-  color: #333;
+  position: relative;
+  font-weight: bold !important;
+  color: white !important;
   font-size: 16px;
   padding: 8px 12px;
   text-decoration: none;
   transition: color 0.2s ease, border-bottom 0.2s ease;
+  box-sizing: border-box;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  top: 40px;
+  height: 2px;
+  background-color: #ffcc00;
+  transform: scaleX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1); 
+}
+
+/* Cuando el enlace está activo */
+/* .nav-link.active {
+  color: #ffbf00 !important; 
+  font-weight: bold;
+  border-bottom: 2px solid #ffcc00;
+} */
+
+.nav-link.active {
+  color: #ffbf00 !important;
+  font-weight: bold;
+}
+
+.nav-link.active::after {
+  visibility: visible; /* Muestra el borde cuando está activo */
+  transform: scaleX(1); /* Aparece el borde */
+}
+
+.nav-link.active:hover::after {
+  transform: scaleX(1); /* Se muestra el borde cuando el enlace está activo */
 }
 
 .logo {
@@ -40,14 +75,6 @@
   height: 50px;
   object-fit: contain;
 }
-
-/* Cuando el enlace está activo */
-.nav-link.active {
-  color: #ffbf00 !important; /* Color para el enlace activo */
-  font-weight: bold;
-  border-bottom: 2px solid #ffcc00;
-}
-
 
 @media (max-width: 991px) {
   .collapse.navbar-collapse {
