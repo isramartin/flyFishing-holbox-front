@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { NavLink,Link, useLocation, useNavigate} from 'react-router-dom'; // Importa useLocation
 import { AuthContext } from '../context/AuthContext';
+import Image1 from '../assets/image/logo.png'
 import '../styles/menu.css';
 
 const Menu = () => {
@@ -89,7 +90,7 @@ const Menu = () => {
 
         <div className="ms-3">
           <NavLink className="navbar-brand" to="/home">
-            Mi App de Reservaciones
+            <img className='logo' src={Image1} alt="" />
           </NavLink>
         </div>
 

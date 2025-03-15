@@ -180,8 +180,8 @@ const getStatusColorWithOpacity = (status, opacity = 0.5) => {
 };
 
   return (
-    <div className="prueba-container d-flex align-items-center flex-column">
-      <div className="opiniones-container text-center p-4 rounded w-75">
+    <div className="prueba-container">
+      <div className="opiniones-container  text-center p-3 rounded">
         <h2 className="titulo">Galería de Opiniones</h2>
         <p className="descripcion">
           Explora nuestra colección de experiencias compartidas por clientes reales. Cada opinión
@@ -189,52 +189,56 @@ const getStatusColorWithOpacity = (status, opacity = 0.5) => {
         </p>
 
         {/* Tarjetas de opinión */}
-        <div className="d-flex justify-content-center gap-3 mt-4">
-          <div className="card-opinion rounded p-3 text-center bg-white shadow-lg">
-            <h3 className="valorP text-primary">4.1</h3>
-            <div className="estrellas text-warning">⭐⭐⭐⭐☆</div>
-            <p className="etiqueta text-muted">Calificación Promedio</p>
-          </div>
-          <div className="card-opinion rounded p-3 text-center bg-white shadow-lg">
-            <h3 className="valorC text-info">78%</h3>
-            <div className="barra-progreso bg-light">
-              <div className="progreso bg-info" style={{ width: "78%" }}></div>
-            </div>
-            <p className="etiqueta text-muted">Clientes Satisfechos</p>
-          </div>
-          <div className="card-opinion rounded p-3 text-center bg-white shadow-lg">
-            <h3 className="valorR text-success">9</h3>
-            <div className="icono-comentario text-success">💬</div>
-            <p className="etiqueta text-muted">Reseñas Totales</p>
-          </div>
-        </div>
+<div className="d-flex card-flex-wrap justify-content-center gap-4 ">
+  <div className="card-opinion rounded p-1 text-center bg-white shadow-lg">
+    <h3 className="valorP text-primary">4.1</h3>
+    <div className="estrellas text-warning">⭐⭐⭐⭐☆</div>
+    <p className="etiqueta text-muted">Calificación Promedio</p>
+  </div>
+  <div className="card-opinion rounded p-3 text-center bg-white shadow-lg">
+    <h3 className="valorC text-info">78%</h3>
+    <div className="barra-progreso bg-light">
+      <div className="progreso bg-info" style={{ width: "78%" }}></div>
+    </div>
+    <p className="etiqueta text-muted">Clientes Satisfechos</p>
+  </div>
+  <div className="card-opinion rounded p-1 text-center bg-white shadow-lg">
+    <h3 className="valorR text-success">9</h3>
+    <div className="icono-comentario text-success">💬</div>
+    <p className="etiqueta text-muted">Reseñas Totales</p>
+  </div>
+</div>
+
       </div>
 
       {/* Pestañas */}
       <div className="op-container">
-        <ul className="nav justify-content-start">
-          <li className="nav-item">
+        <ul className="nav">
+          <li >
             <button
-              className={`tab-op nav-link ${activeTab === "Mosaico" ? "active" : ""}`}
+              className={`tab-op  ${activeTab === "Mosaico" ? "active" : ""}`}
               onClick={() => setActiveTab("Mosaico")}
             >
-              <AlignJustify /> Mosaico
+              <AlignJustify /> 
+              Mosaico
             </button>
           </li>
-          <li className="nav-item">
+          <li >
             <button
-              className={`tab-op nav-link ${activeTab === "Lista" ? "active" : ""}`}
+              className={`tab-op  ${activeTab === "Lista" ? "active" : ""}`}
               onClick={() => setActiveTab("Lista")}
             >
-              <LayoutGrid /> Lista
+              <LayoutGrid />
+              Lista
             </button>
           </li>
-          <li className="nav-item">
+          <li >
             <button
-              className={`tab-op nav-link ${activeTab === "Agregar Reseña" ? "active" : ""}`}
+              className={`tab-op ${activeTab === "Agregar Reseña" ? "active" : ""}`}
               onClick={() => setActiveTab("Agregar Reseña")}
             >
-              <CirclePlus /> Agregar Reseña
+              <CirclePlus /> 
+              Agregar Reseña
             </button>
           </li>
         </ul>

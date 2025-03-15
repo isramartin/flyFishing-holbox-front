@@ -22,7 +22,6 @@
   color: white !important;
 }
 
-.navbar-brand:hover,
 .nav-link:hover {
   color: #ffbf00 !important;
   border-bottom: 2px solid #ffcc00 !important;
@@ -34,6 +33,12 @@
   padding: 8px 12px;
   text-decoration: none;
   transition: color 0.2s ease, border-bottom 0.2s ease;
+}
+
+.logo {
+  width: 70px;
+  height: 50px;
+  object-fit: contain;
 }
 
 /* Cuando el enlace está activo */
