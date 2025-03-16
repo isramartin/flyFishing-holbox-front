@@ -103,6 +103,8 @@ const ReservationStep = () => {
         const value = e.target.value;
         setLocalPhoneNumber(value);
         validatePhone(value);
+  
+
       };
 
       const validatePhone = (value) => {
@@ -380,11 +382,11 @@ const ReservationStep = () => {
                     <ul>
                       <li>
                         <Clock className="icon-style" />
-                        <strong>Duración del Tour:</strong> 3 horas
+                        <strong>Duración del Tour:</strong>  <span>3 horas</span>
                       </li>
                       <li>
                         <Ship className="icon-style" />
-                        <strong>Tipo de Embarcación:</strong> Lancha rápida
+                        <strong>Tipo de Embarcación:</strong> <spam>Lancha rápida</spam>
                       </li>
                     </ul>
                   </div>
@@ -394,12 +396,11 @@ const ReservationStep = () => {
                     <ul>
                       <li>
                         <MapPin className="icon-style" />
-                        <strong>Punto de Partida:</strong> Muelle Principal,
-                        Puerto Aventura
+                        <strong>Punto de Partida:</strong>  <span>Muelle Principal, Puerto Aventura</span>
                       </li>
                       <li>
                         <Phone className="icon-style" />
-                        <strong>Teléfono:</strong> (123) 456-7890
+                        <strong>Teléfono:</strong>  <span>(123) 456-7890</span>
                       </li>
                     </ul>
                   </div>
