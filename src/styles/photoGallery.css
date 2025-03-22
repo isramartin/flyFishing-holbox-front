@@ -171,18 +171,19 @@
 }
 
 .arrow-left {
-  left: 350px;
+  left: 250px;
 }
 
 .arrow-right {
-  right: 350px;
+  right: 250px;
 }
 
 /* Miniaturas */
 .thumbnail-container {
   display: flex;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 20px;
+  position: relative;
 }
 
 .thumbnail {
@@ -234,5 +235,13 @@
   .thumbnail {
     width: 40px;
     height: 40px;
+  }
+
+  .arrow-left {
+    left: -30px;
+  }
+  
+  .arrow-right {
+    left: 325px;
   }
 }
