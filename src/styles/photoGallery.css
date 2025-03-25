@@ -179,7 +179,45 @@
 }
 
 /* Miniaturas */
+
+.thumbnails-wrapper {
+  width: 100%;
+ 
+  position: relative;
+  margin-top: 20px;
+}
+
 .thumbnail-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 8px;
+  position: relative;
+}
+
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.thumbnail.active {
+  opacity: 1;
+  border: 2px solid #007bff;
+  transform: scale(1.1);
+}
+
+.thumbnail.inactive {
+  opacity: 0.5;
+}
+
+
+
+/* .thumbnail-container {
   display: flex;
   justify-content: center;
   margin-top: 20px;
@@ -202,7 +240,7 @@
 
 .thumbnail.inactive {
   opacity: 0.5;
-}
+} */
 
 /* Responsividad */
 @media (max-width: 1024px) {
@@ -219,6 +257,14 @@
   .arrow-left,
   .arrow-right {
     font-size: 24px;
+  }
+
+  .arrow-left {
+    left: 40px;
+  }
+  
+  .arrow-right {
+    left: 35px;
   }
 }
 

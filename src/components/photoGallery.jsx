@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useRef, useEffect } from "react";
 import imagen1 from '../assets/image/image1.png';
 import imagen2 from '../assets/image/image2.png';
 import imagen3 from '../assets/image/image3.png';
@@ -10,6 +10,8 @@ const PhotoGallery = () => {
   const [showModal, setShowModal] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoverIndex, setHoverIndex] = useState(null);
+  const thumbnailContainerRef = useRef(null);
+
 
   console.log("showModal:", showModal); // Verifica si cambia el estado
 
@@ -19,6 +21,29 @@ const PhotoGallery = () => {
     setActiveIndex(index);
     setShowModal(true);
   };
+
+  const centerThumbnail = (index) => {
+    if (thumbnailContainerRef.current) {
+      const container = thumbnailContainerRef.current;
+      const thumb = container.children[index];
+      
+      if (thumb) {
+        const containerWidth = container.offsetWidth;
+        const thumbWidth = thumb.offsetWidth;
+        const scrollLeft = thumb.offsetLeft - (containerWidth / 2) + (thumbWidth / 2);
+        
+        container.scrollTo({
+          left: scrollLeft,
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    centerThumbnail(activeIndex);
+  }, [activeIndex]);
+
 
   const handleCloseModal = () => {
     console.log("Cerrando modal");
@@ -73,23 +98,29 @@ const PhotoGallery = () => {
       {/* Modal */}
       {showModal && (
         <div className="gallery-modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button onClick={handlePrev} className="arrow-left">&#10094;</button>
-            <img src={images[activeIndex]} alt="Imagen ampliada" className="modal-image" />
-            <button onClick={handleNext} className="arrow-right">&#10095;</button>
-            <div className="thumbnail-container">
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <button onClick={handlePrev} className="arrow-left">&#10094;</button>
+          <img src={images[activeIndex]} alt="Imagen ampliada" className="modal-image" />
+          <button onClick={handleNext} className="arrow-right">&#10095;</button>
+          
+          <div className="thumbnails-wrapper">
+            <div className="thumbnail-container" ref={thumbnailContainerRef}>
               {images.map((image, index) => (
                 <img
                   key={index}
                   src={image}
                   alt={`Thumbnail ${index + 1}`}
-                  onClick={(e) => { e.stopPropagation(); setActiveIndex(index); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveIndex(index);
+                  }}
                   className={`thumbnail ${index === activeIndex ? "active" : "inactive"}`}
                 />
               ))}
             </div>
           </div>
         </div>
+      </div>
       )}
     </div>
   );
