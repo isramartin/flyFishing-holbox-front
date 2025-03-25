@@ -133,9 +133,9 @@ const PhotoGallery = () => {
                   <button>⬇️</button>
                 </div>
                 <div className="gallery-info">
-                  <h3>Arquitectura Urbana</h3>
-                  <p>Rascacielos modernos con fachadas de cristal</p>
-                  <span className="gallery-location">Barcelona, España</span>
+                  <h3>Titulo Foto</h3>
+                  <p>Dscripcion foto</p>
+                  <span className="gallery-location">Holbox, Q. Roo, MX</span>
                 </div>
               </div>
             )}
