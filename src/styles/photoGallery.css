@@ -158,6 +158,7 @@
   max-height: 60vh;
   object-fit: contain;
 }
+
 /* Flechas de navegación */
 .arrow-left,
 .arrow-right {
@@ -171,18 +172,17 @@
 }
 
 .arrow-left {
-  left: 250px;
+  left: 25vh;
 }
 
 .arrow-right {
-  right: 250px;
+  right: 25vh;
 }
 
 /* Miniaturas */
 
 .thumbnails-wrapper {
   width: 100%;
- 
   position: relative;
   margin-top: 20px;
 }
@@ -193,6 +193,15 @@
   margin-top: 20px;
   gap: 8px;
   position: relative;
+  padding: 10px calc(50% - 30px);
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch; /* Para suavizado en iOS */
+}
+
+.thumbnail-container::-webkit-scrollbar {
+  display: none;
 }
 
 .thumbnail {
@@ -215,57 +224,37 @@
   opacity: 0.5;
 }
 
-
-
-/* .thumbnail-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  position: relative;
-}
-
-.thumbnail {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  margin: 0 5px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.thumbnail.active {
-  opacity: 1;
-}
-
-.thumbnail.inactive {
-  opacity: 0.5;
-} */
-
 /* Responsividad */
 @media (max-width: 1024px) {
   .gallery-masonry {
     column-count: 3;
   }
+
+ 
 }
 
 @media (max-width: 768px) {
-  .gallery-masonry {
-    column-count: 2;
-  }
 
   .arrow-left,
   .arrow-right {
     font-size: 24px;
+    top: 18vh ;
   }
 
   .arrow-left {
-    left: 40px;
+    left: -4vh;
   }
   
   .arrow-right {
-    left: 35px;
+    left: 40vh;
   }
+
+
+  
+.gallery-modal-overlay {
+  overflow: hidden; /* Previene scroll no deseado */
+}
+
 }
 
 @media (max-width: 480px) {
@@ -276,6 +265,7 @@
   .arrow-left,
   .arrow-right {
     font-size: 20px;
+   
   }
 
   .thumbnail {
@@ -283,11 +273,8 @@
     height: 40px;
   }
 
-  .arrow-left {
-    left: -30px;
+  .thumbnail-container {
+    padding: 10px calc(100% - 70px);
   }
   
-  .arrow-right {
-    left: 325px;
-  }
 }
