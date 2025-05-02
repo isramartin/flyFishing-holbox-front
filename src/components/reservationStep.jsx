@@ -3,7 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input'; 
 import { isValidPhoneNumber } from 'react-phone-number-input';
-import { Calendar1, CalendarCheck, Check, ChevronLeft, ChevronRight, CircleAlert, CircleHelp, Clock,  FileCheck,  FileText, Mail, MapPin, Phone, Ship, ShoppingBag, Smile, User, UserRound, Users, UsersRound } from 'lucide-react';
+import { Calendar1, CalendarCheck, Check, ChevronLeft, ChevronRight, CircleAlert, CircleHelp, Clock,  FileCheck,  FileText, Mail, MapPin, Phone, Ship, ShoppingBag, Smile, User, UserRound, Users, UsersRound, CheckCircle } from 'lucide-react';
 import Flags from 'country-flag-icons/react/3x2'; // Importa las banderas
 import 'react-calendar/dist/Calendar.css';
 import '../styles/ReservationStep.css'; // Importamos el archivo CSS
@@ -76,7 +76,15 @@ const ReservationStep = () => {
         included: true,
       },
     ];
-  
+    
+// Manejar la selección del equipo completo
+const [isPackageSelected, setIsPackageSelected] = useState(false);
+
+// Manejar la selección del paquete completo
+const handlePackageSelection = () => {
+  setIsPackageSelected(!isPackageSelected);
+  // A
+};
     const updateData = (field, value) => {
       setData((prev) => ({ ...prev, [field]: value }));
     };
@@ -192,11 +200,13 @@ const ReservationStep = () => {
                   }
                 >
                   <div className="step-number">
-                    {step === index + 1
-                      ? index + 1
-                      : step > index + 1
-                      ? <Check className='step-check'/>
-                      : index + 1}
+                    {step === index + 1 ? (
+                      index + 1
+                    ) : step > index + 1 ? (
+                      <Check className="step-check" />
+                    ) : (
+                      index + 1
+                    )}
                   </div>
                   <div className="step-title">{label}</div>
                 </span>
@@ -285,10 +295,6 @@ const ReservationStep = () => {
                           <option value="1">1 persona</option>
                           <option value="2">2 personas</option>
                           <option value="3">3 personas</option>
-                          <option value="4">4 personas</option>
-                          <option value="5">5 personas</option>
-                          <option value="6">6 personas</option>
-                          <option value="7">7 personas</option>
                         </select>
                         <p className="price-info">
                           Precio por persona:{" "}
@@ -306,7 +312,10 @@ const ReservationStep = () => {
 
             {step === 2 && (
               <div>
-                <h2><FileText/>Datos Personales</h2>
+                <h2>
+                  <FileText />
+                  Datos Personales
+                </h2>
                 <div className="form-group">
                   <label>
                     <UserRound className="icon-style" /> Nombre Completo
@@ -337,21 +346,33 @@ const ReservationStep = () => {
                     Teléfono
                   </label>
                   <div className="phone-container">
-                    {/* ÚNICO INPUT QUE MANEJA TODO (banderas, código de país y número) */}
                     <PhoneInput
-                      defaultCountry={countryCode} // País inicial
+                      defaultCountry={countryCode}
                       value={phoneNumber}
                       onChange={handlePhoneChange}
                       international
-                      countryCallingCodeEditable={false} // Bloquea edición del código de país
-                      className="phone-input no-focus-style"
+                      countryCallingCodeEditable={false}
+                      className="phone-input"
+                      inputProps={{
+                        readOnly: true,
+                        style: {
+                          pointerEvents: "none",
+                          backgroundColor: "#f5f5f5",
+                          cursor: "default",
+                        },
+                      }}
+                      onFocus={(e) => {
+                       
+                        document.querySelector(".phone-number-input")?.focus();
+                      }}
                     />
                     <input
-                      type="numbr"
+                      type="tel"
                       value={localPhoneNumber}
                       onChange={handleLocalPhoneChange}
                       placeholder="Número de teléfono"
                       className="phone-number-input"
+                      autoFocus={true}
                     />
                   </div>
 
@@ -369,46 +390,75 @@ const ReservationStep = () => {
 
             {step === 3 && (
               <div>
-                <h2><ShoppingBag/> Selecciona Adicionales</h2>
+                <h2>
+                  <ShoppingBag /> Adicionales para tu Tour
+                </h2>
 
+                {/* Sección de información del tour */}
                 <div className="rf-info">
                   <h3>
                     <CircleHelp className="icon-style" />
                     Información del Tour
                   </h3>
 
-                  {/* 📌 Primera columna */}
                   <div className="rf-info-column">
                     <ul>
                       <li>
                         <Clock className="icon-style" />
-                        <strong>Duración del Tour:</strong>  <span>3 horas</span>
+                        <strong>Duración del Tour:</strong> <span>3 horas</span>
                       </li>
                       <li>
                         <Ship className="icon-style" />
-                        <strong>Tipo de Embarcación:</strong> <spam>Lancha rápida</spam>
+                        <strong>Tipo de Embarcación:</strong>{" "}
+                        <span>Lancha rápida</span>
                       </li>
-                    </ul>
-                  </div>
-
-                  {/* 📌 Segunda columna */}
-                  <div className="rf-info-column">
-                    <ul>
                       <li>
                         <MapPin className="icon-style" />
-                        <strong>Punto de Partida:</strong>  <span>Muelle Principal, Puerto Aventura</span>
+                        <strong>Punto de Partida:</strong>{" "}
+                        <span>Muelle Principal, Puerto Aventura</span>
                       </li>
                       <li>
                         <Phone className="icon-style" />
-                        <strong>Teléfono:</strong>  <span>(123) 456-7890</span>
+                        <strong>Teléfono:</strong> <span>(123) 456-7890</span>
                       </li>
                     </ul>
                   </div>
                 </div>
 
+                {/* Sección de lo que incluye el tour */}
+                <div className="tour-includes">
+                  <h3>Lo que incluye el tour (500 USD):</h3>
+                  <div className="includes-grid">
+                    <div className="include-item">
+                      <strong>Transporte marítimo</strong>
+                      <p>Ida y vuelta en catamarán de lujo</p>
+                    </div>
+                    <div className="include-item">
+                      <strong>Comida gourmet</strong>
+                      <p>Buffet con opciones vegetarianas disponibles</p>
+                    </div>
+                    <div className="include-item">
+                      <strong>Servicio fotográfico</strong>
+                      <p>Fotos digitales de la experiencia</p>
+                    </div>
+                    <div className="include-item">
+                      <strong>Guía certificado</strong>
+                      <p>Guía bilingüe especializado en la zona</p>
+                    </div>
+                    <div className="include-item">
+                      <strong>Bebidas premium</strong>
+                      <p>Barra libre de bebidas nacionales</p>
+                    </div>
+                    <div className="include-item">
+                      <strong>Seguro de viaje</strong>
+                      <p>Cobertura durante toda la actividad</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sección de selección de artículos original */}
                 <div className="slect-articulos">
-                  {/* 📌 Sección de selección de artículos */}
-                  <h2>Seleccione artículos para su tour:</h2>
+                  <h2>Paquete de quipo Completo:</h2>
 
                   <div className="filter-buttons">
                     {[
@@ -446,29 +496,72 @@ const ReservationStep = () => {
                           </div>
                         </div>
 
-                        <div className="price-controls">
-                          {item.price > 0 ? (
-                            <strong>{item.price}.00 pesos</strong>
-                          ) : (
-                            <span className="included-badge">Incluido</span>
-                          )}
+                        {/* <div className="price-controls"> */}
+                        {/* {item.price > 0 ? (
+                <strong>{item.price}.00 pesos</strong>
+              ) : (
+                <span className="included-badge">Incluido</span>
+              )} */}
 
-                          <div className="quantity-controls">
-                            <button onClick={() => handleDecrease(index)}>
-                              -
-                            </button>
-                            <span>{quantities[index] || 0}</span>
-                            <button onClick={() => handleIncrease(index)}>
-                              +
-                            </button>
-                          </div>
-                        </div>
+                        {/* <div className="quantity-controls">
+                <button onClick={() => handleDecrease(index)}>
+                  -
+                </button>
+                <span>{quantities[index] || 0}</span>
+                <button onClick={() => handleIncrease(index)}>
+                  +
+                </button>
+              </div> */}
+                        {/* </div> */}
 
                         <p className="max-info">
-                          Máximo: {item.max} por reservación
+                          Descripcion de cada elemneto que conforma el paquete
+                          dl equipo
                         </p>
                       </div>
                     ))}
+                  </div>
+                </div>
+
+                {/* Botón de selección de paquete completo (mantenido como solicitaste) */}
+                <div className="full-equipment-rental">
+                  <div className="equipment-package">
+                    <div className="package-header">
+                      <h3>Alquiler de equipo completo</h3>
+                      <p className="package-description">
+                        Si no cuenta con equipo propio, podemos proporcionarle
+                        todo lo necesario para disfrutar del tour.
+                      </p>
+                    </div>
+
+                    <div className="package-content">
+                      <div className="package-toggle">
+                        <label className="toggle-switch">
+                          <input
+                            type="checkbox"
+                            checked={isPackageSelected}
+                            onChange={handlePackageSelection}
+                          />
+                          <span className="toggle-slider"></span>
+                          <span className="toggle-label">
+                            Deseo alquilar el equipo completo
+                          </span>
+                        </label>
+                      </div>
+
+                      <div className="package-price-display">
+                        <strong className="price-amount">1000.00 pesos</strong>
+                        <span className="price-conversion">
+                          Equivalente a 50 USD
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="package-note">
+                      Nota: Si cuenta con su propio equipo, puede traerlo al
+                      tour. El chaleco salvavidas es obligatorio y está incluido
+                      en el precio base del tour.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -476,10 +569,13 @@ const ReservationStep = () => {
 
             {step === 4 && (
               <div>
-                <h2><FileCheck/> Confirmar Datos de Reservación</h2>
+                <h2>
+                  <FileCheck /> Confirmar Datos de Reservación
+                </h2>
+
+                {/* Resumen de datos personales */}
                 <div className="reservation-summary">
                   <div className="summary-card">
-                    {/* Primera columna */}
                     <div className="summary-column">
                       <div className="summary-item">
                         <Calendar1 className="icon-style" />
@@ -501,7 +597,6 @@ const ReservationStep = () => {
                       </div>
                     </div>
 
-                    {/* Segunda columna */}
                     <div className="summary-column">
                       <div className="summary-item">
                         <User className="icon-style" />
@@ -525,106 +620,90 @@ const ReservationStep = () => {
                   </div>
                 </div>
 
-                {/* Nuevo componente: Resumen del Tour y Artículos */}
-                <div className="tour-summary">
-                  <div className="tour-title-section">
-                    Resumen de su reservación
+                {/* Resumen del Tour - Versión mejorada */}
+                <div className="tour-summary-container">
+                  <div className="tour-summary-section">
+                    <h3>Lo que incluye su tour:</h3>
+                    <div className="included-items-grid">
+                      <div className="included-item">
+                        <CheckCircle className="icon-check" />
+                        <span>Transporte marítimo</span>
+                      </div>
+                      <div className="included-item">
+                        <CheckCircle className="icon-check" />
+                        <span>Guía certificado</span>
+                      </div>
+                      <div className="included-item">
+                        <CheckCircle className="icon-check" />
+                        <span>Comida gourmet</span>
+                      </div>
+                      <div className="included-item">
+                        <CheckCircle className="icon-check" />
+                        <span>Bebidas premium</span>
+                      </div>
+                      <div className="included-item">
+                        <CheckCircle className="icon-check" />
+                        <span>Servicio fotográfico</span>
+                      </div>
+                      <div className="included-item">
+                        <CheckCircle className="icon-check" />
+                        <span>Seguro de viaje</span>
+                      </div>
+                    </div>
                   </div>
-                  {/* <div></div> */}
-                  <div className="tour-details2">
-                    <p>
-                      <strong>Tour básico (9+ personas)</strong>
-                      <span>1000.00 pesos</span>
-                    </p>
-                  </div>
 
-                  <div className="selected-items">
-                    <h3>Artículos del tour seleccionados:</h3>
-                    <ul>
-                      <li>
-                        {/* Columna izquierda: Imagen + Nombre + Descripción */}
-                        <div className="item-info2">
-                          <img
-                            src={iamgen1}
-                            alt="Cámara acuática"
-                            className="item-image"
-                          />
-                          <div className="item-text">
-                            <strong>Cámara acuática</strong>
-                            <p>Cámara GoPro resistente al agua</p>
-                          </div>
-                        </div>
-
-                        {/* Columna derecha: Precio total y cantidad */}
-                        <div className="item-price">
-                          <span>400.00 pesos</span>
-                          <p>2 x 200.00 pesos</p>
-                        </div>
-                      </li>
-
-                      <li>
-                        {/* Columna izquierda: Imagen + Nombre + Descripción */}
-                        <div className="item-info2">
-                          <img
-                            src="/ruta-a-tu-imagen.jpg"
-                            alt="Cámara acuática"
-                            className="item-image"
-                          />
-                          <div className="item-text">
-                            <strong>Cámara acuática</strong>
-                            <p>Cámara GoPro resistente al agua</p>
-                          </div>
-                        </div>
-
-                        {/* Columna derecha: Precio total y cantidad */}
-                        <div className="item-price">
-                          <span>400.00 pesos</span>
-                          <p>2 x 200.00 pesos</p>
-                        </div>
-                      </li>
-                      <li>
-                        {/* Columna izquierda: Imagen + Nombre + Descripción */}
-                        <div className="item-info2">
-                          <img
-                            src="/ruta-a-tu-imagen.jpg"
-                            alt="Cámara acuática"
-                            className="item-image"
-                          />
-                          <div className="item-text">
-                            <strong>Cámara acuática</strong>
-                            <p>Cámara GoPro resistente al agua</p>
-                          </div>
-                        </div>
-
-                        {/* Columna derecha: Precio total y cantidad */}
-                        <div className="item-price">
-                          <span>400.00 pesos</span>
-                          <p>2 x 200.00 pesos</p>
-                        </div>
-                      </li>
-                    </ul>
-
-                    <div className="subtotal-summary">
+                  <div className="equipment-summary-section">
+                    <h3>Equipo incluido en su reservación:</h3>
+                    <div className="equipment-package-summary">
+                      <h4>Paquete completo de equipo</h4>
                       <p>
-                        <strong>Subtotal artículos del tour:</strong>
-                        <span>450.00 pesos</span>
+                        Incluye: equipo de snorkel, chaleco salvavidas, equipo
+                        de pesca y zapatos acuáticos y más artículos
                       </p>
+                      <div className="equipment-price">
+                        <strong>1000.00 pesos</strong>
+                        <span>Equivalente a 50 USD</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Resumen de pago */}
+                <div className="payment-summary">
+                  <div className="payment-header">
+                    <h3>Resumen de pago</h3>
+                  </div>
+
+                  <div className="payment-details">
+                    <div className="payment-row">
+                      <span className="payment-label">Tour básico</span>
+                      <span className="payment-amount">10000.00 pesos</span>
                     </div>
 
-                    <div className="total-summary">
-                      <p>
-                        <strong>TOTAL A PAGAR:</strong>
-                        <span>450.00 pesos</span>
-                      </p>
+                    <div className="payment-row">
+                      <span className="payment-label">Alquiler de equipo</span>
+                      <span className="payment-amount">1000.00 pesos</span>
+                    </div>
 
-                      <p className="totalp">
-                        El precio incluye todos los impuestos y cargos
-                        aplicables.
+                    <div className="payment-total">
+                      <span className="payment-total-label">
+                        Total Impuestos incluidos
+                      </span>
+                      <span className="payment-total-amount">
+                        11000.00 pesos
+                      </span>
+                    </div>
+
+                    <div className="payment-method">
+                      <p className="payment-method-title">Método de pago:</p>
+                      <p className="payment-method-detail">
+                        Se procesará el pago en el siguiente paso
                       </p>
                     </div>
                   </div>
                 </div>
 
+                {/* Información importante */}
                 <div className="important-info">
                   <h2>
                     <CircleAlert /> Información importante

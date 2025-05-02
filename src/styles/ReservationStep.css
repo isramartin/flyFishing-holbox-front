@@ -323,16 +323,21 @@
   margin-top: 5px;
 }
 
+/* ----- */
+
+/* ----- */
+
 .phone-input {
   flex: 0.7;
   padding: 10px;
   border-radius: 4px;
   font-size: 16px;
+  cursor: default;
 }
 
 .PhoneInputInput {
   pointer-events: none !important;
-  cursor:none !important;
+  cursor: none !important;
   cursor: not-allowed;
 }
 
@@ -476,7 +481,6 @@
 /* 📌 Ítems alineados horizontalmente */
 .rf-info-column ul li {
   color: #34495e;
-  
 }
 
 /* 📌 Negrita en los títulos */
@@ -881,11 +885,11 @@ filter-buttons button:hover {
 }
 
 .total-summary {
-  margin: 20px;
   padding: 15px;
   background-color: #eeeeee94;
   border-radius: 8px;
   text-align: left; /* Centra el contenido */
+  margin: 25px 0;
 }
 
 .total-summary p {
@@ -994,10 +998,7 @@ filter-buttons button:hover {
   .rf-info-column ul li {
     font-size: 0.9rem; /* Reduce el tamaño del texto */
   }
-  
-  
 }
-
 
 @media (max-width: 480px) {
   .reservation-tour {
@@ -1051,23 +1052,21 @@ filter-buttons button:hover {
     padding: 8px;
   }
 
- 
-
   .phone-number-input {
     flex: 7;
   }
 
-  .phone-input {
+  /* .phone-input {
     flex: 4.6;
     padding: 10px;
     border-radius: 4px;
     font-size: 16px;
-  }
-  
+  } */
+
   .PhoneInputInput {
     pointer-events: none !important;
   }
-  
+
   .PhoneInputInput:focus,
   .PhoneInputInput:focus-within {
     outline: none !important;
@@ -1075,7 +1074,7 @@ filter-buttons button:hover {
     background-color: #f9f9f9 !important;
     box-shadow: none !important;
   }
-  
+
   .rf-info {
     padding: 0.8rem; /* Reduce más el padding */
   }
@@ -1087,4 +1086,415 @@ filter-buttons button:hover {
   .rf-info-column ul li {
     font-size: 0.85rem; /* Ajusta el tamaño del texto */
   }
+}
+
+/* Estilos para la sección "Lo que incluye el tour" */
+.tour-includes {
+  background-color: #f8fff8; /* Fondo verde muy claro */
+  border-radius: 12px;
+  padding: 25px;
+  margin: 30px 0;
+  border: 1px solid #e0f0e0; /* Borde verde claro */
+}
+
+.tour-includes h3 {
+  color: #2e7d32; /* Verde oscuro */
+  font-size: 1.3em;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #c8e6c9; /* Línea divisoria verde */
+}
+
+.includes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.include-item {
+  background-color: #f1f8e9; /* Fondo verde claro */
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #81c784; /* Borde lateral verde */
+  transition: transform 0.2s ease;
+}
+
+.include-item strong {
+  color: #1b5e20; /* Verde oscuro */
+  font-size: 1.1em;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.include-item p {
+  color: #4c8c4a; /* Verde medio */
+  margin: 0;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+/* Estilos para el alquiler de equipo completo */
+.full-equipment-rental {
+  background-color: #fbfbfb;
+  border-radius: 12px;
+  padding: 25px;
+  margin: 25px 0;
+  border: 1px solid #e0e8e0;
+}
+
+.equipment-package {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.package-header h3 {
+  color: #2c3e50;
+  font-size: 1.3em;
+  margin-bottom: 8px;
+}
+
+.package-description {
+  color: #5a6c5a;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+.package-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-top: 1px solid #e0e8e0;
+  border-bottom: 1px solid #e0e8e0;
+}
+
+/* Estilos para el toggle switch */
+.toggle-switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  background-color: #ccc;
+  border-radius: 30px;
+  transition: 0.4s;
+  margin-right: 15px;
+}
+
+.toggle-slider:before {
+  content: "";
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: #27ae60;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(30px);
+}
+
+.toggle-label {
+  font-weight: 500;
+  color: #2c3e50;
+  font-size: 1.1em;
+}
+
+/* Estilos para el precio */
+.package-price-display {
+  text-align: right;
+}
+
+.price-amount {
+  display: block;
+  font-size: 1.5em;
+  color: #015fbe;
+  font-weight: bold;
+}
+
+.price-conversion {
+  color: #7f8c8d;
+  font-size: 0.95em;
+}
+
+/* Nota al pie */
+.package-note {
+  color: #2776e4 !important;
+  font-size: 0.9em;
+  line-height: 1.5;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* Estilos para el resumen del tour */
+.tour-summary-container {
+  background-color: #f8faf8;
+  border-radius: 12px;
+  padding: 25px;
+  margin: 25px 0;
+  border: 1px solid #e0e8e0;
+}
+
+.tour-summary-section h3,
+.equipment-summary-section h3 {
+  color: #2c3e50;
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e8e0;
+}
+
+.included-items-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.included-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-check {
+  color: #27ae60;
+  font-size: 1.2em;
+}
+
+/* Estilos para el equipo incluido */
+.equipment-package-summary {
+  background-color: #e9f3f8;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.equipment-package-summary h4 {
+  color: #1b325e;
+  margin: 0 0 8px 0;
+  font-size: 1.1em;
+}
+
+.equipment-package-summary p {
+  color: #4a6c8c;
+  margin: 0 0 12px 0;
+  font-size: 0.95em;
+}
+
+.equipment-price {
+  text-align: right;
+}
+
+.equipment-price strong {
+  font-size: 1.3em;
+  color: #2c3e50;
+  display: block;
+}
+
+.equipment-price span {
+  color: #7f8c8d;
+  font-size: 0.9em;
+}
+
+/* Estilos para el resumen de precios */
+.price-summary {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 25px 0;
+}
+
+.price-summary p {
+  display: flex;
+  justify-content: space-between;
+  font-size: 19px;
+  color: #5670ff;
+  font-weight: 600;
+  margin: 6px;
+  align-items: center; /* Centra verticalmente */
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.price-row strong {
+  display: flex;
+  justify-content: space-between;
+  font-size: 19px;
+  color: #007bff;
+  font-weight: 600;
+  margin: 6px;
+  align-items: center; /* Centra verticalmente */
+}
+
+.price-row span {
+  display: flex;
+  justify-content: space-between;
+  font-size: 19px;
+  color: #020202;
+  font-weight: 600;
+  margin: 6px;
+  align-items: center; /* Centra verticalmente */
+}
+
+.price-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0 8px 0;
+  font-size: 1.2em;
+  color: #2c3e50;
+}
+
+.price-note {
+  color: #7f8c8d;
+  font-size: 0.9em;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Estilos para información importante */
+.important-info {
+  background-color: #fff8e1;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 25px;
+}
+
+.important-info h2 {
+  color: #e65100;
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.important-info ul {
+  padding-left: 20px;
+}
+
+.important-info li {
+  margin-bottom: 8px;
+  color: #5d4037;
+}
+
+/* Estilos para el resumen de pago */
+.payment-summary {
+  border-radius: 10px;
+  margin: 25px 0;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.payment-header {
+  background-color: #2c3e50; /* Color oscuro para el header */
+  padding: 15px 20px;
+  border-radius: 10px 10px 0 0;
+}
+
+.payment-header h3 {
+  font-size: 1.3em;
+  color: white; /* Texto blanco para contraste */
+  margin: 0; /* Eliminar margen por defecto del h3 */
+}
+
+.payment-details {
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0; /* Aumentar padding vertical */
+  margin-bottom: 4px; /* Reducir margen inferior */
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.payment-label, .payment-amount {
+  padding-bottom: 5px; /* Espacio adicional debajo del texto */
+  margin: 0; /* Eliminar márgenes por defecto */
+  font-weight: 600;
+  color: #333;
+}
+
+.payment-subrow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-left: 15px;
+}
+
+.payment-sublabel {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.payment-subamount {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.payment-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+.payment-total-label {
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.payment-total-amount {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 1.1em;
+}
+
+.payment-method {
+  background-color: #e9f3f8;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.payment-method-title {
+  font-weight: 600;
+  color: #1b325e !important;
+
+  font-size: 1.1em;
+}
+
+.payment-method-detail {
+  color: #4a6c8c !important;
+
+  font-size: 0.95em;
 }
