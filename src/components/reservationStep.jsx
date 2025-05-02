@@ -372,7 +372,7 @@ const handlePackageSelection = () => {
                       onChange={handleLocalPhoneChange}
                       placeholder="Número de teléfono"
                       className="phone-number-input"
-                      autoFocus={true}
+                      // autoFocus={true}
                     />
                   </div>
 
@@ -687,7 +687,7 @@ const handlePackageSelection = () => {
 
                     <div className="payment-total">
                       <span className="payment-total-label">
-                        Total Impuestos incluidos
+                        Total a Pagar
                       </span>
                       <span className="payment-total-amount">
                         11000.00 pesos

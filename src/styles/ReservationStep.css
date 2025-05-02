@@ -1439,7 +1439,8 @@ input:checked + .toggle-slider:before {
   padding-bottom: 5px; /* Espacio adicional debajo del texto */
   margin: 0; /* Eliminar márgenes por defecto */
   font-weight: 600;
-  color: #333;
+  font-size: 1.1em;
+  color: #0e0e0e;
 }
 
 .payment-subrow {
@@ -1469,14 +1470,15 @@ input:checked + .toggle-slider:before {
 }
 
 .payment-total-label {
-  font-weight: 700;
+  font-weight: 800;
+  font-size: 1.4em;
   color: #2c3e50;
 }
 
 .payment-total-amount {
   font-weight: 700;
   color: #2c3e50;
-  font-size: 1.1em;
+  font-size: 1.4em;
 }
 
 .payment-method {
