@@ -1,4 +1,16 @@
-/* Sección Hero con imagen de fondo */
+/* Variables CSS para consistencia */
+:root {
+  --primary-color: #ea5f34;
+  --primary-dark: #c94a24;
+  --accent-color: #4bafe8;
+  --text-light: #fefefe;
+  --overlay-dark: rgba(0, 0, 0, 0.495);
+  --box-bg: rgba(0, 0, 0, 0.64);
+  --box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+  --transition: all 0.3s ease-in-out;
+}
+
+/* Reset y estilos base */
 .hero {
   width: 100%;
   height: 100vh;
@@ -9,227 +21,215 @@
 }
 
 .hero-image {
+  position: absolute;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  position: absolute;
-  top: 0;
+  top:0;
   left: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
-/* Capa de fondo oscura para mejorar legibilidad */
+.hero-image.fade {
+  opacity: 0.7;
+}
+
+/* Overlay */
 .hero-overlay {
   position: absolute;
   width: 100%;
   height: 100%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  color: white;
-  background: rgba(0, 0, 0, 0.6); /* Más oscuro para mejorar contraste */
-  padding: 45px;
-  z-index: 1;
-  align-items: center;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: var(--text-light);
+  background: var(--overlay-dark);
+  padding: 2rem;
+  z-index: 2;
 }
 
 .hero-overlay h1 {
   font-family: "Playfair Display", serif;
-  font-size: 10rem; /* Tamaño grande */
-  font-weight: 700; /* Negrita */
-  color: #fafafa; /* Color oscuro para un buen contraste */
-  margin-bottom: 500px; /* Espacio debajo del título */
-  text-transform: uppercase; /* Mayúsculas para darle énfasis */
-  letter-spacing: 2px; /* Espaciado entre letras */
-  text-align: center; /* Centrado */
+  font-size: clamp(3rem, 8vw, 10rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  animation: fadeInDown 1s ease-out;
 }
 
 .hero-overlay h2 {
-  margin-top: 100px !important;
   font-family: "Audiowide", cursive;
-  font-size: 2.5rem; /* Un tamaño más pequeño que h1 */
-  font-weight: 400; /* Normal */
-  color: #fefefe; /* Un tono más suave para el texto */
-  line-height: 1.6; /* Espaciado entre líneas */
-  text-align: center; /* Centrado */
-  margin-top: 0; /* Sin margen superior */
-  margin-bottom: 30px; /* Margen inferior para separación */
-  max-width: 80%; /* Limitar el ancho para mejorar la legibilidad */
-  margin-left: auto;
-  margin-right: auto;
-  position: absolute;
+  font-size: clamp(1rem, 2.5vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 80%;
+  color: var(--text-light);
+  margin: 1rem auto 2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  animation: fadeInUp 1s ease-out 0.3s both;
 }
 
-/* Botón de reservar */
+/* Botón */
 .btn-reservar {
-  margin-top: 350px;
   display: inline-block;
-  padding: 12px 24px;
-  background-color: #ea5f34;
+  padding: 0.8rem 1.8rem;
+  background-color: var(--primary-color);
   color: white;
-  font-size: 1.2rem;
+  font-size: clamp(0.9rem, 1.2vw, 1.2rem);
   font-weight: bold;
-  text-decoration: none; /* Elimina la línea debajo del enlace */
+  text-decoration: none;
   border-radius: 8px;
-  transition: background 0.3s ease-in-out;
-  position: absolute;
+  transition: var(--transition);
+  animation: fadeIn 1s ease-out 0.6s both;
+  z-index: 3;
 }
+
 .btn-reservar:hover {
-  background-color: #c94a24; /* Un tono más oscuro del botón */
-  transform: scale(1.05); /* Efecto de agrandamiento */
-  transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
-}
-
-/* Galería de imágenes */
-.photo-frames {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-top: -80px; /* Para que flote un poco sobre la portada */
-  padding: 40px 20px;
-}
-
-.frame img {
-  width: 350px;
-  height: 250px;
-  border-radius: 10px;
-  object-fit: cover;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease-in-out;
-}
-
-.frame img:hover {
+  background-color: var(--primary-dark);
   transform: scale(1.05);
 }
 
-/* Cuadros sobre la imagen de portada */
+/* Cuadros de imágenes */
 .hero-boxes {
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
-  display: flex;
-  gap: 20px;
-}
-
-/* Estilos generales de los cuadros */
-.box {
-  width: 220px;
-  height: 220px;
-  background: rgba(0, 0, 0, 0.64);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-  position: absolute;
-  border: 5px solid #4bafe8;
-  overflow: hidden;
   z-index: 3;
 }
 
-.fade {
-  opacity: 0;
+.box {
+  position: absolute;
+  width: 12vw;
+  height: 12vw;
+  min-width: 100px;
+  min-height: 100px;
+  max-width: 220px;
+  max-height: 220px;
+  background: var(--box-bg);
+  border-radius: 10px;
+  box-shadow: var(--box-shadow);
+  border: 3px solid var(--accent-color);
+  overflow: hidden;
+  transition: var(--transition);
 }
 
-/* Posicionamiento de cada cuadro */
-.top-left {
-  bottom: 20px;
-  right: 1050px;
+.box:hover {
+  transform: scale(1.05);
+  border-color: var(--primary-color);
 }
 
-.top-right {
-  bottom: 20px;
-  right: 580px;
-}
-
-.bottom-left {
-  bottom: 20px;
-  left: 50px;
-}
-
-.bottom-right {
-  bottom: 20px;
-  right: 50px;
-}
-
-/* Ajuste para que las imágenes ocupen el espacio dentro de los cuadros */
 .box img {
   width: 100%;
   height: 100%;
-  border-radius: 5px;
   object-fit: cover;
-  transition: opacity 0.15s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
 }
 
+.box img.fade {
+  opacity: 0.5;
+}
+
+/* Posicionamiento de los cuadros */
+.top-left {
+  top: 10%;
+  left: 10%;
+}
+
+.top-right {
+  top: 10%;
+  right: 10%;
+}
+
+.bottom-left {
+  bottom: 10%;
+  left: 10%;
+}
+
+.bottom-right {
+  bottom: 10%;
+  right: 10%;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-
-  .hero-image {
-    height: 40vh; 
-  }
-  
-  .hero-overlay {
-    height:40vh; 
-    top: 20vh;
-  }
-
-  
   .hero-overlay h1 {
-    font-size: 2rem; /* Tamaño más pequeño para móviles */
-    margin-bottom: 10px;
-    height: 20vh; 
-  }
-
-  .hero-overlay h2 {
-    font-family: "Audiowide", cursive;
-    font-size: 1rem; /* Tamaño más pequeño para móviles */
-    margin-bottom: 80px;
-  }
-
-  .btn-reservar {
-    font-size: 0.9rem; /* Tamaño más pequeño para móviles */
-    padding: 8px 16px;
-    margin-bottom: 150px;
-  }
-
-  .box {
-    width: 100px; /* Tamaño más pequeño para móviles */
-    height: 100px;
-  }
-
-  .hero-boxes {
-    flex-direction: column; /* Apila los cuadros verticalmente */
-    gap: 5px;
-  }
-
-  .top-left {
-    width: 9vh;
-    height: 9vh;
-    bottom: 61vh;
-    right: 10px;
-    top: 28vh;
+    margin-bottom: 0.5rem;
   }
   
-  .top-right {
+  .hero-overlay h2 {
+    margin: 0.5rem auto 1.5rem;
+    max-width: 95%;
+  }
+  
+  .box {
+    width: 20vw;
+    height: 20vw;
+    min-width: 80px;
+    min-height: 80px;
+  }
+  
+  .top-right, .bottom-right {
     display: none;
   }
   
+  .top-left {
+    top: 15%;
+    left: 5%;
+  }
+  
   .bottom-left {
-    width: 9vh;
-    height: 9vh;
-    bottom: 61vh;
-    left: 10px;
-    top: 28vh;
+    bottom: 15%;
+    left: 5%;
   }
-  
-  .bottom-right {
-   display: none;
-  }
-  
 }
 
+@media (max-width: 480px) {
+  .hero-overlay h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-overlay h2 {
+    font-size: 0.9rem;
+  }
+  
+  .btn-reservar {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
