@@ -52,6 +52,7 @@ const Menu = () => {
   }, [location]);
 
   const menuItems = [
+    { path: '/', label: 'Home', roles: ['user', 'guest'] },
     { path: '/home', label: 'Home', roles: ['user', 'guest'] },
     { path: '/pesca', label: 'Pesca', roles: ['user','guest'] },
     { path: '/reservaciones', label: 'Reservaciones', roles: [ 'user','guest'] },
