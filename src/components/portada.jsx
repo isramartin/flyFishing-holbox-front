@@ -23,8 +23,8 @@ const Portada = () => {
       setTimeout(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
         setFade(false);
-      }, 500);
-    }, 5000);
+      }, 400);
+    }, 4000);
 
     window.addEventListener('resize', handleResize);
     return () => {
