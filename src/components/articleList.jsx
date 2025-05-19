@@ -12,7 +12,9 @@ const ArticleList = ({ articles }) => {
               <div className="article-inner">
                 {/* Lado Frontal */}
                 <div className="article-front">
-                  <img src={article.image} alt={article.title} />
+                  <div className="image-container">
+                    <img src={article.image} alt={article.title} />
+                  </div>
                   <h5>{article.title}</h5>
                 </div>
                 {/* Lado Trasero */}

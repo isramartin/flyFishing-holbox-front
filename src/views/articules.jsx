@@ -1,76 +1,58 @@
-import React from "react";
-import ArticleList from "../components/articleList"
+import React, { useState, useEffect } from "react";
+import ArticleList from "../components/articleList";
+import { getAllPesca } from "../service/Pesca.service";
+// Importa tus imágenes locales
 import articulo1 from '../assets/image/image1.png';
 import articulo2 from '../assets/image/image2.png';
 import articulo3 from '../assets/image/image3.png';
 
-const articles = [
-    {
-      id: 1,
-      title: "🔹 Caña de Pesca",
-      description: "Específica para lanzar líneas ligeras con precisión. Su flexibilidad y tamaño varían según el tipo de pesca y pez objetivo.",
-      image: articulo1,
-    },
-    {
-      id: 2,
-      title: "🔹  Chaleco de Pesca",
-      description: "Diseñado con múltiples bolsillos para llevar moscas, herramientas y accesorios sin necesidad de cargar una mochila.",
-      image: articulo2,
-    },
-    {
-      id: 3,
-      title: "🔹 Gafas de Sol Polarizadas",
-      description: "Reducen reflejos en el agua, permitiéndote ver mejor a los peces y protegiendo tus ojos del sol y anzuelos.",
-      image: articulo3,
-    },
-    {
-        id: 4,
-        title: "🔹 Caña de Pesca",
-        description: "Específica para lanzar líneas ligeras con precisión. Su flexibilidad y tamaño varían según el tipo de pesca y pez objetivo.",
-        image: articulo1,
-      },
-      {
-        id: 5,
-        title: "🔹  Chaleco de Pesca",
-        description: "Diseñado con múltiples bolsillos para llevar moscas, herramientas y accesorios sin necesidad de cargar una mochila.",
-        image: articulo2,
-      },
-      {
-        id: 6,
-        title: "🔹 Gafas de Sol Polarizadas",
-        description: "Reducen reflejos en el agua, permitiéndote ver mejor a los peces y protegiendo tus ojos del sol y anzuelos.",
-        image: articulo3,
-      },
-      {
-        id: 7,
-        title: "🔹 Caña de Pesca",
-        description: "Específica para lanzar líneas ligeras con precisión. Su flexibilidad y tamaño varían según el tipo de pesca y pez objetivo.",
-        image: articulo1,
-      },
-      {
-        id: 8,
-        title: "🔹  Chaleco de Pesca",
-        description: "Diseñado con múltiples bolsillos para llevar moscas, herramientas y accesorios sin necesidad de cargar una mochila.",
-        image: articulo2,
-      },
-      {
-        id: 9,
-        title: "🔹 Gafas de Sol Polarizadas",
-        description: "Reducen reflejos en el agua, permitiéndote ver mejor a los peces y protegiendo tus ojos del sol y anzuelos.",
-        image: articulo3,
-      },
-     
-  ];
 
+const Articles = () => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
- const Articles =()=>{
-    return (
-        <div className="articles-container">
-          <ArticleList articles={articles} />
-        </div>
-      );
+  // Objeto para mapear tipos de artículo a imágenes locales
+  const localImages = {
+    'caña': articulo1,
+    'chaleco': articulo2,
+    'gafas': articulo3
+  };
 
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const data = await getAllPesca();
+        
+        const formattedArticles = data.map(item => ({
+          id: item.id,
+          title: item.titulo || `🔹 ${item.tipo}`,
+          description: item.descripcion || "Descripción no disponible",
+          // Usa imagen de la API si existe, sino usa una local según el tipo
+          image: item.imageUrl || localImages[item.tipo?.toLowerCase()] 
+        }));
+        
+        setArticles(formattedArticles);
+      } catch (err) {
+        console.error("Error fetching articles:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
- };
+    fetchArticles();
+  }, []);
 
- export default Articles;
+  if (loading) return <div className="text-center py-8">Cargando artículos...</div>;
+  if (error) return <div className="text-red-500 text-center py-8">Error: {error}</div>;
+  if (articles.length === 0) return <div className="text-center py-8">No hay artículos disponibles</div>;
+
+  return (
+    <div className="articles-container">
+      <ArticleList articles={articles} />
+    </div>
+  );
+};
+
+export default Articles;
