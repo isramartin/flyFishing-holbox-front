@@ -1,3 +1,5 @@
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const getAllPesca = async () => {
   try {
     // Si el endpoint requiere autenticación, descomenta:
@@ -5,7 +7,7 @@ export const getAllPesca = async () => {
     // if (!token) throw new Error("No hay token de autenticación");
 
     const response = await fetch(
-      "http://localhost:8081/api/pesca/All",
+      `${API_URL}/api/pesca/All`,
       {
         method: "GET",
         headers: {
