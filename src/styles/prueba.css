@@ -607,3 +607,79 @@ textarea {
 
 
 }
+
+.skeleton-card {
+  width: 400px;
+  height: 160px;
+  border-radius: 15px;
+  background: linear-gradient(-90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
+  background-size: 400% 400%;
+  animation: shimmer 1.5s infinite;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.skeleton-line {
+  height: 14px;
+  background-color: #d8d8d8;
+  border-radius: 7px;
+  margin-bottom: 10px;
+}
+
+.skeleton-line.short {
+  width: 40%;
+}
+
+.skeleton-line.medium {
+  width: 70%;
+}
+
+.skeleton-line.long {
+  width: 90%;
+}
+
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #d8d8d8;
+  margin-bottom: 15px;
+}
+
+.skeleton-stars {
+  width: 100px;
+  height: 16px;
+  background-color: #d8d8d8;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.skeleton-badge {
+  width: 60px;      /* Ancho aproximado del badge */
+  height: 20px;     /* Alto aproximado del badge */
+  border-radius: 12px;
+  background-color: #d8d8d8;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
