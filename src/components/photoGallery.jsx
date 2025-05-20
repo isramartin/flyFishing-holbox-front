@@ -9,23 +9,28 @@ const PhotoGallery = () => {
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
   const isScrolling = useRef(false);
+  const [skeletonHeights, setSkeletonHeights] = useState([]);
 
-  // Obtener datos de la API
+
   useEffect(() => {
-    const fetchPhotos = async () => {
-      try {
-        setLoading(true);
-        const data = await getAllGaleria();
-        setPhotos(data);
-      } catch (error) {
-        console.error("Error fetching photos:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchPhotos = async () => {
+    try {
+      setLoading(true);
+      setSkeletonHeights(Array.from({ length: 12 }, () =>
+        Math.floor(Math.random() * 150) + 200 // alturas entre 200 y 350px
+      ));
+      const data = await getAllGaleria();
+      setPhotos(data);
+    } catch (error) {
+      console.error("Error fetching photos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchPhotos();
-  }, []);
+  fetchPhotos();
+}, []);
+
 
   const handleImageClick = (index, e) => {
     e.stopPropagation();
@@ -35,11 +40,11 @@ const PhotoGallery = () => {
 
   const centerThumbnail = (index) => {
     if (!containerRef.current || isScrolling.current || photos.length === 0) return;
-    
+
     isScrolling.current = true;
     const container = containerRef.current;
     const thumb = container.children[index];
-    
+
     if (!thumb) return;
 
     const containerWidth = container.offsetWidth;
@@ -66,21 +71,50 @@ const PhotoGallery = () => {
   };
 
   const handleNext = () => {
-    setActiveIndex(prev => {
-      const nextIndex = prev === photos.length - 1 ? 0 : prev + 1;
-      return nextIndex;
-    });
+    setActiveIndex((prev) => (prev === photos.length - 1 ? 0 : prev + 1));
   };
 
   const handlePrev = () => {
-    setActiveIndex(prev => {
-      const prevIndex = prev === 0 ? photos.length - 1 : prev - 1;
-      return prevIndex;
-    });
+    setActiveIndex((prev) => (prev === 0 ? photos.length - 1 : prev - 1));
   };
 
-  if (loading) return <div className="loading">Cargando fotos...</div>;
-  if (photos.length === 0) return <div className="empty">No hay fotos disponibles</div>;
+  if (loading) {
+    return (
+      <div className="gallery-container">
+        <div className="gallery-masonry">
+          {Array.from({ length: 8 }).map((_, i) => {
+            // Generamos alturas aleatorias para simular el layout masonry
+            const randomHeight = Math.floor(Math.random() * 200) + 200; // Entre 200px y 400px
+            
+            return (
+              <div className="gallery-item skeleton-item" key={i}>
+                <div 
+                  className="skeleton-image" 
+                  style={{ height: `${randomHeight}px` }}
+                />
+                <div className="skeleton-overlay">
+                  <div className="skeleton-actions">
+                    <div className="skeleton-button" />
+                    <div className="skeleton-button" />
+                    <div className="skeleton-button" />
+                  </div>
+                  <div className="skeleton-info">
+                    <div className="skeleton-title" />
+                    <div className="skeleton-description" />
+                    <div className="skeleton-location" />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  if (photos.length === 0) {
+    return <div className="empty">No hay fotos disponibles</div>;
+  }
 
   return (
     <div className="gallery-container">

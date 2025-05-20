@@ -229,32 +229,26 @@
   .gallery-masonry {
     column-count: 3;
   }
-
- 
 }
 
 @media (max-width: 768px) {
-
   .arrow-left,
   .arrow-right {
     font-size: 24px;
-    top: 18vh ;
+    top: 18vh;
   }
 
   .arrow-left {
     left: -4vh;
   }
-  
+
   .arrow-right {
     left: 40vh;
   }
 
-
-  
-.gallery-modal-overlay {
-  overflow: hidden; /* Previene scroll no deseado */
-}
-
+  .gallery-modal-overlay {
+    overflow: hidden; /* Previene scroll no deseado */
+  }
 }
 
 @media (max-width: 480px) {
@@ -265,7 +259,6 @@
   .arrow-left,
   .arrow-right {
     font-size: 20px;
-   
   }
 
   .thumbnail {
@@ -276,5 +269,134 @@
   .thumbnail-container {
     padding: 10px calc(100% - 70px);
   }
-  
+}
+
+/* Skeleton styles */
+/* Skeleton Loading - Versión Grande */
+.skeleton-item {
+  position: relative;
+  width: 100%;
+  margin-bottom: 45px; /* Más espacio entre elementos */
+  border-radius: 12px; /* Bordes más redondeados */
+  background-color: #f0f0f0;
+  animation: pulse 1.5s infinite ease-in-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+  overflow: hidden;
+  border: 1px solid #e0e0e0; /* Borde sutil */
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 380px; /* Altura aumentada */
+  background-color: #e0e0e0;
+  border-radius: 12px 12px 0 0;
+}
+
+.skeleton-overlay {
+  padding: 25px; /* Más padding */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 15px; /* Más separación */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.skeleton-actions {
+  position: absolute;
+  top: 20px; /* Más abajo */
+  right: 20px; /* Más a la izquierda */
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Más separación */
+}
+
+.skeleton-button {
+  width: 42px; /* Botones más grandes */
+  height: 42px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.skeleton-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Más separación */
+  margin-top: 35px; /* Más margen superior */
+}
+
+.skeleton-title,
+.skeleton-description,
+.skeleton-location {
+  height: 18px; /* Más altos */
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px; /* Más redondeados */
+}
+
+.skeleton-title {
+  width: 80%; /* Más anchos */
+  height: 24px; /* Más alto */
+}
+
+.skeleton-description {
+  width: 100%; /* Ocupa todo el ancho */
+  height: 16px;
+}
+
+.skeleton-location {
+  width: 60%;
+  height: 16px;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #f0f0f0;
+    opacity: 0.95;
+  }
+  50% {
+    background-color: #e8e8e8; /* Contraste más marcado */
+    opacity: 1;
+  }
+  100% {
+    background-color: #f0f0f0;
+    opacity: 0.95;
+  }
+}
+
+/* Efecto de brillo mejorado */
+.skeleton-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+  animation: shimmer 2.5s infinite;
+  z-index: 1;
+}
+
+/* Animación del shimmer más lenta */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-150%);
+  }
+  100% {
+    transform: translateX(150%);
+  }
+}
+
+/* Texto con variación de ancho para más realismo */
+.skeleton-description:nth-child(odd) {
+  width: 95%;
+}
+.skeleton-description:nth-child(even) {
+  width: 85%;
 }

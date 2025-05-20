@@ -1,0 +1,31 @@
+.skeleton-box {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 12px;
+}
+
+.skeleton-inner {
+  pointer-events: none;
+}
+
+.skeleton-front .image-container {
+  height: 250px;
+  border-radius: 12px 12px 0 0;
+}
+
+.skeleton-title {
+  height: 50px;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
