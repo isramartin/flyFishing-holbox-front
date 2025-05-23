@@ -52,30 +52,38 @@ export const AuthProvider = ({ children }) => {
 
   // Login con Google
   const loginWithGoogle = async () => {
+  try {
+    setAuthData({ loading: true, error: null });
+    
+    // Verificar si los popups están bloqueados
+    if (window.innerWidth <= 768) { // Dispositivos móviles
+      const isPopupBlocked = window.open('', '_blank') === null;
+      if (isPopupBlocked) {
+        throw new Error(
+          'Los popups están bloqueados. Por favor, habilita los popups para este sitio.'
+        );
+      }
+    }
+
+    // Opción 1: Intentar con popup primero
     try {
-      setAuthData({ loading: true, error: null });
-      
-      // 1. Autenticar con Firebase
       const result = await signInWithPopup(auth, new GoogleAuthProvider());
       const user = result.user;
       const token = await user.getIdToken();
       
-      // 2. Autenticar con tu backend
-      const userData = await apiLoginWithGoogle(token);
-      const backendToken = userData.token; // Token de tu backend
-      const role = decodeToken(backendToken);
+      const response = await apiLoginWithGoogle(token);
       
       setAuthData({
         isAuthenticated: true,
-        user: userData,
-        role,
+        user: response.user,
+        userRole: response.user.rol,
         loading: false
       });
 
       localStorage.setItem('auth', JSON.stringify({ 
-        user: userData,
-        role,
-        token: backendToken,
+        user: response.user,
+        userRole: response.user.rol,
+        token: response.token,
         firebaseUser: {
           uid: user.uid,
           email: user.email,
@@ -83,12 +91,29 @@ export const AuthProvider = ({ children }) => {
         }
       }));
       
-      return { ...userData, role };
-    } catch (error) {
-      setAuthData({ error: error.message, loading: false });
-      throw error;
+      return response;
+    } catch (popupError) {
+      // Si falla el popup, intentar con redirección
+      if (popupError.code === 'auth/popup-blocked' || popupError.code === 'auth/popup-closed-by-user') {
+        console.log('Popup bloqueado, intentando con redirección...');
+        const provider = new GoogleAuthProvider();
+        await signInWithRedirect(auth, provider);
+        // El resultado se manejará en el onAuthStateChanged
+        return { pendingRedirect: true };
+      }
+      throw popupError;
     }
-  };
+  } catch (error) {
+    let errorMessage = 'Error al iniciar sesión con Google';
+    if (error.code === 'auth/popup-blocked') {
+      errorMessage = 'El navegador bloqueó la ventana emergente. Por favor, permite popups para este sitio.';
+    } else if (error.code === 'auth/popup-closed-by-user') {
+      errorMessage = 'Cerraste la ventana de autenticación demasiado pronto.';
+    }
+    setAuthData({ error: errorMessage, loading: false });
+    throw error;
+  }
+};
 
   // Logout
   const logout = useCallback(async () => {
