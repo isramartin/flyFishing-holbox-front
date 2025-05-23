@@ -1,34 +1,68 @@
-import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Importa useNavigate
-import "../styles/login.css"; // Archivo CSS personalizado
-import { AuthContext } from "../context/AuthContext"; // Importa el contexto
-import mockData from "../assets/mockdata/mockdata.json"; // Importa el JSON directamente
-import { Mail, KeyRound, Eye, EyeOff  } from "lucide-react";
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/login.css";
+import { AuthContext } from "../context/AuthContext";
+import { Mail, KeyRound, Eye, EyeOff } from "lucide-react";
+import { auth, googleProvider } from "../firebase/firebase.config";
+import logoGoogle from "../assets/logoGoogle.svg";
+import { signInWithPopup } from "firebase/auth";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login: authLogin } = useContext(AuthContext); // Usa la función login del contexto
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate(); // Hook para redireccionar
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
+  const { isAuthenticated, login, loginWithGoogle, loading: authLoading, error: authError } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  // Sincronizar errores del contexto
+  useEffect(() => {
+    if (authError) {
+      setError(authError);
+    }
+  }, [authError]);
+
+  // Redirección cuando está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/home");
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    // Buscar el usuario en el JSON
-    const user = mockData.users.find(
-      (user) => user.email === email && user.password === password
-    );
+    try {
+      await login(email, password);
+    } catch (error) {
+      // El error ya está manejado en el AuthContext
+      console.error("Login error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    if (user) {
-      console.log("Usuario encontrado:", user); // Debug: Verificar que se encontró el usuario
-      authLogin(user.role); // Llama a la función login del contexto
-      setError(""); // Limpiar el mensaje de error
-      navigate("/admin/reservaciones"); // Redirigir a /admin/reservaciones
-    } else {
-      console.log("Credenciales incorrectas"); // Debug: Verificar que las credenciales son incorrectas
-      setError("Correo electrónico o contraseña incorrectos");
+  const handleGoogleSignIn = async () => {
+    try {
+      setGoogleLoading(true);
+      setError("");
+      
+      // Autenticación con Google via Firebase
+      const result = await signInWithPopup(auth, googleProvider);
+      
+      // Pasar el usuario de Firebase al contexto
+      await loginWithGoogle(result.user);
+      
+    } catch (error) {
+      console.error("Google Sign-In error:", error);
+      setError(error.message || "Error al iniciar con Google");
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -37,12 +71,14 @@ const LoginForm = () => {
       <div className="login-card">
         <h2 className="login-title">Iniciar Sesión</h2>
         <p className="forgot-password">
-  ¿No tienes una cuenta? <Link to="/register">Regístrate aquí</Link>
-</p>
+          ¿No tienes una cuenta? <Link to="/register">Regístrate aquí</Link>
+        </p>
+        
         <form className="login-form" onSubmit={handleSubmit}>
           {/* Campo de Email */}
           <div className="form-group">
-            <label htmlFor="email" className="form-label"> <Mail className='icon-style' />
+            <label htmlFor="email" className="form-label">
+              <Mail className="icon-style" />
               Correo Electrónico
             </label>
             <input
@@ -53,45 +89,67 @@ const LoginForm = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading || googleLoading || authLoading}
             />
           </div>
 
           {/* Campo de Contraseña */}
           <div className="form-group">
-            <label htmlFor="password" className="form-label"> <KeyRound className='icon-style'/>
+            <label htmlFor="password" className="form-label">
+              <KeyRound className="icon-style" />
               Contraseña
             </label>
             <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                className="form-control"
-                placeholder="Ingresa tu contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="password-toggle-button"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
+              type={showPassword ? "text" : "password"}
+              id="password"
+              className="form-control"
+              placeholder="Ingresa tu contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading || googleLoading || authLoading}
+            />
+            <button
+              type="button"
+              className="password-toggle-button"
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={loading || googleLoading || authLoading}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
 
-          {/* Mostrar mensaje de error si existe */}
           {error && <p className="error-message">{error}</p>}
 
-          {/* Botón de Iniciar Sesión */}
-          <button type="submit" className="btn btn-primary login-button">
-            Iniciar Sesión
+          <button 
+            type="submit" 
+            className="btn btn-primary login-button"
+            disabled={loading || googleLoading || authLoading}
+          >
+            {loading || authLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </button>
 
-          {/* Enlace para recuperar contraseña */}
+          <div className="divider">
+            <span className="divider-line"></span>
+            <span className="divider-text">o</span>
+            <span className="divider-line"></span>
+          </div>
+
+          <button 
+            type="button"
+            onClick={handleGoogleSignIn}
+            className="btn-google"
+            disabled={loading || googleLoading || authLoading}
+          >
+            <div className="google-btn-content">
+              <img src={logoGoogle} alt="Google" className="google-icon" />
+              <span>{googleLoading ? "Procesando..." : "Continuar con Google"}</span>
+            </div>
+          </button>
+
           <p className="forgot-password">
             ¿Olvidaste tu contraseña? <a href="/recover">Recupérala aquí</a>
           </p>
-          
         </form>
       </div>
     </div>

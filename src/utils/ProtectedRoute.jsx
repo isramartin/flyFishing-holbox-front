@@ -1,21 +1,26 @@
-// components/ProtectedRoute.jsx
 import React, { useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children, requiredRole }) => {
-  const { isAuthenticated, userRole } = useContext(AuthContext);
+  const { isAuthenticated, role, loading } = useContext(AuthContext);
+  const location = useLocation();
 
-  // Verifica si el usuario está autenticado y tiene el rol requerido
+  if (loading) {
+    return <div className="loading-screen">Cargando...</div>; // Muestra un loader mientras verifica
+  }
+
   if (!isAuthenticated) {
-    return <Navigate to="/login" />; // Redirige al login si no está autenticado
+    // Guarda la ubicación a la que intentaban acceder para redirigir después del login
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (requiredRole && userRole !== requiredRole) {
-    return <Navigate to="/home" />; // Redirige a la página principal si no tiene el rol requerido
+  if (requiredRole && role !== requiredRole) {
+    // Usuario autenticado pero sin permisos
+    return <Navigate to="/unauthorized" replace />;
   }
 
-  return children; // Renderiza el componente si el usuario está autenticado y tiene el rol correcto
+  return children;
 };
 
 export default ProtectedRoute;

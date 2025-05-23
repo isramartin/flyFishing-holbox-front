@@ -1,77 +1,87 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { NavLink,Link, useLocation, useNavigate} from 'react-router-dom'; // Importa useLocation
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import Image1 from '../assets/image/logo.png'
+import Image1 from '../assets/image/logo.png';
 import '../styles/menu.css';
 
 const Menu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const location = useLocation(); // Obtén la ubicación actual
-  const navigate = useNavigate(); // Para redirigir
-  const { isAuthenticated, userRole, logout } = useContext(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, role, logout, loading: authLoading } = useContext(AuthContext);
 
   const handleToggle = () => {
     if (menuOpen) {
-      setIsClosing(true);
-      setTimeout(() => {
-        setMenuOpen(false);
-        setIsClosing(false);
-      }, 300);
+      closeMenu();
     } else {
       setMenuOpen(true);
     }
   };
 
-  const handleLogout = () => {
-    console.log("Rol del usuario al cerrar sesión:", userRole);
-    logout();
-
+  const closeMenu = () => {
+    setIsClosing(true);
     setTimeout(() => {
-      if (userRole === 'admin') {
-        console.log("Redirigiendo a /login");
-        navigate('/login');
-      } else if (userRole === 'user') {
-        console.log("Redirigiendo a /home");
-        navigate('/home');
-      } else {
-        console.log("Redirigiendo a /home por defecto");
+      setMenuOpen(false);
+      setIsClosing(false);
+    }, 300);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Error en logout:', error);
+    }
+  };
+
+  // Redirección basada en el rol
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      const currentPath = location.pathname;
+      const normalizedRole = role?.toUpperCase();
+      
+      // Si es ADMIN y no está en una ruta de admin, redirigir a /admin/reservaciones
+      if (normalizedRole === 'ADMIN' && !currentPath.startsWith('/admin')) {
+        navigate('/admin/reservaciones');
+      }
+      // Si es USER y está en una ruta de admin, redirigir a /home
+      else if (normalizedRole === 'USER' && currentPath.startsWith('/admin')) {
         navigate('/home');
       }
-    }, 100);
-  };
+      // Si no está autenticado y está en una ruta de admin, redirigir a /home
+      else if (!isAuthenticated && currentPath.startsWith('/admin')) {
+        navigate('/home');
+      }
+    }
+  }, [isAuthenticated, role, authLoading, navigate, location]);
 
   useEffect(() => {
     if (menuOpen) {
-      setIsClosing(true);
-      setTimeout(() => {
-        setMenuOpen(false);
-        setIsClosing(false);
-      }, 300);
+      closeMenu();
     }
   }, [location]);
 
   const menuItems = [
-   
-    { path: '/home', label: 'Home', roles: ['user', 'guest'] },
-    { path: '/pesca', label: 'Pesca', roles: ['user','guest'] },
-    { path: '/reservaciones', label: 'Reservaciones', roles: [ 'user','guest'] },
-    { path: '/galerias', label: 'Galerías', roles: [ 'user','guest'] },
-    { path: '/reseña', label: 'Reseñas', roles: ['user','guest'] },
-    { path: '/login', label: 'Login', roles: ['guest'] },
-    { path: '/register', label: 'Registro', roles: ['guest'] },
-    { path: '/prueba', label: 'Prueba', roles: ['guest'] },
+    { path: '/home', label: 'Home', roles: ['USER', 'GUEST'] },
+    { path: '/pesca', label: 'Pesca', roles: ['USER', 'GUEST'] },
+    { path: '/reservaciones', label: 'Reservaciones', roles: ['USER', 'GUEST'] },
+    { path: '/galerias', label: 'Galerías', roles: ['USER', 'GUEST'] },
+    { path: '/reseña', label: 'Reseñas', roles: ['USER', 'GUEST'] },
+    { path: '/login', label: 'Login', roles: ['GUEST'] },
+    { path: '/register', label: 'Registro', roles: ['GUEST'] },
+    { path: '/prueba', label: 'Prueba', roles: ['GUEST'] },
+
     
-    { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['admin'] },
-    { path: '/admin/imageUploadGallery', label: 'Upload Gallery', roles: ['admin'] },
+    { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['ADMIN'] },
+    { path: '/admin/imageUploadGallery', label: 'Upload Gallery', roles: ['ADMIN'] },
   ];
 
-  // Filtra las opciones del menú según el rol del usuario
   const filteredMenuItems = menuItems.filter(item => {
     if (!isAuthenticated) {
-      return item.roles.includes('guest') && item.path !== '/register';
+      return item.roles.includes('GUEST');
     }
-    return item.roles.includes(userRole);
+    return item.roles.includes(role?.toUpperCase());
   });
 
   return (
@@ -91,7 +101,7 @@ const Menu = () => {
 
         <div className="ms-3">
           <NavLink className="navbar-brand" to="/home">
-            <img className='logo' src={Image1} alt="" />
+            <img className='logo' src={Image1} alt="Logo" />
           </NavLink>
         </div>
 
@@ -104,26 +114,31 @@ const Menu = () => {
               <li className="nav-item" key={index}>
                 <NavLink
                   to={item.path}
-                  onClick={() => setMenuOpen(false)}
+                  onClick={closeMenu}
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
+                  end
                 >
                   {item.label}
                 </NavLink>
               </li>
             ))}
           </ul>
-          <ul className="closse-session">
-            {isAuthenticated && (
-              <button
-                className="nav-link btn btn-link"
-                onClick={handleLogout}
-              >
-                Cerrar Sesión
-              </button>
-            )}
-          </ul>
+          
+          {isAuthenticated && (
+            <ul className="closse-session">
+              <li className="nav-item">
+                <button
+                  className="nav-link btn btn-link"
+                  onClick={handleLogout}
+                  disabled={authLoading}
+                >
+                  {authLoading ? 'Saliendo...' : 'Cerrar Sesión'}
+                </button>
+              </li>
+            </ul>
+          )}
         </div>
       </div>
     </nav>

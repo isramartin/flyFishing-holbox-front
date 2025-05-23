@@ -20,6 +20,12 @@
         "password": "password789",
         "name": "Carlos López",
         "role": "user"
-      }
+      },
+       {
+        "id": 3,
+        "email": "isramartin157@gmail.com",
+        "role": "user",
+        "isGoogleUser": true
+    }
     ]
   }

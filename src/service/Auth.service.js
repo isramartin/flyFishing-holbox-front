@@ -1,20 +1,55 @@
-// src/service/Auth.service.js
-import mockData from "../assets/mockdata/mockdata.json";
+const API_URL = import.meta.env.VITE_API_URL;
 
-export const login = async (email, password) => {
-  return new Promise((resolve, reject) => {
-    // Simular un retraso de red (opcional)
-    setTimeout(() => {
-      // Buscar el usuario en el JSON
-      const user = mockData.users.find(
-        (user) => user.email === email && user.password === password
-      );
+export const loginWithEmail = async (email, password) => {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/loginEmail`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password
+      }),
+    });
 
-      if (user) {
-        resolve(user); // Devuelve el usuario si las credenciales son correctas
-      } else {
-        reject("Correo electrónico o contraseña incorrectos");
-      }
-    }, 1000); // Simula un retraso de 1 segundo (como una solicitud HTTP real)
-  });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error en el inicio de sesión");
+    }
+
+    const data = await response.json();
+    console.log("data", data);
+    
+    return data;
+  } catch (error) {
+    console.error("Error en loginWithEmail:", error);
+    throw error;
+  }
+};
+
+export const loginWithGoogle = async (googleToken) => {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/google`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        token: googleToken
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error en el inicio de sesión con Google");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error en loginWithGoogle:", error);
+    throw error;
+  }
 };
