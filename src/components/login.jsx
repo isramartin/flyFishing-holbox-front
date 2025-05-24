@@ -70,7 +70,7 @@ const LoginForm = () => {
         <p className="forgot-password">
           ¿No tienes una cuenta? <Link to="/register">Regístrate aquí</Link>
         </p>
-        
+
         <form className="login-form" onSubmit={handleSubmit}>
           {/* Campo de Email */}
           <div className="form-group">
@@ -111,15 +111,22 @@ const LoginForm = () => {
               className="password-toggle-button"
               onClick={() => setShowPassword(!showPassword)}
               disabled={loading || googleLoading || authLoading}
+              aria-label={
+                showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+              }
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? (
+                <EyeOff size={18} className="password-toggle-icon" />
+              ) : (
+                <Eye size={18} className="password-toggle-icon" />
+              )}
             </button>
           </div>
 
           {error && <p className="error-message">{error}</p>}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="btn btn-primary login-button"
             disabled={loading || googleLoading || authLoading}
           >
@@ -132,7 +139,7 @@ const LoginForm = () => {
             <span className="divider-line"></span>
           </div>
 
-          <button 
+          <button
             type="button"
             onClick={handleGoogleSignIn}
             className="btn-google"
@@ -140,7 +147,9 @@ const LoginForm = () => {
           >
             <div className="google-btn-content">
               <img src={logoGoogle} alt="Google" className="google-icon" />
-              <span>{googleLoading ? "Procesando..." : "Continuar con Google"}</span>
+              <span>
+                {googleLoading ? "Procesando..." : "Continuar con Google"}
+              </span>
             </div>
           </button>
 

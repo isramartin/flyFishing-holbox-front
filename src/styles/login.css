@@ -85,9 +85,10 @@
 
 .password-toggle-button {
   position: absolute;
-  left: 116.5vh;
-  top: 54%;
-  transform: translateY(-30%);
+ 
+  top: 48%;
+  transform: translateY(-50%);
+  transform: translateX(1300%);
   background: none;
   border: none;
   cursor: pointer;
@@ -99,8 +100,8 @@
   justify-content: center;
   width: 24px;
   height: 24px;
+  z-index: 2; /* Asegura que esté sobre el campo de entrada */
 }
-
 
 /* Estilos para el botón de Google */
 .btn-google {
@@ -190,4 +191,31 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.password-input-container {
+  position: relative;
+  width: 100%; /* Asegura que el contenedor ocupe todo el ancho disponible */
+}
+
+/* Ajustes para el input */
+.password-input-container input {
+  padding-right: 40px; /* Espacio para el botón */
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .password-toggle-button {
+    right: 610px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .password-toggle-button {
+    right: 610px;
+    width: 18px;
+    height: 18px;
+  }
 }
