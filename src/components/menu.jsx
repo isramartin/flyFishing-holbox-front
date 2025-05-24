@@ -2,14 +2,16 @@ import React, { useState, useEffect, useContext } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import Image1 from '../assets/image/logo.png';
+import { ChevronDown, User, LogOut } from 'lucide-react';
 import '../styles/menu.css';
 
 const Menu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, role, logout, loading: authLoading } = useContext(AuthContext);
+  const { isAuthenticated, role, logout, loading: authLoading, user } = useContext(AuthContext);
 
   const handleToggle = () => {
     if (menuOpen) {
@@ -27,9 +29,14 @@ const Menu = () => {
     }, 300);
   };
 
+  const toggleUserDropdown = () => {
+    setUserDropdownOpen(!userDropdownOpen);
+  };
+
   const handleLogout = async () => {
     try {
       await logout();
+      setUserDropdownOpen(false);
     } catch (error) {
       console.error('Error en logout:', error);
     }
@@ -41,15 +48,12 @@ const Menu = () => {
       const currentPath = location.pathname;
       const normalizedRole = role?.toUpperCase();
       
-      // Si es ADMIN y no está en una ruta de admin, redirigir a /admin/reservaciones
       if (normalizedRole === 'ADMIN' && !currentPath.startsWith('/admin')) {
         navigate('/admin/reservaciones');
       }
-      // Si es USER y está en una ruta de admin, redirigir a /home
       else if (normalizedRole === 'USER' && currentPath.startsWith('/admin')) {
         navigate('/home');
       }
-      // Si no está autenticado y está en una ruta de admin, redirigir a /home
       else if (!isAuthenticated && currentPath.startsWith('/admin')) {
         navigate('/home');
       }
@@ -70,9 +74,7 @@ const Menu = () => {
     { path: '/reseña', label: 'Reseñas', roles: ['USER', 'GUEST'] },
     { path: '/login', label: 'Login', roles: ['GUEST'] },
     { path: '/register', label: 'Registro', roles: ['GUEST'] },
-    { path: '/prueba', label: 'Prueba', roles: ['GUEST'] },
-
-    
+    // { path: '/prueba', label: 'Prueba', roles: ['GUEST'] },
     { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['ADMIN'] },
     { path: '/admin/imageUploadGallery', label: 'Upload Gallery', roles: ['ADMIN'] },
   ];
@@ -101,15 +103,17 @@ const Menu = () => {
 
         <div className="ms-3">
           <NavLink className="navbar-brand" to="/home">
-            <img className='logo' src={Image1} alt="Logo" />
+            <img className="logo" src={Image1} alt="Logo" />
           </NavLink>
         </div>
 
         <div
-          className={`collapse navbar-collapse ${menuOpen ? "show" : ""} ${isClosing ? "closing" : ""}`}
+          className={`collapse navbar-collapse ${menuOpen ? "show" : ""} ${
+            isClosing ? "closing" : ""
+          }`}
           id="navbarNav"
         >
-          <ul className="navbar-nav">
+          <ul className="navbar-nav me-auto">
             {filteredMenuItems.map((item, index) => (
               <li className="nav-item" key={index}>
                 <NavLink
@@ -125,19 +129,49 @@ const Menu = () => {
               </li>
             ))}
           </ul>
-          
+
           {isAuthenticated && (
-            <ul className="closse-session">
-              <li className="nav-item">
-                <button
-                  className="nav-link btn btn-link"
-                  onClick={handleLogout}
-                  disabled={authLoading}
-                >
-                  {authLoading ? 'Saliendo...' : 'Cerrar Sesión'}
-                </button>
-              </li>
-            </ul>
+            <div className="user-dropdown-container">
+              <button
+                className="user-menu-toggle"
+                onClick={toggleUserDropdown}
+                aria-expanded={userDropdownOpen}
+              >
+                <span className="user-name">
+                    {user?.user?.nombre || user?.nombre || user?.email?.split('@')[0]}
+                </span>
+                <ChevronDown
+                  size={16}
+                  className={`dropdown-icon ${
+                    userDropdownOpen ? "rotate" : ""
+                  }`}
+                />
+              </button>
+
+              {userDropdownOpen && (
+                <div className="user-dropdown-menu">
+                  <NavLink
+                    to="/perfil"
+                    className="dropdown-item"
+                    onClick={() => {
+                      closeMenu();
+                      setUserDropdownOpen(false);
+                    }}
+                  >
+                    <User size={16} className="me-2" />
+                    Mi Perfil
+                  </NavLink>
+                  <button
+                    className="dropdown-item"
+                    onClick={handleLogout}
+                    disabled={authLoading}
+                  >
+                    <LogOut size={16} className="me-2" />
+                    {authLoading ? "Saliendo..." : "Cerrar Sesión"}
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
