@@ -30,6 +30,39 @@ export const loginWithEmail = async (email, password) => {
   }
 };
 
+export const registerWithEmail = async (userData) => {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        email: userData.email,
+        password: userData.password,
+        confirmPassword: userData.confirmPassword,
+        nombre: userData.nombre,
+        edad: userData.edad,
+        sexo: userData.sexo
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error en el registro");
+    }
+
+    const data = await response.json();
+    console.log("Registro exitoso, datos:", data);
+    
+    return data;
+  } catch (error) {
+    console.error("Error en registerWithEmail:", error);
+    throw error;
+  }
+};
+
 export const loginWithGoogle = async (idToken) => {
   try {
     const response = await fetch(`${API_URL}/api/auth/google`, {
