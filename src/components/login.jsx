@@ -48,23 +48,20 @@ const LoginForm = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    try {
-      setGoogleLoading(true);
-      setError("");
-      
-      // Autenticación con Google via Firebase
-      const result = await signInWithPopup(auth, googleProvider);
-      
-      // Pasar el usuario de Firebase al contexto
-      await loginWithGoogle(result.user);
-      
-    } catch (error) {
-      console.error("Google Sign-In error:", error);
-      setError(error.message || "Error al iniciar con Google");
-    } finally {
-      setGoogleLoading(false);
-    }
-  };
+  try {
+    setGoogleLoading(true);
+    setError("");
+    
+    // Solo llamar al método del contexto
+    await loginWithGoogle();
+    
+  } catch (error) {
+    console.error("Google Sign-In error:", error);
+    setError(error.message || "Error al iniciar con Google");
+  } finally {
+    setGoogleLoading(false);
+  }
+};
 
   return (
     <div className="login-container">

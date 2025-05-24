@@ -65,7 +65,7 @@ const AppContent = () => {
         <Route
           path="/admin/imageUploadGallery"
           element={
-            <ProtectedRoute requiredRole="admin">
+            <ProtectedRoute requiredRole="ADMIN">
             <ImageUploadPanel />
           </ProtectedRoute>
           }

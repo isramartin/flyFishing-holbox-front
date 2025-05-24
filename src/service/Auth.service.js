@@ -1,5 +1,6 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
+
 export const loginWithEmail = async (email, password) => {
   try {
     const response = await fetch(`${API_URL}/api/auth/loginEmail`, {
@@ -29,27 +30,25 @@ export const loginWithEmail = async (email, password) => {
   }
 };
 
-export const loginWithGoogle = async (googleToken) => {
+export const loginWithGoogle = async (idToken) => {
   try {
     const response = await fetch(`${API_URL}/api/auth/google`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${idToken}`
       },
-      body: JSON.stringify({
-        token: googleToken
-      }),
+      body: JSON.stringify({ idToken })
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || "Error en el inicio de sesión con Google");
+      throw new Error(errorData.message || 'Error en autenticación con Google');
     }
 
-    return await response.json();
+    return await response.json(); // Retorna los datos del backend (ej: { user, token })
   } catch (error) {
-    console.error("Error en loginWithGoogle:", error);
+    console.error("Error en loginWithGoogle (service):", error);
     throw error;
   }
 };
