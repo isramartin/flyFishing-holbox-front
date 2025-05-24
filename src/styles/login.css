@@ -83,9 +83,47 @@
   text-decoration: underline;
 }
 
+.password-toggle {
+  position: absolute;
+  top: 36%;
+  transform: translateY(-50%);
+  transform: translateX(1300%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #005184;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  z-index: 2; /* Asegura que esté sobre el campo de entrada */
+}
+
+.password-toggleC {
+  position: absolute;
+  top: 46%;
+  transform: translateY(-50%);
+  transform: translateX(1300%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #005184;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  z-index: 2; /* Asegura que esté sobre el campo de entrada */
+}
+
 .password-toggle-button {
   position: absolute;
- 
+
   top: 48%;
   transform: translateY(-50%);
   transform: translateX(1300%);

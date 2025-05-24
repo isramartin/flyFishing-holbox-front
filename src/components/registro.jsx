@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/login.css";
 import { AuthContext } from "../context/AuthContext";
-import { Mail, KeyRound, User } from "lucide-react";
+import { Mail, KeyRound, User,  Eye, EyeOff  } from "lucide-react";
 import { auth, googleProvider } from '../firebase/firebase.config';
 import { signInWithPopup } from 'firebase/auth';
 import { registerWithEmail } from "../service/Auth.service";
@@ -17,6 +17,8 @@ const RegisterForm = () => {
   const [error, setError] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Estado para contraseña principal
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Estado para confirma
     
    const { isAuthenticated, loginWithGoogle, loading: authLoading, error: authError } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -167,7 +169,7 @@ const RegisterForm = () => {
               Contraseña
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               className="form-control"
@@ -176,7 +178,13 @@ const RegisterForm = () => {
               onChange={handleChange}
               required
               minLength={6}
-            />
+            /><button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
           </div>
 
           {/* Campo Confirmar Contraseña */}
@@ -186,7 +194,7 @@ const RegisterForm = () => {
               Confirmar Contraseña
             </label>
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
               name="confirmPassword"
               className="form-control"
@@ -195,7 +203,13 @@ const RegisterForm = () => {
               onChange={handleChange}
               required
               minLength={6}
-            />
+            /> <button
+                type="button"
+                className="password-toggleC"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
           </div>
 
           {/* Campo Edad (opcional) */}
