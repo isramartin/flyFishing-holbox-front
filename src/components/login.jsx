@@ -6,6 +6,7 @@ import { Mail, KeyRound, Eye, EyeOff } from "lucide-react";
 import { auth, googleProvider } from "../firebase/firebase.config";
 import logoGoogle from "../assets/logoGoogle.svg";
 import { signInWithPopup } from "firebase/auth";
+import { useAlert } from "./AlertManager";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+   const { addAlert } = useAlert();
   const { isAuthenticated, login, loginWithGoogle, loading: authLoading, error: authError } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -28,6 +29,7 @@ const LoginForm = () => {
   // Redirección cuando está autenticado
   useEffect(() => {
     if (isAuthenticated) {
+      addAlert("Sesión iniciada correctamente", "success");
       navigate("/home");
     }
   }, [isAuthenticated, navigate]);
@@ -57,6 +59,7 @@ const LoginForm = () => {
     
   } catch (error) {
     console.error("Google Sign-In error:", error);
+     addAlert(error.message || "Error al iniciar con Google", "error");
     setError(error.message || "Error al iniciar con Google");
   } finally {
     setGoogleLoading(false);
@@ -96,34 +99,34 @@ const LoginForm = () => {
               <KeyRound className="icon-style" />
               Contraseña
             </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              className="form-control"
-              placeholder="Ingresa tu contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={loading || googleLoading || authLoading}
-            />
-            <button
-              type="button"
-              className="password-toggle-button"
-              onClick={() => setShowPassword(!showPassword)}
-              disabled={loading || googleLoading || authLoading}
-              aria-label={
-                showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-              }
-            >
-              {showPassword ? (
-                <EyeOff size={18} className="password-toggle-icon" />
-              ) : (
-                <Eye size={18} className="password-toggle-icon" />
-              )}
-            </button>
+            <div className="password-input-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                className="form-control"
+                placeholder="Ingresa tu contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={loading || googleLoading || authLoading}
+              />
+              <button
+                type="button"
+                className="password-toggle-button"
+                onClick={() => setShowPassword(!showPassword)}
+                disabled={loading || googleLoading || authLoading}
+                aria-label={
+                  showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                }
+              >
+                {showPassword ? (
+                  <EyeOff size={18} className="password-toggle-icon" />
+                ) : (
+                  <Eye size={18} className="password-toggle-icon" />
+                )}
+              </button>
+            </div>
           </div>
-
-          {error && <p className="error-message">{error}</p>}
 
           <button
             type="submit"

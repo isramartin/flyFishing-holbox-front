@@ -20,13 +20,16 @@ import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 import RegisterForm from "./components/registro";
 import Review2 from "./components/review";
 import ReservationStep from "./components/reservationStep.jsx";
+import { AlertProvider } from './components/AlertManager';
 
 function App() {
   return (
     <AuthProvider>
+      <AlertProvider>
       <Router>
         <AppContent />
       </Router>
+      </AlertProvider>
     </AuthProvider>
   );
 }
