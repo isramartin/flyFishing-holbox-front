@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import '@fontsource/montserrat';
 import '@fontsource/roboto';
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from "react-router-dom";
+import { HashRouter as Router, Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, AuthContext } from "./context/AuthContext.jsx"; // Importa el contexto
 import Menu from "./components/menu"; // Importamos el menú
 import Home from "./views/home"; // Ya tienes este componente de Home

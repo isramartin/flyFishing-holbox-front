@@ -1,10 +1,11 @@
 {
-  "headers": {
-    "/**": {
-      "X-Test-Header": "static-json-loaded"
-    }
-  },
+  "root": "dist/",
   "routes": {
     "/*": "/index.html"
+  },
+  "headers": {
+    "/**": {
+      "Cache-Control": "no-cache"
+    }
   }
 }
