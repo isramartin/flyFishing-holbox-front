@@ -44,7 +44,7 @@ const AppContent = () => {
   return (
     <div className="App">
       {showMenuAndFooter && <Menu />} {/* Mostrar el menú solo si no estamos en /login */}
-
+<BrowserRouter basename="/">
       <Routes>
       <Route path="/reseña" element={<Review2 />} />
         <Route path="/login" element={<LoginForm />} />
@@ -76,7 +76,7 @@ const AppContent = () => {
 
         <Route path="*" element={<Navigate to="/" />} /> {/* Ruta por defecto */}
       </Routes>
-
+</BrowserRouter>
       {showMenuAndFooter && <Footer />} {/* Mostrar el footer solo si el usuario está autenticado */}
     </div>
   );
