@@ -9,9 +9,15 @@ export default defineConfig({
   server: {
     open: true, // Esto hará que se abra el navegador automáticamente
   },
-  base: "/", // Asegúrate de que esté en '/' si tu app está en la raíz del dominio
+  base: "./", // Asegúrate de que esté en '/' si tu app está en la raíz del dominio
   build: {
     outDir: "dist",
     emptyOutDir: true, // Limpia el directorio de build previo
+    rollupOptions: {
+      output: {
+        assetFileNames: 'assets/[name]-[hash][extname]',
+        entryFileNames: 'assets/[name]-[hash].js'
+      }
+    }
   },
 });
