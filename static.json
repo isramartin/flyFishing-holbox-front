@@ -1,5 +1,12 @@
 {
-    "routes": {
-      "/*": "/index.html"
+  "root": "dist/",
+  "routes": {
+    "/*": "/index.html"
+  },
+  "clean_urls": true,
+  "headers": {
+    "/**": {
+      "Cache-Control": "no-cache, no-store, must-revalidate"
     }
   }
+}
