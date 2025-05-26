@@ -1,18 +1,15 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-
 export default defineConfig({
   plugins: [react()],
   define: {
     "process.env": process.env,
   },
   server: {
-    open: true, // Esto hará que se abra el navegador automáticamente
+    open: true,
   },
-  base: "/", // Asegúrate de que esté en '/' si tu app está en la raíz del dominio
+  base: "/", // <- CORREGIDO
   build: {
     outDir: "dist",
-    emptyOutDir: true, // Limpia el directorio de build previo
+    emptyOutDir: true,
     rollupOptions: {
       output: {
         assetFileNames: 'assets/[name]-[hash][extname]',
