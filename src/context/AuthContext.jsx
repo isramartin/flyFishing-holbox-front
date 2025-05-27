@@ -1,8 +1,7 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
 import { auth } from '../firebase/firebase.config';
-import {getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { loginWithEmail, loginWithGoogle as apiLoginWithGoogle } from '../service/Auth.service';
-
 
 export const AuthContext = createContext();
 
@@ -10,221 +9,198 @@ export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
     isAuthenticated: false,
     user: null,
-    role: null, // Rol específico separado
+    role: null,
     loading: true,
     error: null
   });
 
-  // Función para actualizar el estado
-   const setAuthData = useCallback((data) => {
+  const setAuthData = useCallback((data) => {
     setAuthState(prev => ({ ...prev, ...data }));
   }, []);
-  
-  // Login con email/password
+
+  // Login con email/password (manteniendo tu implementación original)
   const login = async (email, password) => {
-  try {
-    setAuthData({ loading: true, error: null });
-    
-    const userData = await loginWithEmail(email, password);
-    const token = userData.token; // Asume que el token viene en la respuesta
-    const role = userData.user.rol; // Obtiene el rol directamente de userData
-    console.log("rol desde contexto:", role)
+    try {
+      setAuthData({ loading: true, error: null });
+      
+      const userData = await loginWithEmail(email, password);
+      const token = userData.token;
+      const role = userData.user.rol;
 
-    setAuthData({
-      isAuthenticated: true,
-      user: userData,
-      role: role, // Usamos role para mantener consistencia
-      loading: false
-    });
+      const authData = {
+        isAuthenticated: true,
+        user: userData.user,
+        role: userData.user.rol,
+        token: userData.token,
+        firebaseUid: userData.user.uid
+      };
 
-    localStorage.setItem('auth', JSON.stringify({
-      user: userData,
-      role: role,
-      token
-    }));
-    
-    return { ...userData, role };
-  } catch (error) {
-    setAuthData({ error: error.message, loading: false });
-    throw error;
-  }
-};
-
-  // Login con Google
-const loginWithGoogle = async () => {
-  try {
-    setAuthData({ loading: true, error: null });
-    
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
-    
-    // Solo esta llamada a signInWithPopup
-    const result = await signInWithPopup(auth, provider);
-    console.log("Firebase User:", result.user);
-
-    const idToken = await result.user.getIdToken();
-     console.log("Firebase ID Token:", idToken); // ¿Es un string largo?
-    
-    
-    // Enviar token al backend
-    const response = await apiLoginWithGoogle(idToken);
-    console.log("Backend Response:", response);
-
-    setAuthData({
-      isAuthenticated: true,
-      user: response.user,
-      role: response.user.rol,
-      loading: false
-    });
-
-    localStorage.setItem('auth', JSON.stringify({
-      user: response.user,
-      role: response.user.rol,
-      token: response.token,
-      firebaseUser: {
-        uid: result.user.uid,
-        email: result.user.email,
-        displayName: result.user.displayName
-      }
-    }));
-    
-    return response;
-  } catch (error) {
-     console.error("Error completo:", error);
-    setAuthData({ error: error.message, loading: false });
-    throw error;
-  }
-};
-
-// Manejo de login exitoso
-const handleSuccessfulLogin = async (result) => {
-  const user = result.user;
-  const idToken = await user.getIdToken();
-  const response = await apiLoginWithGoogle(idToken);
-
-  setAuthData({
-    isAuthenticated: true,
-    user: response.user,
-    userRole: response.user.rol,
-    loading: false,
-    error: null
-  });
-
-  localStorage.setItem('auth', JSON.stringify({
-    user: response.user,
-    userRole: response.user.rol,
-    token: response.token,
-    firebaseUser: user.providerData[0]
-  }));
-
-  return response;
-};
-
-// Manejo de popups bloqueados
-const handlePopupBlockedError = async (auth, provider) => {
-  // Opción 1: Guiar al usuario para permitir popups
-  const popupInstructions = `
-    Para iniciar sesión, por favor:
-    1. Haz click en el ícono de bloqueo (🔒 o 🚫) en la barra de direcciones
-    2. Selecciona "Permitir ventanas emergentes"
-    3. Vuelve a intentar
-  `;
-
-  // Opción 2: Ofrecer autenticación por redirección como alternativa
-  const useRedirect = window.confirm(
-    `${popupInstructions}\n\n¿Prefieres continuar con redirección?`
-  );
-
-  if (useRedirect) {
-    window.location.href = `https://${auth.config.authDomain}/__/auth/handler?apiKey=${
-      auth.config.apiKey
-    }&authType=signInWithPopup&provider=google.com&redirectUrl=${
-      encodeURIComponent(window.location.href)
-    }`;
-    return { pending: true };
-  }
-
-  throw new Error('popup-blocked');
-};
-
-// Manejo de errores
-const handleAuthError = (error) => {
-  const errorMap = {
-    'auth/popup-blocked': 'Popups bloqueados. Por favor permite ventanas emergentes.',
-    'auth/popup-closed-by-user': 'Ventana cerrada demasiado pronto.',
-    'auth/cancelled-popup-request': 'Solicitud cancelada.',
-    'auth/network-request-failed': 'Error de conexión.'
+      setAuthData(authData);
+      localStorage.setItem('auth', JSON.stringify(authData));
+      
+      return userData;
+    } catch (error) {
+      setAuthData({ error: error.message, loading: false });
+      throw error;
+    }
   };
 
-  setAuthData({
-    error: errorMap[error.code] || 'Error al iniciar sesión',
-    loading: false
-  });
+  // Login con Google (versión corregida pero manteniendo estructura)
+ const loginWithGoogle = async () => {
+  try {
+    setAuthData({ loading: true, error: null });
+    
+    const authInstance = getAuth();
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(authInstance, provider);
+    const firebaseToken = await result.user.getIdToken();
+    
+    console.log('[Auth Debug] Firebase auth successful:', result.user.uid);
+    
+    const backendResponse = await apiLoginWithGoogle(firebaseToken);
+    console.log('[Auth Debug] Backend response:', backendResponse);
+
+    const authData = {
+      isAuthenticated: true,
+      user: {
+        ...backendResponse.user,
+        firebaseUid: result.user.uid,
+        displayName: result.user.displayName,
+        photoURL: result.user.photoURL
+      },
+      role: backendResponse.user.rol,
+      token: backendResponse.token,
+      firebaseToken: firebaseToken,
+      provider: 'google',
+      lastLogin: Date.now()
+    };
+
+    console.log('[Auth Debug] Saving auth data:', authData);
+    setAuthData(authData);
+    localStorage.setItem('auth', JSON.stringify(authData));
+    
+    return backendResponse;
+  } catch (error) {
+    console.error("[Auth Error] Google login failed:", error);
+    setAuthData({ error: error.message, loading: false });
+    throw error;
+  }
 };
 
-  // Logout
+  // Logout (versión mejorada pero manteniendo nombre)
   const logout = useCallback(async () => {
-    try {
-      await signOut(auth);
-      setAuthData({
-        isAuthenticated: false,
-        user: null,
-        role: null,
-        error: null,
-        loading: false
-      });
-      localStorage.removeItem('auth');
-    } catch (error) {
-      setAuthData({ error: error.message });
-      console.error('Logout error:', error);
-    }
-  }, []);
-
-  // Verificar estado al cargar
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      try {
-        if (firebaseUser) {
-          const savedAuth = JSON.parse(localStorage.getItem('auth'));
-          
-          if (savedAuth) {
-            // Verificar si el token sigue siendo válido
-            const currentTime = Date.now() / 1000;
-            const tokenData = jwt_decode(savedAuth.token);
-            
-            if (tokenData.exp < currentTime) {
-              console.log('Token expirado, haciendo logout');
-              await logout();
-              return;
-            }
-
-            setAuthData({
-              isAuthenticated: true,
-              user: savedAuth.user,
-              role: savedAuth.role,
-              loading: false
-            });
-          } else {
-            await logout();
-          }
-        } else {
-          await logout();
-        }
-      } catch (error) {
-        console.error('Error en verificación de estado:', error);
-        await logout();
-        setAuthData({ loading: false, error: error.message });
-      }
+  try {
+    const authInstance = getAuth();
+    await signOut(authInstance);
+    
+    // Limpieza completa
+    localStorage.removeItem('auth');
+    sessionStorage.removeItem('firebaseAuth');
+    
+    setAuthData({
+      isAuthenticated: false,
+      user: null,
+      role: null,
+      error: null,
+      loading: false
     });
+  } catch (error) {
+    console.error('Logout error:', error);
+    // Forzar limpieza en caso de error
+    localStorage.removeItem('auth');
+    setAuthData({
+      isAuthenticated: false,
+      user: null,
+      role: null,
+      error: null,
+      loading: false
+    });
+  }
+}, []);
 
-    return () => unsubscribe();
-  }, [logout]);
+  // Efecto único para manejar estado de autenticación
+ useEffect(() => {
+  let isMounted = true;
+  const authInstance = getAuth();
+
+  const handleAuthState = async (firebaseUser) => {
+    try {
+      const savedAuth = JSON.parse(localStorage.getItem('auth')) || null;
+      
+      // Debug: Verificar estado actual
+      console.log('[Auth Debug] Firebase User:', firebaseUser?.uid);
+      console.log('[Auth Debug] Saved Auth:', savedAuth);
+      
+      if (!savedAuth) {
+        console.log('[Auth Debug] No saved auth - logging out');
+        await logout();
+        return;
+      }
+
+      // Verificación básica del token
+      if (!savedAuth.token || savedAuth.token.split('.').length !== 3) {
+        console.log('[Auth Debug] Invalid token format - logging out');
+        await logout();
+        return;
+      }
+
+      // Caso especial para Google
+      if (savedAuth.provider === 'google') {
+        if (!firebaseUser) {
+          console.log('[Auth Debug] Google auth - attempting reconnect');
+          try {
+            const credential = GoogleAuthProvider.credential(savedAuth.firebaseToken);
+            await signInWithCredential(authInstance, credential);
+            firebaseUser = authInstance.currentUser;
+            console.log('[Auth Debug] Reconnect successful:', firebaseUser?.uid);
+          } catch (error) {
+            console.error('[Auth Error] Google reconnect failed:', error);
+            await logout();
+            return;
+          }
+        }
+
+        // Verificar coincidencia de tokens
+        const currentToken = await firebaseUser.getIdToken();
+        if (currentToken !== savedAuth.firebaseToken) {
+          console.log('[Auth Debug] Token mismatch - logging out');
+          await logout();
+          return;
+        }
+      }
+
+      // Restaurar sesión
+      if (isMounted) {
+        console.log('[Auth Debug] Restoring session for:', savedAuth.user?.email);
+        setAuthData({
+          isAuthenticated: true,
+          user: savedAuth.user,
+          role: savedAuth.role,
+          loading: false
+        });
+      }
+    } catch (error) {
+      console.error('[Auth Error] State change error:', error);
+      if (isMounted) await logout();
+    }
+  };
+
+  const unsubscribe = onAuthStateChanged(authInstance, handleAuthState);
+
+  // Verificación inicial forzada
+  handleAuthState(authInstance.currentUser);
+
+  return () => {
+    isMounted = false;
+    unsubscribe();
+  };
+}, [logout]);
 
   return (
     <AuthContext.Provider value={{
       isAuthenticated: authState.isAuthenticated,
       user: authState.user,
-      role: authState.role, // Proveemos el rol específicamente
+      role: authState.role,
       loading: authState.loading,
       error: authState.error,
       login,
