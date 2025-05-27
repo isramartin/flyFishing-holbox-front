@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
 import { auth } from '../firebase/firebase.config';
-import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, browserLocalPersistence ,signInWithPopup } from 'firebase/auth';
 import { loginWithEmail, loginWithGoogle as apiLoginWithGoogle } from '../service/Auth.service';
 
 export const AuthContext = createContext();
@@ -24,9 +24,7 @@ export const AuthProvider = ({ children }) => {
       setAuthData({ loading: true, error: null });
       
       const userData = await loginWithEmail(email, password);
-      const token = userData.token;
-      const role = userData.user.rol;
-
+  
       const authData = {
         isAuthenticated: true,
         user: userData.user,
@@ -46,46 +44,45 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Login con Google (versión corregida pero manteniendo estructura)
- const loginWithGoogle = async () => {
+const loginWithGoogle = async () => {
   try {
     setAuthData({ loading: true, error: null });
-    
+
     const authInstance = getAuth();
     const provider = new GoogleAuthProvider();
+
+    // 🔥 Asegurar persistencia
+    await authInstance.setPersistence(browserLocalPersistence);
+
     const result = await signInWithPopup(authInstance, provider);
     const firebaseToken = await result.user.getIdToken();
-    
-    console.log('[Auth Debug] Firebase auth successful:', result.user.uid);
-    
+
     const backendResponse = await apiLoginWithGoogle(firebaseToken);
-    console.log('[Auth Debug] Backend response:', backendResponse);
+
+    console.log("token", backendResponse.jwtToken);
+    
 
     const authData = {
       isAuthenticated: true,
       user: {
         ...backendResponse.user,
-        firebaseUid: result.user.uid,
-        displayName: result.user.displayName,
-        photoURL: result.user.photoURL
+        firebaseUid: result.user.uid
       },
       role: backendResponse.user.rol,
-      token: backendResponse.token,
-      firebaseToken: firebaseToken,
-      provider: 'google',
-      lastLogin: Date.now()
+      token: backendResponse.jwtToken,
+      firebaseToken: firebaseToken
     };
 
-    console.log('[Auth Debug] Saving auth data:', authData);
     setAuthData(authData);
     localStorage.setItem('auth', JSON.stringify(authData));
-    
+
     return backendResponse;
   } catch (error) {
-    console.error("[Auth Error] Google login failed:", error);
     setAuthData({ error: error.message, loading: false });
     throw error;
   }
 };
+
 
   // Logout (versión mejorada pero manteniendo nombre)
   const logout = useCallback(async () => {
@@ -118,8 +115,7 @@ export const AuthProvider = ({ children }) => {
   }
 }, []);
 
-  // Efecto único para manejar estado de autenticación
- useEffect(() => {
+  useEffect(() => {
   let isMounted = true;
   const authInstance = getAuth();
 
@@ -127,49 +123,23 @@ export const AuthProvider = ({ children }) => {
     try {
       const savedAuth = JSON.parse(localStorage.getItem('auth')) || null;
       
-      // Debug: Verificar estado actual
       console.log('[Auth Debug] Firebase User:', firebaseUser?.uid);
       console.log('[Auth Debug] Saved Auth:', savedAuth);
       
+      // 1. No hay sesión guardada
       if (!savedAuth) {
-        console.log('[Auth Debug] No saved auth - logging out');
         await logout();
         return;
       }
 
-      // Verificación básica del token
+      // 2. Validar token JWT (para ambos métodos)
       if (!savedAuth.token || savedAuth.token.split('.').length !== 3) {
-        console.log('[Auth Debug] Invalid token format - logging out');
+        console.log('[Auth Debug] Invalid JWT token - logging out');
         await logout();
         return;
       }
 
-      // Caso especial para Google
-      if (savedAuth.provider === 'google') {
-        if (!firebaseUser) {
-          console.log('[Auth Debug] Google auth - attempting reconnect');
-          try {
-            const credential = GoogleAuthProvider.credential(savedAuth.firebaseToken);
-            await signInWithCredential(authInstance, credential);
-            firebaseUser = authInstance.currentUser;
-            console.log('[Auth Debug] Reconnect successful:', firebaseUser?.uid);
-          } catch (error) {
-            console.error('[Auth Error] Google reconnect failed:', error);
-            await logout();
-            return;
-          }
-        }
-
-        // Verificar coincidencia de tokens
-        const currentToken = await firebaseUser.getIdToken();
-        if (currentToken !== savedAuth.firebaseToken) {
-          console.log('[Auth Debug] Token mismatch - logging out');
-          await logout();
-          return;
-        }
-      }
-
-      // Restaurar sesión
+      // 3. Restaurar sesión (sin depender de Firebase para la validación)
       if (isMounted) {
         console.log('[Auth Debug] Restoring session for:', savedAuth.user?.email);
         setAuthData({
@@ -178,6 +148,16 @@ export const AuthProvider = ({ children }) => {
           role: savedAuth.role,
           loading: false
         });
+        
+        // 4. Sincronizar Firebase en segundo plano si es necesario
+        if (!firebaseUser && savedAuth.firebaseToken) {
+          try {
+            await signInWithCustomToken(authInstance, savedAuth.firebaseToken);
+            console.log('[Auth Debug] Firebase session restored in background');
+          } catch (error) {
+            console.log('[Auth Debug] Firebase background sync failed (non-critical)');
+          }
+        }
       }
     } catch (error) {
       console.error('[Auth Error] State change error:', error);
@@ -186,8 +166,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const unsubscribe = onAuthStateChanged(authInstance, handleAuthState);
-
-  // Verificación inicial forzada
   handleAuthState(authInstance.currentUser);
 
   return () => {
