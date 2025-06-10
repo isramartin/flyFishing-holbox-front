@@ -19,8 +19,18 @@ import LoginForm from "./components/login";
 import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 import RegisterForm from "./components/registro";
 import Review2 from "./components/review";
-import ReservationStep from "./components/reservationStep.jsx";
+import {ReservationStep} from "./components/reservationStep.jsx";
 import { AlertProvider } from './components/AlertManager';
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_51QDrXnAH6Ull8Wzh7xQ9CtLmsYdgoFA4dTkRI7PBXp3YNwN3pKa3PY48GnPC4R69IsczthC8pqx4lMigEpdrtsi800YxxkWh8m');
+
+stripePromise.then(stripe => {
+  console.log('Stripe cargado correctamente:', !!stripe);
+}).catch(error => {
+  console.error('Error al cargar Stripe:', error);
+});
 
 function App() {
   return (
@@ -55,7 +65,14 @@ const AppContent = () => {
         <Route path="/prueba" element={<Reservaciones />} />
         <Route path="/reservaciones/reservaForm" element={<ReservacionesForm />} />
         <Route path="/galerias" element={<Gallery />} />
-        <Route path="/reservaciones" element={<ReservationStep />} />
+        <Route 
+          path="/reservaciones" 
+          element={
+            <Elements stripe={stripePromise}>
+              <ReservationStep />
+            </Elements>
+          } 
+        />
         <Route
           path="/admin/reservaciones"
           element={
