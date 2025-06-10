@@ -98,6 +98,10 @@
   background-color: #00c02d;
 }
 
+.step span.failled .step-number {
+  background-color: #c00300;
+}
+
 .step-check {
   color: #ffffff;
   font-size: 19px;
@@ -137,7 +141,15 @@
 }
 
 .step-line.active {
+  background-color: #0078f8;
+}
+
+.step-line.completed {
   background-color: #00c02d;
+}
+
+.step-line.failed {
+  background-color: #c00000;
 }
 
 .tour-details {
@@ -1588,4 +1600,52 @@ input:checked + .toggle-slider:before {
 
 .finish-button:hover {
   background-color: #43a047;
+}
+
+.error-step {
+  text-align: center;
+  padding: 2rem;
+  background-color: #fff0f0;
+  border: 1px solid #f44336;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(244, 67, 54, 0.1);
+  max-width: 500px;
+  margin: 2rem auto;
+}
+
+.error-icon-container {
+  margin-bottom: 1rem;
+}
+
+.error-title {
+  font-size: 1.8rem;
+  color: #f44336;
+  margin-bottom: 0.5rem;
+}
+
+.error-message {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.error-instruction {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.retry-button.modern-button {
+  background-color: #f44336;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.retry-button.modern-button:hover {
+  background-color: #d32f2f;
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
@@ -8,6 +8,7 @@ import {
   Calendar1,
   CalendarCheck,
   Check,
+  X,
   ChevronLeft,
   ChevronRight,
   CircleAlert,
@@ -145,10 +146,18 @@ export const ReservationStep = () => {
     setLocalToken(tokenFromStorage || '');
   }, []);
 
-  // 3. Función para obtener el token activo
-  const getActiveToken = () => {
-    return localToken || contextToken || '';
-  };
+  const location = useLocation();
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const status = params.get('status');
+
+    if (stepNumber === 5 && status) {
+      setReservaState((prev) => ({
+        ...prev,
+        paymentStatus: status === 'succeeded' ? 'succeeded' : 'failed',
+      }));
+    }
+  }, [location.search, stepNumber]);
 
   const items = [
     {
@@ -262,7 +271,7 @@ export const ReservationStep = () => {
           nombreCompleto: data.name,
           email: data.email,
           numeroTelefono: data.phone,
-          precio: 1000 * parseInt(data.guests),
+          precio: 1000,
           equipo: {
             alquilar: data.alquilarEquipo,
             precio: data.alquilarEquipo ? 500 : 0,
@@ -443,38 +452,66 @@ export const ReservationStep = () => {
 
       <div className="steps-container">
         <div className="steps">
-          {steps.map((label, index) => (
-            <div key={index} className="step">
-              <span
-                className={
-                  stepNumber === index + 1
-                    ? 'active'
-                    : stepNumber > index + 1
-                    ? 'completed'
-                    : ''
-                }
-              >
-                <div className="step-number">
-                  {stepNumber === index + 1 ? (
-                    index + 1
-                  ) : stepNumber > index + 1 ? (
-                    <Check className="step-check" />
-                  ) : (
-                    index + 1
-                  )}
-                </div>
-                <div className="step-title">{label}</div>
-              </span>
-            </div>
-          ))}
+          {steps.map((label, index) => {
+            const currentStep = index + 1;
+            const isStepFive = currentStep === 5;
+            const paymentSucceeded = reservaState.paymentStatus === 'succeeded';
+            const paymentFailed = reservaState.paymentStatus === 'failed';
+
+            const isActive = stepNumber === currentStep;
+            const isCompleted = stepNumber > currentStep;
+
+            let stepClass = '';
+            if (isStepFive) {
+              if (paymentSucceeded) stepClass = 'completed';
+              else if (paymentFailed) stepClass = 'failled';
+              else stepClass = isActive ? 'active' : '';
+            } else {
+              if (isActive) stepClass = 'active';
+              else if (isCompleted) stepClass = 'completed';
+            }
+
+            return (
+              <div key={index} className="step">
+                <span className={`step-span ${stepClass}`}>
+                  <div className="step-number">
+                    {isStepFive && paymentSucceeded ? (
+                      <Check className="step-check" />
+                    ) : isStepFive && paymentFailed ? (
+                      <X className="step-check" />
+                    ) : isCompleted ? (
+                      <Check className="step-check" />
+                    ) : (
+                      currentStep
+                    )}
+                  </div>
+                  <div className="step-title">{label}</div>
+                </span>
+              </div>
+            );
+          })}
         </div>
+
         <div className="step-lines">
-          {steps.map((_, index) => (
-            <div
-              key={index}
-              className={`step-line ${stepNumber >= index + 1 ? 'active' : ''}`}
-            ></div>
-          ))}
+          {steps.map((_, index) => {
+            const currentStep = index + 1;
+
+            let lineClass = '';
+            if (currentStep === 5 && reservaState.paymentStatus === 'failed') {
+              lineClass = 'failled';
+            } else if (
+              currentStep === 5 &&
+              reservaState.paymentStatus === 'succeeded'
+            ) {
+              lineClass = 'completed'; // o 'success' si tienes esa clase, pero según tu sistema: 'completed'
+            } else if (stepNumber > currentStep) {
+              lineClass = 'completed';
+            } else if (stepNumber === currentStep) {
+              lineClass = 'active';
+            }
+
+            return <div key={index} className={`step-line ${lineClass}`}></div>;
+          })}
         </div>
       </div>
 
@@ -955,14 +992,79 @@ export const ReservationStep = () => {
 
           {stepNumber === 5 && (
             <div>
-              {reservaState.loading ? (
+              {reservaState.paymentStatus === 'succeeded' ? (
+                // ✅ PAGO EXITOSO
+                <div className="confirmation-step modern-card">
+                  <div className="confirmation-icon success-icon">
+                    <CheckCircle size={64} color="#4CAF50" />
+                  </div>
+                  <h2 className="confirmation-title">
+                    ¡Pago realizado con éxito!
+                  </h2>
+                  <p className="confirmation-subtitle">
+                    Tu reserva ha sido confirmada. Recibirás un correo con los
+                    detalles.
+                  </p>
+                  <div className="confirmation-details">
+                    <h3 className="details-title">Detalles de la reserva:</h3>
+                    <p>
+                      <strong>Fecha:</strong> {data?.date}
+                    </p>
+                    <p>
+                      <strong>Hora:</strong> {data?.time}
+                    </p>
+                    <p>
+                      <strong>Personas:</strong> {data?.guests}
+                    </p>
+                    <p>
+                      <strong>Total pagado:</strong> ${totals.total}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      clearReserva();
+                      navigate('/reservaciones/steps/1');
+                    }}
+                    className="confirmation-button modern-button"
+                  >
+                    Finalizar Proceso de Reserva
+                  </button>
+                </div>
+              ) : reservaState.paymentStatus === 'failed' ? (
+                // ❌ ERROR O CANCELACIÓN
+                <div className="error-step modern-card">
+                  {/* <div className="error-icon-container">
+                    <X size={64} color="#f44336" />
+                  </div> */}
+                  <h2 className="error-title">
+                    Ocurrió un problema con tu pago
+                  </h2>
+                  <p className="error-message">
+                    Tu transacción fue cancelada o falló. No se ha realizado
+                    ningún cargo.
+                  </p>
+                  <p className="error-instruction">
+                    Puedes volver a intentarlo o revisar tu método de pago.
+                  </p>
+                  <button
+                    onClick={() => {
+                      clearReserva();
+                      navigate('/reservaciones/steps/1');
+                    }}
+                    className="retry-button modern-button"
+                  >
+                    Reintentar Reserva
+                  </button>
+                </div>
+              ) : reservaState.loading ? (
+                // 🔄 CARGANDO / REDIRECCIONANDO
                 <div className="loading-state">
                   <Spinner />
                   <p>Cargando pasarela de pago...</p>
                 </div>
               ) : reservaState.sessionUrl ? (
                 (() => {
-                  // Redirige automáticamente a la sesión de Stripe Checkout
+                  // Redirigir manualmente si sessionUrl existe
                   window.location.href = reservaState.sessionUrl;
                   return (
                     <div className="redirecting-state">
@@ -972,6 +1074,7 @@ export const ReservationStep = () => {
                   );
                 })()
               ) : (
+                // ❗ NO SE PUDO INICIALIZAR
                 <div className="error-state">
                   <p>No se pudo inicializar la pasarela de pago</p>
                   {reservaState.error && (
@@ -982,16 +1085,10 @@ export const ReservationStep = () => {
                   </button>
                 </div>
               )}
-
-              {reservaState.error && (
-                <div className="error-message">
-                  <span>{reservaState.error}</span>
-                </div>
-              )}
             </div>
           )}
 
-          {stepNumber === 6 && (
+          {/* {stepNumber === 6 && (
             <div className="confirmation-step modern-card">
               <div className="confirmation-icon success-icon">
                 <CheckCircle size={64} color="#4CAF50" />
@@ -1029,16 +1126,16 @@ export const ReservationStep = () => {
                 Finalizar Proceso de Reserva
               </button>
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="step-buttons">
-          {stepNumber > 1 && stepNumber < 6 && (
+          {stepNumber > 1 && stepNumber < 5 && (
             <button className="prev-button" onClick={prevStep}>
               <ChevronLeft /> Anterior
             </button>
           )}
-          {stepNumber < 6 && (
+          {stepNumber < 5 && (
             <button className="next-button" onClick={nextStep}>
               {' '}
               Siguiente <ChevronRight />
