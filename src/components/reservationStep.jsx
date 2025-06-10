@@ -64,7 +64,7 @@ export const ReservationStep = () => {
   const [authToken, setAuthToken] = useState(null);
   const { isAuthenticated, user, token } = useContext(AuthContext);
   const { token: contextToken } = useContext(AuthContext);
-  const { data, setData } = useReserva();
+  const { data, setData, clearReserva } = useReserva();
   const navigate = useNavigate();
   const [localToken, setLocalToken] = useState('');
 
@@ -94,8 +94,16 @@ export const ReservationStep = () => {
   const calculateTotal = () => {
     const basePrice = 1000;
     const equipmentPrice = data.alquilarEquipo ? 500 : 0;
-    return basePrice + equipmentPrice;
+    const total = basePrice + equipmentPrice;
+
+    return {
+      basePrice,
+      equipmentPrice,
+      total,
+    };
   };
+  const totals = calculateTotal();
+
   // Verificar autenticación al inicio
   useEffect(() => {
     console.log('Estado de autenticación:', isAuthenticated);
@@ -188,14 +196,14 @@ export const ReservationStep = () => {
     },
   ];
 
-  // Manejar la selección del equipo completo
-  const [isPackageSelected, setIsPackageSelected] = useState(false);
-
   // Manejar la selección del paquete completo
-  const handlePackageSelection = () => {
-    setIsPackageSelected(!isPackageSelected);
-    // A
+  const handlePackageSelection = (event) => {
+    setData((prevData) => ({
+      ...prevData,
+      alquilarEquipo: event.target.checked,
+    }));
   };
+
   const updateData = (field, value) => {
     setData((prev) => ({ ...prev, [field]: value }));
   };
@@ -257,7 +265,7 @@ export const ReservationStep = () => {
           precio: 1000 * parseInt(data.guests),
           equipo: {
             alquilar: data.alquilarEquipo,
-            precio: data.alquilarEquipo ? 200 : 0,
+            precio: data.alquilarEquipo ? 500 : 0,
           },
         };
         console.log('📦 Datos preparados para reserva:', reservaData);
@@ -293,12 +301,6 @@ export const ReservationStep = () => {
         console.error('🔥 Error en nextStep:', {
           message: error.message,
           stack: error.stack,
-        });
-
-        setReservaState({
-          loading: false,
-          clientSecret: null,
-          error: error.message || 'Error al procesar la reserva',
         });
 
         // Redirección a login si corresponde
@@ -549,11 +551,6 @@ export const ReservationStep = () => {
                         <option value="2">2 personas</option>
                         <option value="3">3 personas</option>
                       </select>
-                      <p className="price-info">
-                        Precio por persona:{' '}
-                        {data.guests ? (1000 / data.guests).toFixed(2) : '0.00'}{' '}
-                        pesos
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -741,24 +738,6 @@ export const ReservationStep = () => {
                         </div>
                       </div>
 
-                      {/* <div className="price-controls"> */}
-                      {/* {item.price > 0 ? (
-                <strong>{item.price}.00 pesos</strong>
-              ) : (
-                <span className="included-badge">Incluido</span>
-              )} */}
-
-                      {/* <div className="quantity-controls">
-                <button onClick={() => handleDecrease(index)}>
-                  -
-                </button>
-                <span>{quantities[index] || 0}</span>
-                <button onClick={() => handleIncrease(index)}>
-                  +
-                </button>
-              </div> */}
-                      {/* </div> */}
-
                       <p className="max-info">
                         Descripcion de cada elemneto que conforma el paquete dl
                         equipo
@@ -923,21 +902,23 @@ export const ReservationStep = () => {
                   <div className="payment-row">
                     <span className="payment-label">Tour básico</span>
                     <span className="payment-amount">
-                      {calculateTotal.basePrice} pesos
+                      {totals.basePrice} pesos
                     </span>
                   </div>
 
                   {data.alquilarEquipo && (
                     <div className="payment-row">
-                      <span>Alquiler de equipo</span>
-                      <span>{data.precioEquipo}.00 pesos</span>
+                      <span className="payment-label">Alquiler de equipo</span>
+                      <span className="payment-amount">
+                        {totals.equipmentPrice} pesos
+                      </span>
                     </div>
                   )}
 
                   <div className="payment-total">
                     <span className="payment-total-label">Total a Pagar</span>
                     <span className="payment-total-amount">
-                      ${calculateTotal()}
+                      ${totals.total}
                     </span>
                   </div>
 
@@ -1023,9 +1004,7 @@ export const ReservationStep = () => {
 
               <div className="confirmation-details">
                 <h3 className="details-title">Detalles de la reserva:</h3>
-                <p>
-                  <strong>Número de reserva:</strong> {reservaState.reservaId}
-                </p>
+
                 <p>
                   <strong>Fecha:</strong> {data?.date}
                 </p>
@@ -1036,14 +1015,14 @@ export const ReservationStep = () => {
                   <strong>Personas:</strong> {data?.guests}
                 </p>
                 <p>
-                  <strong>Total pagado:</strong> ${calculateTotal()}
+                  <strong>Total pagado:</strong> ${totals.total}
                 </p>
               </div>
 
               <button
                 onClick={() => {
-                  // resetForm();
-                  navigate('/reservaciones/steps/1'); // ✅ esto sí cambia la URL, lo que activa el useEffect
+                  clearReserva();
+                  navigate('/reservaciones/steps/1');
                 }}
                 className="confirmation-button modern-button"
               >
