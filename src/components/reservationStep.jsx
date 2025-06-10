@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
@@ -35,6 +36,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { crearReserva } from '../service/Reserva.service';
 import { AuthContext } from '../context/AuthContext';
+import { useReserva } from '../context/ReservaContext';
 import { CheckoutForm } from '/src/components/CheckoutForm.jsx';
 const steps = [
   'Fecha y Hora',
@@ -45,7 +47,9 @@ const steps = [
 ];
 
 export const ReservationStep = () => {
-  const [step, setStep] = useState(1);
+  const { step } = useParams();
+  const [stepNumber, setStepNumber] = useState(1);
+  const [currentStep, setCurrentStep] = React.useState(step);
   const [localPhoneNumber, setLocalPhoneNumber] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -60,37 +64,38 @@ export const ReservationStep = () => {
   const [authToken, setAuthToken] = useState(null);
   const { isAuthenticated, user, token } = useContext(AuthContext);
   const { token: contextToken } = useContext(AuthContext);
+  const { data, setData } = useReserva();
+  const navigate = useNavigate();
   const [localToken, setLocalToken] = useState('');
-  const [data, setData] = useState({
-    date: '',
-    time: '09:00',
-    guests: '1',
-    name: '',
-    email: '',
-    phone: '',
-    alquilarEquipo: false,
-    precioEquipo: 0,
-  });
 
   const [reservaState, setReservaState] = useState({
-  loading: false,          // true mientras estás pidiendo la session al backend
-  error: null,             // mensaje de error si falla algo
-  reservaId: null,         // lo devuelve tu backend
-  sessionUrl: null,        // lo devuelve tu backend (URL de Stripe Checkout)
-  sessionId: null,         // lo devuelve tu backend (puede ser útil para verificar con webhook)
-  paymentStatus: null,     // 'succeeded' si lo manejas luego (por ejemplo, por webhook)
-  paymentDetails: null,    // detalles del pago (si decides consultarlos al backend después del pago)
-});
+    loading: false, // true mientras estás pidiendo la session al backend
+    error: null, // mensaje de error si falla algo
+    reservaId: null, // lo devuelve tu backend
+    sessionUrl: null, // lo devuelve tu backend (URL de Stripe Checkout)
+    sessionId: null, // lo devuelve tu backend (puede ser útil para verificar con webhook)
+    paymentStatus: null, // 'succeeded' si lo manejas luego (por ejemplo, por webhook)
+    paymentDetails: null, // detalles del pago (si decides consultarlos al backend después del pago)
+  });
 
+  console.log('Renderizando ReservaSteps, step param:', step);
 
-  const stripePromise = loadStripe('pk_test_TU_CLAVE_PUBLICA_STRIPE');
-  const [stripe, setStripe] = useState(null);
+  useEffect(() => {
+    console.log('useEffect - step cambió:', step);
+    setStepNumber(parseInt(step, 10) || 1);
+  }, [step]);
+
+  useEffect(() => {
+    console.log('🔄 Cambio de paso detectado:', stepNumber);
+    // puedes resetear errores o estados si quieres
+    setError(null);
+  }, [stepNumber]);
 
   const calculateTotal = () => {
-  const basePrice = 1000;
-  const equipmentPrice = data.alquilarEquipo ? 500 : 0;
-  return basePrice + equipmentPrice;
-};
+    const basePrice = 1000;
+    const equipmentPrice = data.alquilarEquipo ? 500 : 0;
+    return basePrice + equipmentPrice;
+  };
   // Verificar autenticación al inicio
   useEffect(() => {
     console.log('Estado de autenticación:', isAuthenticated);
@@ -136,18 +141,6 @@ export const ReservationStep = () => {
   const getActiveToken = () => {
     return localToken || contextToken || '';
   };
-
-  // useEffect(() => {
-  //   if (sessionId) {
-  //     stripePromise.then(async (stripeInstance) => {
-  //       setStripe(stripeInstance);
-  //       const { error } = await stripeInstance.redirectToCheckout({
-  //         sessionId,
-  //       });
-  //       if (error) console.error("Stripe Checkout Error:", error.message);
-  //     });
-  //   }
-  // }, [sessionId]);
 
   const items = [
     {
@@ -209,121 +202,134 @@ export const ReservationStep = () => {
 
   // const nextStep = () => step < 5 && setStep(step + 1);
   const nextStep = async () => {
-  console.log('👉 Iniciando nextStep, paso actual:', step);
+    console.log('👉 Iniciando nextStep, paso actual:', stepNumber);
 
-  // Validaciones previas
-  if (step === 1 && !data.date) {
-    console.warn('⚠️ Validación fallida: fecha no seleccionada');
-    setError('Por favor selecciona una fecha');
-    return;
-  }
-
-  if (step === 2 && (!data.name || !data.email || !data.phone)) {
-    console.warn('⚠️ Validación fallida: campos personales incompletos');
-    setError('Por favor completa todos los campos');
-    return;
-  }
-
-  // Paso especial: 4 → 5 (crear reserva y redirigir a Stripe Checkout)
-  if (step === 4) {
-    console.log('🛠️ Preparando para enviar reserva...');
-
-    try {
-      // Mostrar loading
-      setReservaState((prev) => ({ ...prev, loading: true, error: null }));
-      console.log('⏳ Estado loading = true');
-
-      // Obtener token
-      const tokenSources = [
-        localStorage.getItem('authToken'),
-        authContext?.token,
-        JSON.parse(localStorage.getItem('auth'))?.token,
-      ].filter(Boolean);
-
-      const token = tokenSources[0];
-      console.log('🔑 Token seleccionado:', token ? `***${token.slice(-4)}` : 'NO TOKEN');
-
-      if (!token) {
-        const errorMsg = 'No se encontró token de autenticación. Por favor inicie sesión nuevamente.';
-        console.error(errorMsg);
-        throw new Error(errorMsg);
-      }
-
-      // Preparar datos para la reserva
-      const reservaData = {
-        fechaReserva: data.date,
-        hora: data.time,
-        numeroPersonas: parseInt(data.guests),
-        nombreCompleto: data.name,
-        email: data.email,
-        numeroTelefono: data.phone,
-        precio: 1000 * parseInt(data.guests),
-        equipo: {
-          alquilar: data.alquilarEquipo,
-          precio: data.alquilarEquipo ? 200 : 0,
-        },
-      };
-      console.log('📦 Datos preparados para reserva:', reservaData);
-
-      // Llamar a la API
-      console.log('🚀 Llamando a crearReserva...');
-      const response = await crearReserva(reservaData, token);
-
-      console.log('✅ Respuesta de crearReserva:', {
-        reservaId: response?.reservaId,
-        sessionId: response?.sessionId,
-        sessionUrl: response?.sessionUrl,
-      });
-
-      // Validación con nuevo flujo de Checkout Session
-      if (!response || !response.sessionUrl || !response.sessionId || !response.reservaId) {
-        const errorMsg = response?.message || 'No se recibió sessionUrl en la respuesta';
-        console.error('❌', errorMsg);
-        throw new Error(errorMsg);
-      }
-
-      // Actualizar estado (loading false)
-      setReservaState({
-        loading: false,
-        clientSecret: null, // Por compatibilidad, puedes eliminar esto si ya no usas clientSecret en el estado
-        error: null,
-      });
-
-      console.log('🔗 Redirigiendo a Stripe Checkout:', response.sessionUrl);
-
-      // Redirigir a Stripe Checkout
-      window.location.href = response.sessionUrl;
-
-    } catch (error) {
-      console.error('🔥 Error en nextStep:', {
-        message: error.message,
-        stack: error.stack,
-      });
-
-      setReservaState({
-        loading: false,
-        clientSecret: null,
-        error: error.message || 'Error al procesar la reserva',
-      });
-
-      // Redirección a login si corresponde
-      if (error.message.includes('autenticación') || error.response?.status === 401) {
-        console.log('🔐 Redirigiendo a página de login...');
-        // navigate('/login');
-      }
+    // Validaciones previas
+    if (stepNumber === 1 && !data.date) {
+      console.warn('⚠️ Validación fallida: fecha no seleccionada');
+      setError('Por favor selecciona una fecha');
+      return;
     }
 
-    return;
-  }
+    if (stepNumber === 2 && (!data.name || !data.email || !data.phone)) {
+      console.warn('⚠️ Validación fallida: campos personales incompletos');
+      setError('Por favor completa todos los campos');
+      return;
+    }
 
-  // Para otros pasos (1→2, 2→3, 3→4)
-  console.log('➡️ Navegación normal al paso:', step + 1);
-  setStep(step + 1);
-  setError(null);
-};
+    // Paso especial: 4 → 5 (crear reserva y redirigir a Stripe Checkout)
+    if (stepNumber === 4) {
+      console.log('🛠️ Preparando para enviar reserva...');
 
+      try {
+        // Mostrar loading
+        setReservaState((prev) => ({ ...prev, loading: true, error: null }));
+        console.log('⏳ Estado loading = true');
 
-  const prevStep = () => step > 1 && setStep(step - 1);
+        // Obtener token
+        const tokenSources = [
+          localStorage.getItem('authToken'),
+          authContext?.token,
+          JSON.parse(localStorage.getItem('auth'))?.token,
+        ].filter(Boolean);
+
+        const token = tokenSources[0];
+        console.log(
+          '🔑 Token seleccionado:',
+          token ? `***${token.slice(-4)}` : 'NO TOKEN'
+        );
+
+        if (!token) {
+          const errorMsg =
+            'No se encontró token de autenticación. Por favor inicie sesión nuevamente.';
+          console.error(errorMsg);
+          throw new Error(errorMsg);
+        }
+
+        // Preparar datos para la reserva
+        const reservaData = {
+          fechaReserva: data.date,
+          hora: data.time,
+          numeroPersonas: parseInt(data.guests),
+          nombreCompleto: data.name,
+          email: data.email,
+          numeroTelefono: data.phone,
+          precio: 1000 * parseInt(data.guests),
+          equipo: {
+            alquilar: data.alquilarEquipo,
+            precio: data.alquilarEquipo ? 200 : 0,
+          },
+        };
+        console.log('📦 Datos preparados para reserva:', reservaData);
+
+        // Llamar a la API
+        console.log('🚀 Llamando a crearReserva...');
+        const response = await crearReserva(reservaData, token);
+
+        console.log('✅ Respuesta de crearReserva:', {
+          reservaId: response?.reservaId,
+          sessionId: response?.sessionId,
+          sessionUrl: response?.sessionUrl,
+        });
+
+        // Validación con nuevo flujo de Checkout Session
+        if (
+          !response ||
+          !response.sessionUrl ||
+          !response.sessionId ||
+          !response.reservaId
+        ) {
+          const errorMsg =
+            response?.message || 'No se recibió sessionUrl en la respuesta';
+          console.error('❌', errorMsg);
+          throw new Error(errorMsg);
+        }
+
+        console.log('🔗 Redirigiendo a Stripe Checkout:', response.sessionUrl);
+
+        // Redirigir a Stripe Checkout
+        window.location.href = response.sessionUrl;
+      } catch (error) {
+        console.error('🔥 Error en nextStep:', {
+          message: error.message,
+          stack: error.stack,
+        });
+
+        setReservaState({
+          loading: false,
+          clientSecret: null,
+          error: error.message || 'Error al procesar la reserva',
+        });
+
+        // Redirección a login si corresponde
+        if (
+          error.message.includes('autenticación') ||
+          error.response?.status === 401
+        ) {
+          console.log('🔐 Redirigiendo a página de login...');
+          // navigate('/login');
+        }
+      }
+
+      return;
+    }
+
+    // Para otros pasos (1→2, 2→3, 3→4)
+    console.log('➡️ Navegación normal al paso:', stepNumber + 1);
+    setError(null);
+    if (stepNumber < 7) {
+      navigate(`/reservaciones/steps/${stepNumber + 1}`);
+    }
+  };
+
+  const prevStep = () => {
+    if (stepNumber > 1) {
+      console.log('⬅️ Volviendo al paso:', stepNumber - 1);
+
+      // 👉 Actualizar barra de navegación
+      navigate(`/reservaciones/steps/${stepNumber - 1}`);
+    }
+  };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -439,17 +445,17 @@ export const ReservationStep = () => {
             <div key={index} className="step">
               <span
                 className={
-                  step === index + 1
+                  stepNumber === index + 1
                     ? 'active'
-                    : step > index + 1
+                    : stepNumber > index + 1
                     ? 'completed'
                     : ''
                 }
               >
                 <div className="step-number">
-                  {step === index + 1 ? (
+                  {stepNumber === index + 1 ? (
                     index + 1
-                  ) : step > index + 1 ? (
+                  ) : stepNumber > index + 1 ? (
                     <Check className="step-check" />
                   ) : (
                     index + 1
@@ -464,7 +470,7 @@ export const ReservationStep = () => {
           {steps.map((_, index) => (
             <div
               key={index}
-              className={`step-line ${step >= index + 1 ? 'active' : ''}`}
+              className={`step-line ${stepNumber >= index + 1 ? 'active' : ''}`}
             ></div>
           ))}
         </div>
@@ -472,7 +478,7 @@ export const ReservationStep = () => {
 
       <div className="reservation-tour">
         <div className="tour-details">
-          {step === 1 && (
+          {stepNumber === 1 && (
             <div>
               {/* Encabezado con título */}
               <h2>
@@ -555,7 +561,7 @@ export const ReservationStep = () => {
             </div>
           )}
 
-          {step === 2 && (
+          {stepNumber === 2 && (
             <div>
               <h2>
                 <FileText />
@@ -629,7 +635,7 @@ export const ReservationStep = () => {
             </div>
           )}
 
-          {step === 3 && (
+          {stepNumber === 3 && (
             <div>
               <h2>
                 <ShoppingBag /> Adicionales para tu Tour
@@ -806,7 +812,7 @@ export const ReservationStep = () => {
             </div>
           )}
 
-          {step === 4 && (
+          {stepNumber === 4 && (
             <div>
               <h2>
                 <FileCheck /> Confirmar Datos de Reservación
@@ -916,7 +922,9 @@ export const ReservationStep = () => {
                 <div className="payment-details">
                   <div className="payment-row">
                     <span className="payment-label">Tour básico</span>
-                    <span className="payment-amount">{calculateTotal.basePrice} pesos</span>
+                    <span className="payment-amount">
+                      {calculateTotal.basePrice} pesos
+                    </span>
                   </div>
 
                   {data.alquilarEquipo && (
@@ -928,7 +936,9 @@ export const ReservationStep = () => {
 
                   <div className="payment-total">
                     <span className="payment-total-label">Total a Pagar</span>
-                    <span className="payment-total-amount">${calculateTotal()}</span>
+                    <span className="payment-total-amount">
+                      ${calculateTotal()}
+                    </span>
                   </div>
 
                   <div className="payment-method">
@@ -962,85 +972,94 @@ export const ReservationStep = () => {
             </div>
           )}
 
-{step === 5 && (
-  <div>
-    {reservaState.loading ? (
-      <div className="loading-state">
-        <Spinner />
-        <p>Cargando pasarela de pago...</p>
-      </div>
-    ) : reservaState.sessionUrl ? (
-      (() => {
-        // Redirige automáticamente a la sesión de Stripe Checkout
-        window.location.href = reservaState.sessionUrl;
-        return (
-          <div className="redirecting-state">
-            <Spinner />
-            <p>Redirigiendo a la pasarela de pago segura...</p>
-          </div>
-        );
-      })()
-    ) : (
-      <div className="error-state">
-        <p>No se pudo inicializar la pasarela de pago</p>
-        {reservaState.error && (
-          <p className="error-detail">{reservaState.error}</p>
-        )}
-        <button onClick={() => setStep(4)} className="retry-button">
-          Volver a intentar
-        </button>
-      </div>
-    )}
+          {stepNumber === 5 && (
+            <div>
+              {reservaState.loading ? (
+                <div className="loading-state">
+                  <Spinner />
+                  <p>Cargando pasarela de pago...</p>
+                </div>
+              ) : reservaState.sessionUrl ? (
+                (() => {
+                  // Redirige automáticamente a la sesión de Stripe Checkout
+                  window.location.href = reservaState.sessionUrl;
+                  return (
+                    <div className="redirecting-state">
+                      <Spinner />
+                      <p>Redirigiendo a la pasarela de pago segura...</p>
+                    </div>
+                  );
+                })()
+              ) : (
+                <div className="error-state">
+                  <p>No se pudo inicializar la pasarela de pago</p>
+                  {reservaState.error && (
+                    <p className="error-detail">{reservaState.error}</p>
+                  )}
+                  <button onClick={() => setStep(4)} className="retry-button">
+                    Volver a intentar
+                  </button>
+                </div>
+              )}
 
-    {reservaState.error && (
-      <div className="error-message">
-        <span>{reservaState.error}</span>
-      </div>
-    )}
-  </div>
-)}
+              {reservaState.error && (
+                <div className="error-message">
+                  <span>{reservaState.error}</span>
+                </div>
+              )}
+            </div>
+          )}
 
-{step === 6 && (
-  <div className="confirmation-step">
-    <div className="confirmation-icon">
-      <CheckCircle size={48} color="#4CAF50" />
-    </div>
-    <h2>¡Pago realizado con éxito!</h2>
-    <p>Tu reserva ha sido confirmada y recibirás un correo con los detalles.</p>
-    
-    <div className="confirmation-details">
-      <h3>Detalles de la reserva:</h3>
-      <p><strong>Número de reserva:</strong> {reservaState.reservaId}</p>
-      <p><strong>Fecha:</strong> {formatDate(data?.date)}</p>
-      <p><strong>Hora:</strong> {data?.time}</p>
-      <p><strong>Personas:</strong> {data?.guests}</p>
-      <p><strong>Total pagado:</strong> ${calculateTotal()}</p>
-      {/* Método de pago ya no lo tendrás aquí a menos que consultes tu backend */}
-    </div>
+          {stepNumber === 6 && (
+            <div className="confirmation-step modern-card">
+              <div className="confirmation-icon success-icon">
+                <CheckCircle size={64} color="#4CAF50" />
+              </div>
+              <h2 className="confirmation-title">¡Pago realizado con éxito!</h2>
+              <p className="confirmation-subtitle">
+                Tu reserva ha sido confirmada. Recibirás un correo con los
+                detalles.
+              </p>
 
-    <button 
-      onClick={() => {
-        resetForm();
-        setStep(1);
-      }} 
-      className="confirmation-button"
-    >
-      Realizar otra reserva
-    </button>
-  </div>
-)}
+              <div className="confirmation-details">
+                <h3 className="details-title">Detalles de la reserva:</h3>
+                <p>
+                  <strong>Número de reserva:</strong> {reservaState.reservaId}
+                </p>
+                <p>
+                  <strong>Fecha:</strong> {data?.date}
+                </p>
+                <p>
+                  <strong>Hora:</strong> {data?.time}
+                </p>
+                <p>
+                  <strong>Personas:</strong> {data?.guests}
+                </p>
+                <p>
+                  <strong>Total pagado:</strong> ${calculateTotal()}
+                </p>
+              </div>
 
-
-          
+              <button
+                onClick={() => {
+                  // resetForm();
+                  navigate('/reservaciones/steps/1'); // ✅ esto sí cambia la URL, lo que activa el useEffect
+                }}
+                className="confirmation-button modern-button"
+              >
+                Finalizar Proceso de Reserva
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="step-buttons">
-          {step > 1 && (
+          {stepNumber > 1 && stepNumber < 6 && (
             <button className="prev-button" onClick={prevStep}>
               <ChevronLeft /> Anterior
             </button>
           )}
-          {step <= 5 && (
+          {stepNumber < 6 && (
             <button className="next-button" onClick={nextStep}>
               {' '}
               Siguiente <ChevronRight />
@@ -1051,5 +1070,3 @@ export const ReservationStep = () => {
     </div>
   );
 };
-
-

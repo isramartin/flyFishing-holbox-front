@@ -1501,6 +1501,91 @@ input:checked + .toggle-slider:before {
   font-size: 0.95em;
 }
 
-/* csss stripe */
-/* Contenedor principal 
 
+/* Contenedor principal */
+
+.confirmation-step.modern-card {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.success-icon {
+  margin-bottom: 20px;
+}
+
+.confirmation-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+.confirmation-subtitle {
+  font-size: 16px;
+  color: #666666;
+  margin-bottom: 20px;
+}
+
+.confirmation-details {
+  text-align: left;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+.details-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #4CAF50;
+}
+
+.confirmation-details p {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #444444;
+}
+
+.confirmation-button.modern-button {
+  background-color: #4CAF50;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.confirmation-button.modern-button:hover {
+  background-color: #43a047;
+  transform: translateY(-2px);
+}
+
+.confirmation-button.modern-button:active {
+  background-color: #388e3c;
+  transform: translateY(0);
+}
+
+
+.finish-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.finish-button:hover {
+  background-color: #43a047;
+}

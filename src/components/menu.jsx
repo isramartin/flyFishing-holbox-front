@@ -11,7 +11,13 @@ const Menu = () => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, role, logout, loading: authLoading, user } = useContext(AuthContext);
+  const {
+    isAuthenticated,
+    role,
+    logout,
+    loading: authLoading,
+    user,
+  } = useContext(AuthContext);
 
   const handleToggle = () => {
     if (menuOpen) {
@@ -47,14 +53,15 @@ const Menu = () => {
     if (!authLoading && isAuthenticated) {
       const currentPath = location.pathname;
       const normalizedRole = role?.toUpperCase();
-      
+
       if (normalizedRole === 'ADMIN' && !currentPath.startsWith('/admin')) {
         navigate('/admin/reservaciones');
-      }
-      else if (normalizedRole === 'USER' && currentPath.startsWith('/admin')) {
+      } else if (
+        normalizedRole === 'USER' &&
+        currentPath.startsWith('/admin')
+      ) {
         navigate('/home');
-      }
-      else if (!isAuthenticated && currentPath.startsWith('/admin')) {
+      } else if (!isAuthenticated && currentPath.startsWith('/admin')) {
         navigate('/home');
       }
     }
@@ -69,17 +76,25 @@ const Menu = () => {
   const menuItems = [
     { path: '/home', label: 'Home', roles: ['USER', 'GUEST'] },
     { path: '/pesca', label: 'Pesca', roles: ['USER', 'GUEST'] },
-    { path: '/reservaciones', label: 'Reservaciones', roles: ['USER', 'GUEST'] },
+    {
+      path: '/reservaciones/steps/1',
+      label: 'Reservaciones',
+      roles: ['USER', 'GUEST'],
+    },
     { path: '/galerias', label: 'Galerías', roles: ['USER', 'GUEST'] },
     { path: '/reseña', label: 'Reseñas', roles: ['USER', 'GUEST'] },
     { path: '/login', label: 'Login', roles: ['GUEST'] },
     { path: '/register', label: 'Registro', roles: ['GUEST'] },
     // { path: '/prueba', label: 'Prueba', roles: ['GUEST'] },
     { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['ADMIN'] },
-    { path: '/admin/imageUploadGallery', label: 'Upload Gallery', roles: ['ADMIN'] },
+    {
+      path: '/admin/imageUploadGallery',
+      label: 'Upload Gallery',
+      roles: ['ADMIN'],
+    },
   ];
 
-  const filteredMenuItems = menuItems.filter(item => {
+  const filteredMenuItems = menuItems.filter((item) => {
     if (!isAuthenticated) {
       return item.roles.includes('GUEST');
     }
@@ -94,7 +109,7 @@ const Menu = () => {
             className="navbar-toggler me-2"
             type="button"
             onClick={handleToggle}
-            aria-expanded={menuOpen ? "true" : "false"}
+            aria-expanded={menuOpen ? 'true' : 'false'}
             aria-label="Toggle navigation"
           >
             <span className="navbar-toggler-icon"></span>
@@ -108,26 +123,37 @@ const Menu = () => {
         </div>
 
         <div
-          className={`collapse navbar-collapse ${menuOpen ? "show" : ""} ${
-            isClosing ? "closing" : ""
+          className={`collapse navbar-collapse ${menuOpen ? 'show' : ''} ${
+            isClosing ? 'closing' : ''
           }`}
           id="navbarNav"
         >
           <ul className="navbar-nav me-auto">
-            {filteredMenuItems.map((item, index) => (
-              <li className="nav-item" key={index}>
-                <NavLink
-                  to={item.path}
-                  onClick={closeMenu}
-                  className={({ isActive }) =>
-                    isActive ? "nav-link active" : "nav-link"
-                  }
-                  end
-                >
-                  {item.label}
-                </NavLink>
-              </li>
-            ))}
+            {filteredMenuItems.map((item, index) => {
+              // Ajuste solo para "Reservaciones"
+              const isReservaciones = item.path.startsWith(
+                '/reservaciones/steps/'
+              );
+              const isHome = item.path === '/home';
+
+              const isActiveCustom = isHome
+                ? location.pathname === '/' || location.pathname === '/home'
+                : isReservaciones
+                ? location.pathname.startsWith('/reservaciones/steps/')
+                : location.pathname === item.path;
+
+              return (
+                <li className="nav-item" key={index}>
+                  <NavLink
+                    to={item.path}
+                    onClick={closeMenu}
+                    className={isActiveCustom ? 'nav-link active' : 'nav-link'}
+                  >
+                    {item.label}
+                  </NavLink>
+                </li>
+              );
+            })}
           </ul>
 
           {isAuthenticated && (
@@ -138,12 +164,14 @@ const Menu = () => {
                 aria-expanded={userDropdownOpen}
               >
                 <span className="user-name">
-                    {user?.user?.nombre || user?.nombre || user?.email?.split('@')[0]}
+                  {user?.user?.nombre ||
+                    user?.nombre ||
+                    user?.email?.split('@')[0]}
                 </span>
                 <ChevronDown
                   size={16}
                   className={`dropdown-icon ${
-                    userDropdownOpen ? "rotate" : ""
+                    userDropdownOpen ? 'rotate' : ''
                   }`}
                 />
               </button>
@@ -167,7 +195,7 @@ const Menu = () => {
                     disabled={authLoading}
                   >
                     <LogOut size={16} className="me-2" />
-                    {authLoading ? "Saliendo..." : "Cerrar Sesión"}
+                    {authLoading ? 'Saliendo...' : 'Cerrar Sesión'}
                   </button>
                 </div>
               )}
