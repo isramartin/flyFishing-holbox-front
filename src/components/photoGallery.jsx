@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import { getAllGaleria } from "../service/galeria.service";
+import React, { useState, useRef, useEffect } from 'react';
+import { getAllGaleria } from '../service/galeria.service';
+import { X, ArrowDownToLine, Heart, HeartOff, Link } from 'lucide-react';
 
 const PhotoGallery = () => {
   const [showModal, setShowModal] = useState(false);
@@ -11,26 +12,27 @@ const PhotoGallery = () => {
   const isScrolling = useRef(false);
   const [skeletonHeights, setSkeletonHeights] = useState([]);
 
-
   useEffect(() => {
-  const fetchPhotos = async () => {
-    try {
-      setLoading(true);
-      setSkeletonHeights(Array.from({ length: 12 }, () =>
-        Math.floor(Math.random() * 150) + 200 // alturas entre 200 y 350px
-      ));
-      const data = await getAllGaleria();
-      setPhotos(data);
-    } catch (error) {
-      console.error("Error fetching photos:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchPhotos = async () => {
+      try {
+        setLoading(true);
+        setSkeletonHeights(
+          Array.from(
+            { length: 12 },
+            () => Math.floor(Math.random() * 150) + 200 // alturas entre 200 y 350px
+          )
+        );
+        const data = await getAllGaleria();
+        setPhotos(data);
+      } catch (error) {
+        console.error('Error fetching photos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchPhotos();
-}, []);
-
+    fetchPhotos();
+  }, []);
 
   const handleImageClick = (index, e) => {
     e.stopPropagation();
@@ -39,7 +41,8 @@ const PhotoGallery = () => {
   };
 
   const centerThumbnail = (index) => {
-    if (!containerRef.current || isScrolling.current || photos.length === 0) return;
+    if (!containerRef.current || isScrolling.current || photos.length === 0)
+      return;
 
     isScrolling.current = true;
     const container = containerRef.current;
@@ -50,11 +53,11 @@ const PhotoGallery = () => {
     const containerWidth = container.offsetWidth;
     const thumbWidth = thumb.offsetWidth;
     const thumbOffset = thumb.offsetLeft;
-    const scrollTo = thumbOffset - (containerWidth / 2) + (thumbWidth / 2);
+    const scrollTo = thumbOffset - containerWidth / 2 + thumbWidth / 2;
 
     container.scrollTo({
       left: scrollTo,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
 
     setTimeout(() => {
@@ -85,11 +88,11 @@ const PhotoGallery = () => {
           {Array.from({ length: 8 }).map((_, i) => {
             // Generamos alturas aleatorias para simular el layout masonry
             const randomHeight = Math.floor(Math.random() * 200) + 200; // Entre 200px y 400px
-            
+
             return (
               <div className="gallery-item skeleton-item" key={i}>
-                <div 
-                  className="skeleton-image" 
+                <div
+                  className="skeleton-image"
                   style={{ height: `${randomHeight}px` }}
                 />
                 <div className="skeleton-overlay">
@@ -120,10 +123,10 @@ const PhotoGallery = () => {
     <div className="gallery-container">
       <div className="gallery-masonry">
         {photos.map((photo, index) => (
-          <div 
-            className="gallery-item" 
+          <div
+            className="gallery-item"
             key={photo.id}
-            onMouseEnter={() => setHoverIndex(index)} 
+            onMouseEnter={() => setHoverIndex(index)}
             onMouseLeave={() => setHoverIndex(null)}
             onClick={(e) => handleImageClick(index, e)}
           >
@@ -135,14 +138,20 @@ const PhotoGallery = () => {
             {hoverIndex === index && (
               <div className="gallery-overlay">
                 <div className="gallery-actions">
-                  <button>{photo.favorito ? '❤️' : '🤍'}</button>
-                  <button>🔗</button>
-                  <button>⬇️</button>
+                  <button>{photo.favorito ? <HeartOff /> : <Heart />}</button>
+                  <button>
+                    <Link />
+                  </button>
+                  <button>
+                    <ArrowDownToLine />
+                  </button>
                 </div>
                 <div className="gallery-info">
-                  <h3>{photo.titulo || "Sin título"}</h3>
-                  <p>{photo.descripcion || "Sin descripción"}</p>
-                  <span className="gallery-location">{photo.lugarCreacion || "Holbox, Q. Roo, MX"}</span>
+                  <h3>{photo.titulo || 'Sin título'}</h3>
+                  <p>{photo.descripcion || 'Sin descripción'}</p>
+                  <span className="gallery-location">
+                    {photo.lugarCreacion || 'Holbox, Q. Roo, MX'}
+                  </span>
                 </div>
               </div>
             )}
@@ -152,16 +161,25 @@ const PhotoGallery = () => {
 
       {/* Modal */}
       {showModal && photos.length > 0 && (
-        <div className="gallery-modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button onClick={handlePrev} className="arrow-left">&#10094;</button>
-            <img 
-              src={photos[activeIndex].imageUrl} 
-              alt={photos[activeIndex].titulo || "Imagen ampliada"} 
-              className="modal-image" 
+        <div className="gallery-modal-overlay">
+          <div className="modal-content">
+            <X className="close-button-close" onClick={handleCloseModal} />
+            <ArrowDownToLine className="close-button-dowload" />
+            <Heart className="close-button-favorite" />
+            <Link className="close-button-link" />
+
+            <button onClick={handlePrev} className="arrow-left">
+              &#10094;
+            </button>
+            <img
+              src={photos[activeIndex].imageUrl}
+              alt={photos[activeIndex].titulo || 'Imagen ampliada'}
+              className="modal-image"
             />
-            <button onClick={handleNext} className="arrow-right">&#10095;</button>
-            
+            <button onClick={handleNext} className="arrow-right">
+              &#10095;
+            </button>
+
             <div className="thumbnails-wrapper">
               <div className="thumbnail-container" ref={containerRef}>
                 {photos.map((photo, index) => (
@@ -170,7 +188,9 @@ const PhotoGallery = () => {
                     src={photo.imageUrl}
                     alt={`Thumbnail ${index + 1}`}
                     onClick={() => setActiveIndex(index)}
-                    className={`thumbnail ${index === activeIndex ? 'active' : 'inactive'}`}
+                    className={`thumbnail ${
+                      index === activeIndex ? 'active' : 'inactive'
+                    }`}
                   />
                 ))}
               </div>
