@@ -11,6 +11,7 @@ const Menu = () => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const [logoutLoading, setLogoutLoading] = useState(false);
   const {
     isAuthenticated,
     role,
@@ -40,12 +41,15 @@ const Menu = () => {
   };
 
   const handleLogout = async () => {
+    setLogoutLoading(true);
     try {
       await logout();
       setUserDropdownOpen(false);
     } catch (error) {
       console.error('Error en logout:', error);
-    }
+    }finally {
+    setLogoutLoading(false);
+  }
   };
 
   // Redirección basada en el rol
@@ -192,10 +196,10 @@ const Menu = () => {
                   <button
                     className="dropdown-item"
                     onClick={handleLogout}
-                    disabled={authLoading}
+                     disabled={logoutLoading}
                   >
                     <LogOut size={16} className="me-2" />
-                    {authLoading ? 'Saliendo...' : 'Cerrar Sesión'}
+                    {logoutLoading ? 'Saliendo...' : 'Cerrar Sesión'}
                   </button>
                 </div>
               )}

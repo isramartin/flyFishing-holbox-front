@@ -1649,3 +1649,52 @@ input:checked + .toggle-slider:before {
 .retry-button.modern-button:hover {
   background-color: #d32f2f;
 }
+
+.auth-warning {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 250px;
+  padding: 1.5rem;
+}
+
+.auth-warning-card {
+  background: #ffe3e3;
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 6px 15px rgba(255, 77, 77, 0.2);
+  color: #b63131;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.auth-warning-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.alert-icon-block {
+  color: #d9534f;
+  font-size: 2.4rem;
+}
+
+.auth-warning-message {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #8a2929;
+  line-height: 1.4;
+}
+
+.lock-icon-block {
+  font-size: 5rem;
+  width: 50px;
+  height: 50px;
+  color: #d9534f;
+  opacity: 0.85;
+}

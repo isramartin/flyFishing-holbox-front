@@ -27,18 +27,17 @@ import {
   Users,
   UsersRound,
   CheckCircle,
-  CreditCard,
+  LockKeyhole,
+  TriangleAlert,
 } from 'lucide-react';
 import Flags from 'country-flag-icons/react/3x2'; // Importa las banderas
 import 'react-calendar/dist/Calendar.css';
 import '../styles/ReservationStep.css'; // Importamos el archivo CSS
 import iamgen1 from '../assets/image/image1.png';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
 import { crearReserva } from '../service/Reserva.service';
 import { AuthContext } from '../context/AuthContext';
 import { useReserva } from '../context/ReservaContext';
-import { CheckoutForm } from '/src/components/CheckoutForm.jsx';
+
 const steps = [
   'Fecha y Hora',
   'Datos Personales',
@@ -107,8 +106,8 @@ export const ReservationStep = () => {
 
   // Verificar autenticación al inicio
   useEffect(() => {
-    console.log('Estado de autenticación:', isAuthenticated);
-    console.log(
+    console.log('Estado de autenticación reserva:', isAuthenticated);
+     console.log(
       'Token disponible:',
       token ? '***' + token.slice(-4) : 'No hay token'
     );
@@ -517,616 +516,622 @@ export const ReservationStep = () => {
 
       <div className="reservation-tour">
         <div className="tour-details">
-          {stepNumber === 1 && (
-            <div>
-              {/* Encabezado con título */}
-              <h2>
-                {' '}
-                <Calendar1 /> Seleccione fecha y hora del tour
-              </h2>
+          {isAuthenticated ? (
+  <>
+              {stepNumber === 1 && (
+                <div>
+                  {/* Encabezado con título */}
+                  <h2>
+                    {' '}
+                    <Calendar1 /> Seleccione fecha y hora del tour
+                  </h2>
 
-              {/* Información del tour */}
-              <div className="tour-option">
-                <h3>
-                  {' '}
-                  <MapPin /> Fly Fishing Holbox
-                </h3>
-                <p>Precio: 1000.00 pesos</p>
-              </div>
+                  {/* Información del tour */}
+                  <div className="tour-option">
+                    <h3>
+                      {' '}
+                      <MapPin /> Fly Fishing Holbox
+                    </h3>
+                    <p>Precio: 1000.00 pesos</p>
+                  </div>
 
-              {/* Contenedor principal con columnas */}
-              <div className="tour-content">
-                {/* Calendario a la izquierda */}
-                <div className="calendar-container">
-                  <Calendar
-                    onChange={handleDateChange}
-                    value={selectedDate}
-                    locale="es-ES"
-                    minDate={new Date()}
-                  />
-                </div>
-
-                {/* Formulario a la derecha */}
-                <div className="tour-info">
-                  <div className="selected-details">
-                    <div className="form-group">
-                      <label>
-                        <CalendarCheck className="icon-style" />
-                        Fecha seleccionada
-                      </label>
-                      <input
-                        type="text"
-                        value={data.date || 'Seleccione una fecha'}
-                        disabled
+                  {/* Contenedor principal con columnas */}
+                  <div className="tour-content">
+                    {/* Calendario a la izquierda */}
+                    <div className="calendar-container">
+                      <Calendar
+                        onChange={handleDateChange}
+                        value={selectedDate}
+                        locale="es-ES"
+                        minDate={new Date()}
                       />
                     </div>
-                    <div className="form-group">
-                      <label>
-                        <Clock className="icon-style" />
-                        Hora
-                      </label>
-                      <select
-                        value={data.time}
-                        onChange={(e) => updateData('time', e.target.value)}
-                      >
-                        <option value="09:00">09:00</option>
-                        <option value="10:00">10:00</option>
-                        <option value="11:00">11:00</option>
-                        <option value="12:00">12:00</option>
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      <label>
-                        <UsersRound className="icon-style" />
-                        Número de personas
-                      </label>
-                      <select
-                        value={data.guests}
-                        onChange={(e) => updateData('guests', e.target.value)}
-                      >
-                        <option value="1">1 persona</option>
-                        <option value="2">2 personas</option>
-                        <option value="3">3 personas</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
-          {stepNumber === 2 && (
-            <div>
-              <h2>
-                <FileText />
-                Datos Personales
-              </h2>
-              <div className="form-group">
-                <label>
-                  <UserRound className="icon-style" /> Nombre Completo
-                </label>
-                <input
-                  type="text"
-                  value={data.name}
-                  onChange={(e) => updateData('name', e.target.value)}
-                  placeholder="Nombre Completo"
-                />
-              </div>
-              <div className="form-group">
-                <label>
-                  {' '}
-                  <Mail className="icon-style" />
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={data.email}
-                  onChange={(e) => updateData('email', e.target.value)}
-                  placeholder="Correo Electronico"
-                />
-              </div>
-              <div className="form-group">
-                <label>
-                  <Phone className="icon-style" />
-                  Teléfono
-                </label>
-                <div className="phone-container">
-                  <PhoneInput
-                    defaultCountry={countryCode}
-                    value={phoneNumber}
-                    onChange={handlePhoneChange}
-                    international
-                    countryCallingCodeEditable={false}
-                    className="phone-input"
-                    inputProps={{
-                      readOnly: true,
-                      style: {
-                        pointerEvents: 'none',
-                        backgroundColor: '#f5f5f5',
-                        cursor: 'default',
-                      },
-                    }}
-                    onFocus={(e) => {
-                      document.querySelector('.phone-number-input')?.focus();
-                    }}
-                  />
-                  <input
-                    type="tel"
-                    value={localPhoneNumber}
-                    onChange={handleLocalPhoneChange}
-                    placeholder="Número de teléfono"
-                    className="phone-number-input"
-                  />
-                </div>
-
-                <p>Código de país seleccionado: {phoneNumber}</p>
-
-                {/* Mensaje de error si el número es inválido */}
-                {!isValid && localPhoneNumber.length > 0 && (
-                  <p className="error-message">Número de teléfono no válido</p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {stepNumber === 3 && (
-            <div>
-              <h2>
-                <ShoppingBag /> Adicionales para tu Tour
-              </h2>
-
-              {/* Sección de información del tour */}
-              <div className="rf-info">
-                <h3>
-                  <CircleHelp className="icon-style" />
-                  Información del Tour
-                </h3>
-
-                <div className="rf-info-column">
-                  <ul>
-                    <li>
-                      <Clock className="icon-style" />
-                      <strong>Duración del Tour:</strong> <span>3 horas</span>
-                    </li>
-                    <li>
-                      <Ship className="icon-style" />
-                      <strong>Tipo de Embarcación:</strong>{' '}
-                      <span>Lancha rápida</span>
-                    </li>
-                    <li>
-                      <MapPin className="icon-style" />
-                      <strong>Punto de Partida:</strong>{' '}
-                      <span>Muelle Principal, Puerto Aventura</span>
-                    </li>
-                    <li>
-                      <Phone className="icon-style" />
-                      <strong>Teléfono:</strong> <span>(123) 456-7890</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Sección de lo que incluye el tour */}
-              <div className="tour-includes">
-                <h3>Lo que incluye el tour (500 USD):</h3>
-                <div className="includes-grid">
-                  <div className="include-item">
-                    <strong>Transporte marítimo</strong>
-                    <p>Ida y vuelta en catamarán de lujo</p>
-                  </div>
-                  <div className="include-item">
-                    <strong>Comida gourmet</strong>
-                    <p>Buffet con opciones vegetarianas disponibles</p>
-                  </div>
-                  <div className="include-item">
-                    <strong>Servicio fotográfico</strong>
-                    <p>Fotos digitales de la experiencia</p>
-                  </div>
-                  <div className="include-item">
-                    <strong>Guía certificado</strong>
-                    <p>Guía bilingüe especializado en la zona</p>
-                  </div>
-                  <div className="include-item">
-                    <strong>Bebidas premium</strong>
-                    <p>Barra libre de bebidas nacionales</p>
-                  </div>
-                  <div className="include-item">
-                    <strong>Seguro de viaje</strong>
-                    <p>Cobertura durante toda la actividad</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Sección de selección de artículos original */}
-              <div className="slect-articulos">
-                <h2>Paquete de quipo Completo:</h2>
-
-                <div className="filter-buttons">
-                  {[
-                    'Todos los artículos',
-                    'Equipo',
-                    'Seguridad',
-                    'Comodidad',
-                    'Entretenimiento',
-                  ].map((category) => (
-                    <button
-                      key={category}
-                      className={activeCategory === category ? 'active' : ''}
-                      onClick={() => handleCategoryChange(category)}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="items-container">
-                  {filteredItems.map((item, index) => (
-                    <div
-                      key={index}
-                      className={`item-card ${item.included ? 'included' : ''}`}
-                    >
-                      <div className="item-top">
-                        <div className="item-image">
-                          <img src={item.img} alt={item.name} />
+                    {/* Formulario a la derecha */}
+                    <div className="tour-info">
+                      <div className="selected-details">
+                        <div className="form-group">
+                          <label>
+                            <CalendarCheck className="icon-style" />
+                            Fecha seleccionada
+                          </label>
+                          <input
+                            type="text"
+                            value={data.date || 'Seleccione una fecha'}
+                            disabled
+                          />
                         </div>
-                        <div className="item-info">
-                          <h3>{item.name}</h3>
-                          <p>{item.category}</p>
+                        <div className="form-group">
+                          <label>
+                            <Clock className="icon-style" />
+                            Hora
+                          </label>
+                          <select
+                            value={data.time}
+                            onChange={(e) => updateData('time', e.target.value)}
+                          >
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                          </select>
+                        </div>
+                        <div className="form-group">
+                          <label>
+                            <UsersRound className="icon-style" />
+                            Número de personas
+                          </label>
+                          <select
+                            value={data.guests}
+                            onChange={(e) =>
+                              updateData('guests', e.target.value)
+                            }
+                          >
+                            <option value="1">1 persona</option>
+                            <option value="2">2 personas</option>
+                            <option value="3">3 personas</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {stepNumber === 2 && (
+                <div>
+                  <h2>
+                    <FileText />
+                    Datos Personales
+                  </h2>
+                  <div className="form-group">
+                    <label>
+                      <UserRound className="icon-style" /> Nombre Completo
+                    </label>
+                    <input
+                      type="text"
+                      value={data.name}
+                      onChange={(e) => updateData('name', e.target.value)}
+                      placeholder="Nombre Completo"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>
+                      {' '}
+                      <Mail className="icon-style" />
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      value={data.email}
+                      onChange={(e) => updateData('email', e.target.value)}
+                      placeholder="Correo Electronico"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>
+                      <Phone className="icon-style" />
+                      Teléfono
+                    </label>
+                    <div className="phone-container">
+                      <PhoneInput
+                        defaultCountry={countryCode}
+                        value={phoneNumber}
+                        onChange={handlePhoneChange}
+                        international
+                        countryCallingCodeEditable={false}
+                        className="phone-input"
+                        inputProps={{
+                          readOnly: true,
+                          style: {
+                            pointerEvents: 'none',
+                            backgroundColor: '#f5f5f5',
+                            cursor: 'default',
+                          },
+                        }}
+                        onFocus={(e) => {
+                          document
+                            .querySelector('.phone-number-input')
+                            ?.focus();
+                        }}
+                      />
+                      <input
+                        type="tel"
+                        value={localPhoneNumber}
+                        onChange={handleLocalPhoneChange}
+                        placeholder="Número de teléfono"
+                        className="phone-number-input"
+                      />
+                    </div>
+
+                    <p>Código de país seleccionado: {phoneNumber}</p>
+
+                    {/* Mensaje de error si el número es inválido */}
+                    {!isValid && localPhoneNumber.length > 0 && (
+                      <p className="error-message">
+                        Número de teléfono no válido
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {stepNumber === 3 && (
+                <div>
+                  <h2>
+                    <ShoppingBag /> Adicionales para tu Tour
+                  </h2>
+
+                  {/* Sección de información del tour */}
+                  <div className="rf-info">
+                    <h3>
+                      <CircleHelp className="icon-style" />
+                      Información del Tour
+                    </h3>
+
+                    <div className="rf-info-column">
+                      <ul>
+                        <li>
+                          <Clock className="icon-style" />
+                          <strong>Duración del Tour:</strong>{' '}
+                          <span>3 horas</span>
+                        </li>
+                        <li>
+                          <Ship className="icon-style" />
+                          <strong>Tipo de Embarcación:</strong>{' '}
+                          <span>Lancha rápida</span>
+                        </li>
+                        <li>
+                          <MapPin className="icon-style" />
+                          <strong>Punto de Partida:</strong>{' '}
+                          <span>Muelle Principal, Puerto Aventura</span>
+                        </li>
+                        <li>
+                          <Phone className="icon-style" />
+                          <strong>Teléfono:</strong> <span>(123) 456-7890</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Sección de lo que incluye el tour */}
+                  <div className="tour-includes">
+                    <h3>Lo que incluye el tour (500 USD):</h3>
+                    <div className="includes-grid">
+                      <div className="include-item">
+                        <strong>Transporte marítimo</strong>
+                        <p>Ida y vuelta en catamarán de lujo</p>
+                      </div>
+                      <div className="include-item">
+                        <strong>Comida gourmet</strong>
+                        <p>Buffet con opciones vegetarianas disponibles</p>
+                      </div>
+                      <div className="include-item">
+                        <strong>Servicio fotográfico</strong>
+                        <p>Fotos digitales de la experiencia</p>
+                      </div>
+                      <div className="include-item">
+                        <strong>Guía certificado</strong>
+                        <p>Guía bilingüe especializado en la zona</p>
+                      </div>
+                      <div className="include-item">
+                        <strong>Bebidas premium</strong>
+                        <p>Barra libre de bebidas nacionales</p>
+                      </div>
+                      <div className="include-item">
+                        <strong>Seguro de viaje</strong>
+                        <p>Cobertura durante toda la actividad</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sección de selección de artículos original */}
+                  <div className="slect-articulos">
+                    <h2>Paquete de quipo Completo:</h2>
+
+                    <div className="filter-buttons">
+                      {[
+                        'Todos los artículos',
+                        'Equipo',
+                        'Seguridad',
+                        'Comodidad',
+                        'Entretenimiento',
+                      ].map((category) => (
+                        <button
+                          key={category}
+                          className={
+                            activeCategory === category ? 'active' : ''
+                          }
+                          onClick={() => handleCategoryChange(category)}
+                        >
+                          {category}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="items-container">
+                      {filteredItems.map((item, index) => (
+                        <div
+                          key={index}
+                          className={`item-card ${
+                            item.included ? 'included' : ''
+                          }`}
+                        >
+                          <div className="item-top">
+                            <div className="item-image">
+                              <img src={item.img} alt={item.name} />
+                            </div>
+                            <div className="item-info">
+                              <h3>{item.name}</h3>
+                              <p>{item.category}</p>
+                            </div>
+                          </div>
+
+                          <p className="max-info">
+                            Descripcion de cada elemneto que conforma el paquete
+                            dl equipo
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Botón de selección de paquete completo (mantenido como solicitaste) */}
+                  <div className="full-equipment-rental">
+                    <div className="equipment-package">
+                      <div className="package-header">
+                        <h3>Alquiler de equipo completo</h3>
+                        <p className="package-description">
+                          Si no cuenta con equipo propio, podemos proporcionarle
+                          todo lo necesario para disfrutar del tour.
+                        </p>
+                      </div>
+
+                      <div className="package-content">
+                        <div className="package-toggle">
+                          <label className="toggle-switch">
+                            <input
+                              type="checkbox"
+                              checked={data.alquilarEquipo}
+                              onChange={handlePackageSelection}
+                            />
+                            <span className="toggle-slider"></span>
+                            <span className="toggle-label">
+                              Deseo alquilar el equipo completo
+                            </span>
+                          </label>
+                        </div>
+
+                        <div className="package-price-display">
+                          <strong className="price-amount">
+                            1000.00 pesos
+                          </strong>
+                          <span className="price-conversion">
+                            Equivalente a 50 USD
+                          </span>
                         </div>
                       </div>
 
-                      <p className="max-info">
-                        Descripcion de cada elemneto que conforma el paquete dl
-                        equipo
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Botón de selección de paquete completo (mantenido como solicitaste) */}
-              <div className="full-equipment-rental">
-                <div className="equipment-package">
-                  <div className="package-header">
-                    <h3>Alquiler de equipo completo</h3>
-                    <p className="package-description">
-                      Si no cuenta con equipo propio, podemos proporcionarle
-                      todo lo necesario para disfrutar del tour.
-                    </p>
-                  </div>
-
-                  <div className="package-content">
-                    <div className="package-toggle">
-                      <label className="toggle-switch">
-                        <input
-                          type="checkbox"
-                          checked={data.alquilarEquipo}
-                          onChange={handlePackageSelection}
-                        />
-                        <span className="toggle-slider"></span>
-                        <span className="toggle-label">
-                          Deseo alquilar el equipo completo
-                        </span>
-                      </label>
-                    </div>
-
-                    <div className="package-price-display">
-                      <strong className="price-amount">1000.00 pesos</strong>
-                      <span className="price-conversion">
-                        Equivalente a 50 USD
-                      </span>
-                    </div>
-                  </div>
-
-                  <p className="package-note">
-                    Nota: Si cuenta con su propio equipo, puede traerlo al tour.
-                    El chaleco salvavidas es obligatorio y está incluido en el
-                    precio base del tour.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {stepNumber === 4 && (
-            <div>
-              <h2>
-                <FileCheck /> Confirmar Datos de Reservación
-              </h2>
-
-              {/* Resumen de datos personales */}
-              <div className="reservation-summary">
-                <div className="summary-card">
-                  <div className="summary-column">
-                    <div className="summary-item">
-                      <Calendar1 className="icon-style" />
-                      <p>
-                        <strong>Fecha:</strong> {data.date}
-                      </p>
-                    </div>
-                    <div className="summary-item">
-                      <Clock className="icon-style" />
-                      <p>
-                        <strong>Hora:</strong> {data.time}
-                      </p>
-                    </div>
-                    <div className="summary-item">
-                      <Users className="icon-style" />
-                      <p>
-                        <strong>Personas:</strong> {data.guests}
+                      <p className="package-note">
+                        Nota: Si cuenta con su propio equipo, puede traerlo al
+                        tour. El chaleco salvavidas es obligatorio y está
+                        incluido en el precio base del tour.
                       </p>
                     </div>
                   </div>
-
-                  <div className="summary-column">
-                    <div className="summary-item">
-                      <User className="icon-style" />
-                      <p>
-                        <strong>Nombre:</strong> {data.name}
-                      </p>
-                    </div>
-                    <div className="summary-item">
-                      <Mail className="icon-style" />
-                      <p>
-                        <strong>Email:</strong> {data.email}
-                      </p>
-                    </div>
-                    <div className="summary-item">
-                      <Phone className="icon-style" />
-                      <p>
-                        <strong>Teléfono:</strong> {data.phone}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Resumen del Tour - Versión mejorada */}
-              <div className="tour-summary-container">
-                <div className="tour-summary-section">
-                  <h3>Lo que incluye su tour:</h3>
-                  <div className="included-items-grid">
-                    <div className="included-item">
-                      <CheckCircle className="icon-check" />
-                      <span>Transporte marítimo</span>
-                    </div>
-                    <div className="included-item">
-                      <CheckCircle className="icon-check" />
-                      <span>Guía certificado</span>
-                    </div>
-                    <div className="included-item">
-                      <CheckCircle className="icon-check" />
-                      <span>Comida gourmet</span>
-                    </div>
-                    <div className="included-item">
-                      <CheckCircle className="icon-check" />
-                      <span>Bebidas premium</span>
-                    </div>
-                    <div className="included-item">
-                      <CheckCircle className="icon-check" />
-                      <span>Servicio fotográfico</span>
-                    </div>
-                    <div className="included-item">
-                      <CheckCircle className="icon-check" />
-                      <span>Seguro de viaje</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="equipment-summary-section">
-                  <h3>Equipo incluido en su reservación:</h3>
-                  <div className="equipment-package-summary">
-                    <h4>Paquete completo de equipo</h4>
-                    <p>
-                      Incluye: equipo de snorkel, chaleco salvavidas, equipo de
-                      pesca y zapatos acuáticos y más artículos
-                    </p>
-                    <div className="equipment-price">
-                      <strong>1000.00 pesos</strong>
-                      <span>Equivalente a 50 USD</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Resumen de pago */}
-              <div className="payment-summary">
-                <div className="payment-header">
-                  <h3>Resumen de pago</h3>
-                </div>
-
-                <div className="payment-details">
-                  <div className="payment-row">
-                    <span className="payment-label">Tour básico</span>
-                    <span className="payment-amount">
-                      {totals.basePrice} pesos
-                    </span>
-                  </div>
-
-                  {data.alquilarEquipo && (
-                    <div className="payment-row">
-                      <span className="payment-label">Alquiler de equipo</span>
-                      <span className="payment-amount">
-                        {totals.equipmentPrice} pesos
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="payment-total">
-                    <span className="payment-total-label">Total a Pagar</span>
-                    <span className="payment-total-amount">
-                      ${totals.total}
-                    </span>
-                  </div>
-
-                  <div className="payment-method">
-                    <p className="payment-method-title">Método de pago:</p>
-                    <p className="payment-method-detail">
-                      Se procesará el pago en el siguiente paso
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Información importante */}
-              <div className="important-info">
-                <h2>
-                  <CircleAlert /> Información importante
-                </h2>
-                <ul>
-                  <li>Presentarse 30 minutos antes de la hora de salida</li>
-                  <li>
-                    Llevar identificación oficial y comprobante de reservación
-                  </li>
-                  <li>
-                    El tour puede cancelarse con 24 horas de anticipación con
-                    reembolso completo
-                  </li>
-                  <li>
-                    En caso de mal tiempo, se reprogramará sin costo adicional
-                  </li>
-                </ul>
-              </div>
-            </div>
-          )}
-
-          {stepNumber === 5 && (
-            <div>
-              {reservaState.paymentStatus === 'succeeded' ? (
-                // ✅ PAGO EXITOSO
-                <div className="confirmation-step modern-card">
-                  <div className="confirmation-icon success-icon">
-                    <CheckCircle size={64} color="#4CAF50" />
-                  </div>
-                  <h2 className="confirmation-title">
-                    ¡Pago realizado con éxito!
-                  </h2>
-                  <p className="confirmation-subtitle">
-                    Tu reserva ha sido confirmada. Recibirás un correo con los
-                    detalles.
-                  </p>
-                  <div className="confirmation-details">
-                    <h3 className="details-title">Detalles de la reserva:</h3>
-                    <p>
-                      <strong>Fecha:</strong> {data?.date}
-                    </p>
-                    <p>
-                      <strong>Hora:</strong> {data?.time}
-                    </p>
-                    <p>
-                      <strong>Personas:</strong> {data?.guests}
-                    </p>
-                    <p>
-                      <strong>Total pagado:</strong> ${totals.total}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      clearReserva();
-                      navigate('/reservaciones/steps/1');
-                    }}
-                    className="confirmation-button modern-button"
-                  >
-                    Finalizar Proceso de Reserva
-                  </button>
-                </div>
-              ) : reservaState.paymentStatus === 'failed' ? (
-                // ❌ ERROR O CANCELACIÓN
-                <div className="error-step modern-card">
-                  {/* <div className="error-icon-container">
-                    <X size={64} color="#f44336" />
-                  </div> */}
-                  <h2 className="error-title">
-                    Ocurrió un problema con tu pago
-                  </h2>
-                  <p className="error-message">
-                    Tu transacción fue cancelada o falló. No se ha realizado
-                    ningún cargo.
-                  </p>
-                  <p className="error-instruction">
-                    Puedes volver a intentarlo o revisar tu método de pago.
-                  </p>
-                  <button
-                    onClick={() => {
-                      clearReserva();
-                      navigate('/reservaciones/steps/1');
-                    }}
-                    className="retry-button modern-button"
-                  >
-                    Reintentar Reserva
-                  </button>
-                </div>
-              ) : reservaState.loading ? (
-                // 🔄 CARGANDO / REDIRECCIONANDO
-                <div className="loading-state">
-                  <Spinner />
-                  <p>Cargando pasarela de pago...</p>
-                </div>
-              ) : reservaState.sessionUrl ? (
-                (() => {
-                  // Redirigir manualmente si sessionUrl existe
-                  window.location.href = reservaState.sessionUrl;
-                  return (
-                    <div className="redirecting-state">
-                      <Spinner />
-                      <p>Redirigiendo a la pasarela de pago segura...</p>
-                    </div>
-                  );
-                })()
-              ) : (
-                // ❗ NO SE PUDO INICIALIZAR
-                <div className="error-state">
-                  <p>No se pudo inicializar la pasarela de pago</p>
-                  {reservaState.error && (
-                    <p className="error-detail">{reservaState.error}</p>
-                  )}
-                  <button onClick={() => setStep(4)} className="retry-button">
-                    Volver a intentar
-                  </button>
                 </div>
               )}
-            </div>
-          )}
 
-          {/* {stepNumber === 6 && (
-            <div className="confirmation-step modern-card">
-              <div className="confirmation-icon success-icon">
-                <CheckCircle size={64} color="#4CAF50" />
-              </div>
-              <h2 className="confirmation-title">¡Pago realizado con éxito!</h2>
-              <p className="confirmation-subtitle">
-                Tu reserva ha sido confirmada. Recibirás un correo con los
-                detalles.
-              </p>
+              {stepNumber === 4 && (
+                <div>
+                  <h2>
+                    <FileCheck /> Confirmar Datos de Reservación
+                  </h2>
 
-              <div className="confirmation-details">
-                <h3 className="details-title">Detalles de la reserva:</h3>
+                  {/* Resumen de datos personales */}
+                  <div className="reservation-summary">
+                    <div className="summary-card">
+                      <div className="summary-column">
+                        <div className="summary-item">
+                          <Calendar1 className="icon-style" />
+                          <p>
+                            <strong>Fecha:</strong> {data.date}
+                          </p>
+                        </div>
+                        <div className="summary-item">
+                          <Clock className="icon-style" />
+                          <p>
+                            <strong>Hora:</strong> {data.time}
+                          </p>
+                        </div>
+                        <div className="summary-item">
+                          <Users className="icon-style" />
+                          <p>
+                            <strong>Personas:</strong> {data.guests}
+                          </p>
+                        </div>
+                      </div>
 
-                <p>
-                  <strong>Fecha:</strong> {data?.date}
-                </p>
-                <p>
-                  <strong>Hora:</strong> {data?.time}
-                </p>
-                <p>
-                  <strong>Personas:</strong> {data?.guests}
-                </p>
-                <p>
-                  <strong>Total pagado:</strong> ${totals.total}
-                </p>
-              </div>
+                      <div className="summary-column">
+                        <div className="summary-item">
+                          <User className="icon-style" />
+                          <p>
+                            <strong>Nombre:</strong> {data.name}
+                          </p>
+                        </div>
+                        <div className="summary-item">
+                          <Mail className="icon-style" />
+                          <p>
+                            <strong>Email:</strong> {data.email}
+                          </p>
+                        </div>
+                        <div className="summary-item">
+                          <Phone className="icon-style" />
+                          <p>
+                            <strong>Teléfono:</strong> {data.phone}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-              <button
-                onClick={() => {
-                  clearReserva();
-                  navigate('/reservaciones/steps/1');
-                }}
-                className="confirmation-button modern-button"
-              >
-                Finalizar Proceso de Reserva
-              </button>
-            </div>
-          )} */}
+                  {/* Resumen del Tour - Versión mejorada */}
+                  <div className="tour-summary-container">
+                    <div className="tour-summary-section">
+                      <h3>Lo que incluye su tour:</h3>
+                      <div className="included-items-grid">
+                        <div className="included-item">
+                          <CheckCircle className="icon-check" />
+                          <span>Transporte marítimo</span>
+                        </div>
+                        <div className="included-item">
+                          <CheckCircle className="icon-check" />
+                          <span>Guía certificado</span>
+                        </div>
+                        <div className="included-item">
+                          <CheckCircle className="icon-check" />
+                          <span>Comida gourmet</span>
+                        </div>
+                        <div className="included-item">
+                          <CheckCircle className="icon-check" />
+                          <span>Bebidas premium</span>
+                        </div>
+                        <div className="included-item">
+                          <CheckCircle className="icon-check" />
+                          <span>Servicio fotográfico</span>
+                        </div>
+                        <div className="included-item">
+                          <CheckCircle className="icon-check" />
+                          <span>Seguro de viaje</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="equipment-summary-section">
+                      <h3>Equipo incluido en su reservación:</h3>
+                      <div className="equipment-package-summary">
+                        <h4>Paquete completo de equipo</h4>
+                        <p>
+                          Incluye: equipo de snorkel, chaleco salvavidas, equipo
+                          de pesca y zapatos acuáticos y más artículos
+                        </p>
+                        <div className="equipment-price">
+                          <strong>1000.00 pesos</strong>
+                          <span>Equivalente a 50 USD</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Resumen de pago */}
+                  <div className="payment-summary">
+                    <div className="payment-header">
+                      <h3>Resumen de pago</h3>
+                    </div>
+
+                    <div className="payment-details">
+                      <div className="payment-row">
+                        <span className="payment-label">Tour básico</span>
+                        <span className="payment-amount">
+                          {totals.basePrice} pesos
+                        </span>
+                      </div>
+
+                      {data.alquilarEquipo && (
+                        <div className="payment-row">
+                          <span className="payment-label">
+                            Alquiler de equipo
+                          </span>
+                          <span className="payment-amount">
+                            {totals.equipmentPrice} pesos
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="payment-total">
+                        <span className="payment-total-label">
+                          Total a Pagar
+                        </span>
+                        <span className="payment-total-amount">
+                          ${totals.total}
+                        </span>
+                      </div>
+
+                      <div className="payment-method">
+                        <p className="payment-method-title">Método de pago:</p>
+                        <p className="payment-method-detail">
+                          Se procesará el pago en el siguiente paso
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Información importante */}
+                  <div className="important-info">
+                    <h2>
+                      <CircleAlert /> Información importante
+                    </h2>
+                    <ul>
+                      <li>Presentarse 30 minutos antes de la hora de salida</li>
+                      <li>
+                        Llevar identificación oficial y comprobante de
+                        reservación
+                      </li>
+                      <li>
+                        El tour puede cancelarse con 24 horas de anticipación
+                        con reembolso completo
+                      </li>
+                      <li>
+                        En caso de mal tiempo, se reprogramará sin costo
+                        adicional
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              {stepNumber === 5 && (
+                <div>
+                  {reservaState.paymentStatus === 'succeeded' ? (
+                    // ✅ PAGO EXITOSO
+                    <div className="confirmation-step modern-card">
+                      <div className="confirmation-icon success-icon">
+                        <CheckCircle size={64} color="#4CAF50" />
+                      </div>
+                      <h2 className="confirmation-title">
+                        ¡Pago realizado con éxito!
+                      </h2>
+                      <p className="confirmation-subtitle">
+                        Tu reserva ha sido confirmada. Recibirás un correo con
+                        los detalles.
+                      </p>
+                      <div className="confirmation-details">
+                        <h3 className="details-title">
+                          Detalles de la reserva:
+                        </h3>
+                        <p>
+                          <strong>Fecha:</strong> {data?.date}
+                        </p>
+                        <p>
+                          <strong>Hora:</strong> {data?.time}
+                        </p>
+                        <p>
+                          <strong>Personas:</strong> {data?.guests}
+                        </p>
+                        <p>
+                          <strong>Total pagado:</strong> ${totals.total}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          clearReserva();
+                          navigate('/reservaciones/steps/1');
+                        }}
+                        className="confirmation-button modern-button"
+                      >
+                        Finalizar Proceso de Reserva
+                      </button>
+                    </div>
+                  ) : reservaState.paymentStatus === 'failed' ? (
+                    // ❌ ERROR O CANCELACIÓN
+                    <div className="error-step modern-card">
+                      {/* <div className="error-icon-container">
+                    <X size={64} color="#f44336" />
+                  </div> */}
+                      <h2 className="error-title">
+                        Ocurrió un problema con tu pago
+                      </h2>
+                      <p className="error-message">
+                        Tu transacción fue cancelada o falló. No se ha realizado
+                        ningún cargo.
+                      </p>
+                      <p className="error-instruction">
+                        Puedes volver a intentarlo o revisar tu método de pago.
+                      </p>
+                      <button
+                        onClick={() => {
+                          clearReserva();
+                          navigate('/reservaciones/steps/1');
+                        }}
+                        className="retry-button modern-button"
+                      >
+                        Reintentar Reserva
+                      </button>
+                    </div>
+                  ) : reservaState.loading ? (
+                    // 🔄 CARGANDO / REDIRECCIONANDO
+                    <div className="loading-state">
+                      <Spinner />
+                      <p>Cargando pasarela de pago...</p>
+                    </div>
+                  ) : reservaState.sessionUrl ? (
+                    (() => {
+                      // Redirigir manualmente si sessionUrl existe
+                      window.location.href = reservaState.sessionUrl;
+                      return (
+                        <div className="redirecting-state">
+                          <Spinner />
+                          <p>Redirigiendo a la pasarela de pago segura...</p>
+                        </div>
+                      );
+                    })()
+                  ) : (
+                    // ❗ NO SE PUDO INICIALIZAR
+                    <div className="error-state">
+                      <p>No se pudo inicializar la pasarela de pago</p>
+                      {reservaState.error && (
+                        <p className="error-detail">{reservaState.error}</p>
+                      )}
+                      <button
+                        onClick={() => {
+                          clearReserva();
+                          navigate('/reservaciones/steps/1');
+                        }}
+                      >
+                        Volver a intentar
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+           </>
+) : (
+ <div className="auth-warning">
+  <div className="auth-warning-card">
+    <h2 className="auth-warning-title">
+      <TriangleAlert className="alert-icon-block" /> Sesión no iniciada
+    </h2>
+    <p className="auth-warning-message">
+      Para continuar con tu reserva, necesitas iniciar sesión en tu cuenta.
+    </p>
+    <LockKeyhole className="lock-icon-block" />
+  </div>
+</div>
+
+
+)}
+
         </div>
 
         <div className="step-buttons">
@@ -1135,7 +1140,7 @@ export const ReservationStep = () => {
               <ChevronLeft /> Anterior
             </button>
           )}
-          {stepNumber < 5 && (
+          {stepNumber < 5 && isAuthenticated && (
             <button className="next-button" onClick={nextStep}>
               {' '}
               Siguiente <ChevronRight />
