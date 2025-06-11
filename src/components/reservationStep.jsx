@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-phone-number-input/style.css';
@@ -107,7 +107,7 @@ export const ReservationStep = () => {
   // Verificar autenticación al inicio
   useEffect(() => {
     console.log('Estado de autenticación reserva:', isAuthenticated);
-     console.log(
+    console.log(
       'Token disponible:',
       token ? '***' + token.slice(-4) : 'No hay token'
     );
@@ -517,7 +517,7 @@ export const ReservationStep = () => {
       <div className="reservation-tour">
         <div className="tour-details">
           {isAuthenticated ? (
-  <>
+            <>
               {stepNumber === 1 && (
                 <div>
                   {/* Encabezado con título */}
@@ -1114,24 +1114,22 @@ export const ReservationStep = () => {
                   )}
                 </div>
               )}
-
-           </>
-) : (
- <div className="auth-warning">
-  <div className="auth-warning-card">
-    <h2 className="auth-warning-title">
-      <TriangleAlert className="alert-icon-block" /> Sesión no iniciada
-    </h2>
-    <p className="auth-warning-message">
-      Para continuar con tu reserva, necesitas iniciar sesión en tu cuenta.
-    </p>
-    <LockKeyhole className="lock-icon-block" />
-  </div>
-</div>
-
-
-)}
-
+            </>
+          ) : (
+            <div className="auth-warning">
+              <div className="auth-warning-card">
+                <h2 className="auth-warning-title">
+                  <TriangleAlert className="alert-icon-block" /> Sesión no
+                  iniciada
+                </h2>
+                <p className="auth-warning-message">
+                  Para continuar con tu reserva, necesitas iniciar sesión en tu
+                  cuenta.
+                </p>
+                <LockKeyhole className="lock-icon-block" />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="step-buttons">
