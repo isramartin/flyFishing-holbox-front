@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { getAllResenas } from '../service/Reseña.service';
+import { getAllResenas, createResena } from '../service/Reseña.service';
 import '../styles/prueba.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
@@ -10,6 +10,7 @@ import {
   TriangleAlert,
 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
+import { useAlert } from './AlertManager';
 
 const Review2 = () => {
   const [activeTab, setActiveTab] = useState('Mosaico');
@@ -21,7 +22,7 @@ const Review2 = () => {
   const { isAuthenticated, user, token } = useContext(AuthContext);
   const { token: contextToken } = useContext(AuthContext);
   const [localToken, setLocalToken] = useState('');
-
+  const { addAlert } = useAlert();
   // Estados para el formulario
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -29,6 +30,9 @@ const Review2 = () => {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [group, setGroup] = useState(null);
+
+  const minChars = 50;
+  const maxChars = 150;
 
   const groups = ['Parejas', 'Familia', 'Amigos', 'Solo'];
   const ratingLabels = ['Pésimo', 'Malo', 'Bueno', 'Muy bueno', 'Excelente'];
@@ -94,28 +98,58 @@ const Review2 = () => {
     setRating(index + 1);
   };
 
-  const handleSubmit = () => {
-    if (!review.trim() || !title.trim() || !date || !group) {
-      alert('Por favor completa todos los campos.');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!rating || !date || !group || !title || !review) {
+      addAlert('Por favor, completa todos los campos.', 'warning');
       return;
     }
 
-    const newReview = {
-      rating,
-      title,
-      review,
-      date,
-      group,
+    const resenaData = {
+      calificacion: rating,
+      fechaVisita: date,
+      acompanante: group,
+      titulo: title,
+      opinion: review,
     };
 
-    // Aquí deberías implementar la función para enviar a tu API
-    // onSubmit(newReview);
+    // Obtener token
+    const tokenSources = [
+      localStorage.getItem('authToken'),
+      authContext?.token,
+      JSON.parse(localStorage.getItem('auth'))?.token,
+    ].filter(Boolean);
 
-    setRating(0);
-    setReview('');
-    setTitle('');
-    setDate('');
-    setGroup(null);
+    const token = tokenSources[0];
+    console.log(
+      '🔑 Token seleccionado:',
+      token ? `***${token.slice(-4)}` : 'NO TOKEN'
+    );
+
+    if (!token) {
+      const errorMsg =
+        'No se encontró token de autenticación. Por favor inicie sesión nuevamente.';
+      console.error(errorMsg);
+      throw new Error(errorMsg);
+    }
+
+    try {
+      console.log('🟡 resenaData que se enviará:', resenaData);
+      console.log('🟢 Token usado:', token);
+
+      await createResena(resenaData, token);
+      addAlert('¡Reseña enviada con éxito!', 'success');
+      // Reiniciar formulario
+      setRating(0);
+      setHover(0);
+      setDate('');
+      setGroup('');
+      setTitle('');
+      setReview('');
+    } catch (error) {
+      addAlert('Ocurrió un error al enviar la reseña.', 'error');
+    }
   };
 
   // Función para obtener el color de la línea según el estado
@@ -445,8 +479,34 @@ const Review2 = () => {
                     <textarea
                       placeholder="Escribe tu reseña..."
                       value={review}
-                      onChange={(e) => setReview(e.target.value)}
+                      onChange={(e) => {
+                        const text = e.target.value;
+                        if (text.length <= maxChars) {
+                          setReview(text);
+                        }
+                      }}
+                      style={{
+                        borderColor:
+                          review.length > 0 && review.length < minChars
+                            ? 'red'
+                            : '#ccc',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                        outline: 'none',
+                        padding: '8px',
+                        width: '100%',
+                        borderRadius: '4px',
+                      }}
                     ></textarea>
+
+                    <div style={{ fontSize: '0.9em', marginTop: '4px' }}>
+                      Caracteres: {review.length}/{maxChars}
+                      {review.length === maxChars && (
+                        <span style={{ color: 'red', marginLeft: '8px' }}>
+                          Has alcanzado el máximo permitido.
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="button-container">
                     <button type="submit" onClick={handleSubmit}>

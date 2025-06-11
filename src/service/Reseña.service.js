@@ -22,3 +22,28 @@ export const getAllResenas = async () => {
     throw error;
   }
 };
+
+export const createResena = async (resenaData, token) => {
+  try {
+
+    const response = await fetch(`${API_URL}/api/resenas`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(resenaData),
+    });
+
+    if (!response.ok) {
+  const errorData = await response.json();
+  console.error("🔴 Detalle del error del backend:", errorData);
+  throw new Error(errorData.message || "Error al crear la reseña");
+}
+    return await response.json();
+  } catch (error) {
+    console.error("Error en createResena:", error);
+    throw error;
+  }
+};
+
