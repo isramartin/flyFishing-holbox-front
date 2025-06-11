@@ -4,9 +4,6 @@ import react from '@vitejs/plugin-react-swc';
 export default defineConfig({
   base: "/", // Para Render
   plugins: [react()],
-  define: {
-    'process.env': process.env,
-  },
   server: {
     open: true,
   },

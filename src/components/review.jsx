@@ -15,7 +15,8 @@ import { useAlert } from './AlertManager';
 const Review2 = () => {
   const [activeTab, setActiveTab] = useState('Mosaico');
   const [resenas, setResenas] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [fetchOnMount, setFetchOnMount] = useState(true);
   const [error, setError] = useState(null);
   const authContext = useContext(AuthContext);
   const [authToken, setAuthToken] = useState(null);
@@ -30,6 +31,7 @@ const Review2 = () => {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [group, setGroup] = useState(null);
+  const [nuevaResenaPublicada, setNuevaResenaPublicada] = useState(false);
 
   const minChars = 50;
   const maxChars = 150;
@@ -55,8 +57,8 @@ const Review2 = () => {
 
     // Intentar obtener el token de varias fuentes
     const token =
-      localStorage.getItem('authToken') || // 1. LocalStorage
-      (authContext && authContext.token) || // 2. Contexto
+      localStorage.getItem('authToken') ||
+      (authContext && authContext.token) ||
       '';
 
     console.log(
@@ -80,19 +82,20 @@ const Review2 = () => {
   // Obtener reseñas de la API
   useEffect(() => {
     const fetchResenas = async () => {
+      if (fetchOnMount) setLoading(true);
       try {
-        setLoading(true);
         const data = await getAllResenas();
         setResenas(data);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
+        setFetchOnMount(false);
       }
     };
 
     fetchResenas();
-  }, []);
+  }, [nuevaResenaPublicada]);
 
   const handleRating = (index) => {
     setRating(index + 1);
@@ -147,6 +150,7 @@ const Review2 = () => {
       setGroup('');
       setTitle('');
       setReview('');
+      setNuevaResenaPublicada((prev) => !prev);
     } catch (error) {
       addAlert('Ocurrió un error al enviar la reseña.', 'error');
     }
@@ -379,7 +383,6 @@ const Review2 = () => {
                     </div>
                     <h3 className="card-title">{resena.titulo}</h3>
                     <p className="card-content">{resena.opinion}</p>
-                    <a className="card-read-more">Leer más →</a>
                   </div>
                 ))}
               </div>
@@ -411,126 +414,122 @@ const Review2 = () => {
                     </div>
                     <h3 className="card-title">{resena.titulo}</h3>
                     <p className="card-content">{resena.opinion}</p>
-                    <a className="card-read-more">Leer más →</a>
                   </div>
                 ))}
               </div>
             )}
-
-            {activeTab === 'Agregar Reseña' &&
-              (isAuthenticated ? (
-                <div className="review-box">
-                  <h2>¿Cómo calificarías tu experiencia?</h2>
-                  <div className="left-column">
-                    <div className="star-rating">
-                      {[...Array(5)].map((_, index) => (
-                        <span
-                          key={index}
-                          className={
-                            index < (hover || rating) ? 'star selected' : 'star'
-                          }
-                          onClick={() => handleRating(index)}
-                          onMouseEnter={() => setHover(index + 1)}
-                          onMouseLeave={() => setHover(0)}
-                        >
-                          ★
-                        </span>
-                      ))}
-                      <p className="rating-text">
-                        {hover > 0
-                          ? ratingLabels[hover - 1]
-                          : rating > 0
-                          ? ratingLabels[rating - 1]
-                          : 'Selecciona una calificación'}
-                      </p>
-                    </div>
-                    <label>¿Cuándo fuiste?</label>
-                    <select
-                      value={date}
-                      onChange={(e) => setDate(e.target.value)}
-                    >
-                      <option value="">Seleccione una opción</option>
-                      <option value="Enero">Enero</option>
-                      <option value="Febrero">Febrero</option>
-                      <option value="Marzo">Marzo</option>
-                    </select>
-                    <label>¿Con quién fuiste?</label>
-                    <div className="group-selection">
-                      {groups.map((g) => (
-                        <button
-                          key={g}
-                          className={group === g ? 'selected' : ''}
-                          onClick={() => setGroup(g)}
-                        >
-                          {g}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="right-column">
-                    <label>Título de tu opinión</label>
-                    <input
-                      type="text"
-                      placeholder="Cuéntanos un poco sobre tu experiencia"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                    />
-                    <label>Escribe tu opinión</label>
-                    <textarea
-                      placeholder="Escribe tu reseña..."
-                      value={review}
-                      onChange={(e) => {
-                        const text = e.target.value;
-                        if (text.length <= maxChars) {
-                          setReview(text);
-                        }
-                      }}
-                      style={{
-                        borderColor:
-                          review.length > 0 && review.length < minChars
-                            ? 'red'
-                            : '#ccc',
-                        borderWidth: '1px',
-                        borderStyle: 'solid',
-                        outline: 'none',
-                        padding: '8px',
-                        width: '100%',
-                        borderRadius: '4px',
-                      }}
-                    ></textarea>
-
-                    <div style={{ fontSize: '0.9em', marginTop: '4px' }}>
-                      Caracteres: {review.length}/{maxChars}
-                      {review.length === maxChars && (
-                        <span style={{ color: 'red', marginLeft: '8px' }}>
-                          Has alcanzado el máximo permitido.
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="button-container">
-                    <button type="submit" onClick={handleSubmit}>
-                      Enviar Reseña
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="auth-warning">
-                  <div className="auth-warning-card">
-                    <h2 className="auth-warning-title">
-                      <TriangleAlert className="alert-icon-block" /> Sesión no
-                      iniciada
-                    </h2>
-                    <p className="auth-warning-message">
-                      Para escribir una reseña, necesitas iniciar sesión en tu
-                      cuenta.
-                    </p>
-                    <LockKeyhole className="lock-icon-block" />
-                  </div>
-                </div>
-              ))}
           </>
         )}
+
+        {activeTab === 'Agregar Reseña' &&
+          (isAuthenticated ? (
+            <div className="review-box">
+              <h2>¿Cómo calificarías tu experiencia?</h2>
+              <div className="left-column">
+                <div className="star-rating">
+                  {[...Array(5)].map((_, index) => (
+                    <span
+                      key={index}
+                      className={
+                        index < (hover || rating) ? 'star selected' : 'star'
+                      }
+                      onClick={() => handleRating(index)}
+                      onMouseEnter={() => setHover(index + 1)}
+                      onMouseLeave={() => setHover(0)}
+                    >
+                      ★
+                    </span>
+                  ))}
+                  <p className="rating-text">
+                    {hover > 0
+                      ? ratingLabels[hover - 1]
+                      : rating > 0
+                      ? ratingLabels[rating - 1]
+                      : 'Selecciona una calificación'}
+                  </p>
+                </div>
+                <label>¿Cuándo fuiste?</label>
+                <select value={date} onChange={(e) => setDate(e.target.value)}>
+                  <option value="">Seleccione una opción</option>
+                  <option value="Enero">Enero</option>
+                  <option value="Febrero">Febrero</option>
+                  <option value="Marzo">Marzo</option>
+                </select>
+                <label>¿Con quién fuiste?</label>
+                <div className="group-selection">
+                  {groups.map((g) => (
+                    <button
+                      key={g}
+                      className={group === g ? 'selected' : ''}
+                      onClick={() => setGroup(g)}
+                    >
+                      {g}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="right-column">
+                <label>Título de tu opinión</label>
+                <input
+                  type="text"
+                  placeholder="Cuéntanos un poco sobre tu experiencia"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+                <label>Escribe tu opinión</label>
+                <textarea
+                  placeholder="Escribe tu reseña..."
+                  value={review}
+                  onChange={(e) => {
+                    const text = e.target.value;
+                    if (text.length <= maxChars) {
+                      setReview(text);
+                    }
+                  }}
+                  style={{
+                    borderColor:
+                      review.length > 0 && review.length < minChars
+                        ? 'red'
+                        : '#ccc',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    outline: 'none',
+                    padding: '8px',
+                    width: '100%',
+                    borderRadius: '4px',
+                  }}
+                ></textarea>
+
+                <div style={{ fontSize: '0.9em', marginTop: '4px' }}>
+                  Caracteres: {review.length}/{maxChars}
+                  {review.length === maxChars && (
+                    <span style={{ color: 'red', marginLeft: '8px' }}>
+                      Has alcanzado el máximo permitido.
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="button-container">
+                <button type="submit" onClick={handleSubmit}>
+                  Enviar Reseña
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="auth-warning">
+              <div className="auth-warning-card">
+                <h2 className="auth-warning-title">
+                  <TriangleAlert className="alert-icon-block" /> Sesión no
+                  iniciada
+                </h2>
+                <p className="auth-warning-message">
+                  Para escribir una reseña, necesitas iniciar sesión en tu
+                  cuenta.
+                </p>
+                <LockKeyhole className="lock-icon-block" />
+              </div>
+            </div>
+          ))}
       </div>
     </div>
   );
