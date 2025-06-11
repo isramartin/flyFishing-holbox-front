@@ -77,7 +77,7 @@ const Portada = () => {
           and well known as a world class tarpon fishing destination where you can 
           regularly find migratory giants upwards of 100lbs
         </h2>
-        <Link className="btn-reservar" to="/reservaciones">
+        <Link className="btn-reservar" to="/reservaciones/steps/1">
           Reservar Ahora
         </Link>
       </div>
