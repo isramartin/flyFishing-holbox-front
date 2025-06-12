@@ -23,3 +23,26 @@ export const getAllGaleria = async () => {
     throw error;
   }
 };
+
+export const updateFavorito = async (id, favorito) => {
+  try {
+    const response = await fetch(`${API_URL}/api/galeria/favorito/${id}?favorito=${favorito}`, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        // Agrega si usas autenticación:
+        // Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error al actualizar favorito');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error en updateFavorito:', error);
+    throw error;
+  }
+};

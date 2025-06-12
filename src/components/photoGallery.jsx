@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { getAllGaleria } from '../service/galeria.service';
+import { getAllGaleria, updateFavorito } from '../service/galeria.service';
 import { X, ArrowDownToLine, Heart, HeartOff, Link } from 'lucide-react';
 
 const PhotoGallery = () => {
@@ -33,6 +33,24 @@ const PhotoGallery = () => {
 
     fetchPhotos();
   }, []);
+
+  const handleToggleFavorito = async (photoId, currentFavorito) => {
+    try {
+      // Actualizar el favorito en backend
+      await updateFavorito(photoId, !currentFavorito);
+      // Actualizar estado local para refrescar la UI
+      setPhotos((prevPhotos) =>
+        prevPhotos.map((photo) =>
+          photo.id === photoId
+            ? { ...photo, favorito: !currentFavorito }
+            : photo
+        )
+      );
+    } catch (error) {
+      console.error('Error al actualizar favorito:', error);
+      // Puedes agregar alertas o notificaciones aquí si quieres
+    }
+  };
 
   const handleImageClick = (index, e) => {
     e.stopPropagation();
@@ -138,7 +156,15 @@ const PhotoGallery = () => {
             {hoverIndex === index && (
               <div className="gallery-overlay">
                 <div className="gallery-actions">
-                  <button>{photo.favorito ? <HeartOff /> : <Heart />}</button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleFavorito(photo.id, photo.favorito);
+                    }}
+                  >
+                    {photo.favorito ? <HeartOff /> : <Heart />}
+                  </button>
+
                   <button>
                     <Link />
                   </button>
@@ -165,7 +191,24 @@ const PhotoGallery = () => {
           <div className="modal-content">
             <X className="close-button-close" onClick={handleCloseModal} />
             <ArrowDownToLine className="close-button-dowload" />
-            <Heart className="close-button-favorite" />
+            {photos[activeIndex].favorito ? (
+              <HeartOff
+                className="close-button-favorite"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggleFavorito(photos[activeIndex].id, true);
+                }}
+              />
+            ) : (
+              <Heart
+                className="close-button-favorite"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggleFavorito(photos[activeIndex].id, false);
+                }}
+              />
+            )}
+
             <Link className="close-button-link" />
 
             <button onClick={handlePrev} className="arrow-left">
