@@ -24,9 +24,9 @@
   margin-bottom: 20px;
 }
 
-.form-group {
+/* .form-group {
   margin-bottom: 20px;
-}
+} */
 
 .form-label {
   font-size: 14px;
@@ -83,30 +83,19 @@
   text-decoration: underline;
 }
 
-.password-toggle {
-  position: absolute;
-  top: 36%;
-  transform: translateY(-50%);
-  transform: translateX(1300%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #005184;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  z-index: 2; /* Asegura que esté sobre el campo de entrada */
+
+.form-group {
+  position: relative; /* importante para el botón absoluto */
+  margin-bottom: 1.5rem;
 }
 
+
+.password-toggle,
 .password-toggleC {
   position: absolute;
-  top: 46%;
+  top: 70%;
+  right: 8px; /* separación a la derecha del input */
   transform: translateY(-50%);
-  transform: translateX(1300%);
   background: none;
   border: none;
   cursor: pointer;
@@ -118,13 +107,19 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  z-index: 2; /* Asegura que esté sobre el campo de entrada */
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.password-toggle:hover,
+.password-toggleC:hover {
+  color: #003d66; /* un poco más oscuro al hover */
 }
 
 .password-toggle-button {
   position: absolute;
 
-  top: 48%;
+  top: 25%;
   transform: translateY(-50%);
   transform: translateX(1300%);
   background: none;
@@ -256,5 +251,14 @@
     width: 18px;
     height: 18px;
   }
+
 }
 
+@media (max-width: 600px) {
+  .password-toggle,
+  .password-toggleC {
+    right: 8px;
+    width: 20px;
+    height: 20px;
+  }
+}

@@ -4,7 +4,7 @@
   --primary-dark: #c94a24;
   --accent-color: #4bafe8;
   --text-light: #fefefe;
-  --overlay-dark: rgba(0, 0, 0, 0.495);
+  --overlay-dark: rgba(0, 0, 0, 0.232);
   --box-bg: rgba(0, 0, 0, 0.64);
   --box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
   --transition: all 0.3s ease-in-out;
@@ -27,7 +27,7 @@
   object-fit: cover;
   top:0;
   left: 0;
-  transition: opacity 0.5s ease-in-out;
+  /* transition: opacity 0.10s ease-in-out; */
 }
 
 .hero-image.fade {
@@ -59,6 +59,7 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 1rem;
+  /* margin-top: 25rem; */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   animation: fadeInDown 1s ease-out;
 }

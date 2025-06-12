@@ -1,11 +1,265 @@
 .home-container {
-    width: 90%;
-    min-height: 100vh;
-    margin: 10px auto; /* Centra el contenido horizontalmente */
-    /* border-radius: 8px;
+  width: 90%;
+  min-height: 100vh;
+  margin: 10px auto; /* Centra el contenido horizontalmente */
+  /* border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
-    margin-top: 40px; /* Añade espacio superior para separar de otros componentes */
-    margin-bottom: 1px;
+  margin-top: 40px; /* Añade espacio superior para separar de otros componentes */
+  margin-bottom: 1px;
+}
+
+.info-section {
+  padding: 3rem 1.5rem;
+  /* max-width: 1100px; */
+  margin: 3rem auto;
+  text-align: center;
+}
+
+.info-section h2 {
+  font-size: 4rem;
+  color: #0b3d91;
+  margin-bottom: 1rem;
+}
+
+.info-section p {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 2rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.info-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.info-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  flex: 1 1 280px;
+  max-width: 320px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.132);
+  transition: transform 0.3s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-6px);
+}
+
+.info-card span {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.info-card h3 {
+  color: #005184;
+  margin-bottom: 0.5rem;
+}
+
+.info-card p {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.service-section {
+  padding: 3rem 1rem;
+  /* background-color: #f9f9f9; */
+  text-align: center;
+  /* max-width: 900px; */
+  margin: 0 auto 3rem auto;
+  /* border-radius: 8px; */
+  /* box-shadow: 0 4px 8px rgb(0 0 0 / 0.05); */
+}
+
+.service-section h2 {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  color: #005184;
+}
+
+.service-section p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #444;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.service-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.service-card {
+  background: white;
+  flex: 1 1 220px;
+  max-width: 250px;
+  padding: 1.8rem 1rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.132);
+  transition: transform 0.2s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+}
+
+.service-icon {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+  color: #0078b3;
+}
+
+.service-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: #003a5d;
+}
+
+.service-card p {
+  font-size: 1rem;
+  color: #555;
+}
+
+.btn-primary {
+  background-color: #005184;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #003a5d;
+}
+
+/* Responsivo */
+
+@media (max-width: 650px) {
+  .service-cards {
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
+  .service-card {
+    max-width: 100%;
+  }
+}
 
+.boat-info-section {
+  /* max-width: 900px; */
+  margin: 3rem auto 4rem auto;
+  padding: 2rem 1rem;
+  /* background-color: #f0f8ff; */
+  /* border-radius: 12px;
+  box-shadow: 0 6px 15px rgb(0 0 0 / 0.1); */
+  color: #073763;
+}
+
+.boat-info-section h2 {
+  text-align: center;
+  font-size: 2.3rem;
+  margin-bottom: 1.8rem;
+  font-weight: 700;
+}
+
+.boat-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.boat-image-container {
+  flex: 1 1 300px;
+  max-width: 350px;
+  text-align: center;
+}
+
+.boat-image {
+  width: 100%;
+  border-radius: 12px;
+  /* box-shadow: 0 4px 12px rgb(0 0 0 / 0.12); */
+}
+
+.boat-description {
+  flex: 1 1 350px;
+  max-width: 500px;
+}
+
+.boat-description h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.boat-description p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.boat-features {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  color: #0a2a52;
+}
+
+.boat-features li {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.schedule {
+  text-align: center;
+}
+
+.schedule h3 {
+  font-size: 1.7rem;
+  margin-bottom: 1rem;
+}
+
+.schedule ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #0a2a52;
+}
+
+.schedule ul li {
+  margin-bottom: 0.6rem;
+}
+
+.schedule p {
+  font-style: italic;
+  color: #2f4976;
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+  .boat-details {
+    flex-direction: column;
+  }
+
+  .boat-description, 
+  .boat-image-container {
+    max-width: 100%;
+  }
+}

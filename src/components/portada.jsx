@@ -4,9 +4,10 @@ import imagen1 from '../assets/image/image1.png';
 import imagen2 from '../assets/image/image2.png';
 import imagen3 from '../assets/image/image3.png';
 import imagen4 from '../assets/image/image4.png';
+import imagen5 from '../assets/image/image5.jpg';
 import { Link } from 'react-router-dom';
 
-const images = [imagen1, imagen2, imagen3, imagen4];
+const images = [imagen5];
 
 const Portada = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -62,7 +63,7 @@ const Portada = () => {
       <img 
         src={images[currentIndex]} 
         alt="Portada" 
-        className={`hero-image ${fade ? 'fade' : ''}`} 
+      className="hero-image" 
         loading="eager"
       />
 
