@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { getAllGaleria, updateFavorito } from '../service/galeria.service';
+import {
+  getAllGaleria,
+  updateFavorito,
+  descargarImagen,
+} from '../service/galeria.service';
 import { X, ArrowDownToLine, Heart, HeartOff, Link } from 'lucide-react';
+import { useAlert } from './AlertManager';
 
 const PhotoGallery = () => {
   const [showModal, setShowModal] = useState(false);
@@ -10,6 +15,7 @@ const PhotoGallery = () => {
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
   const isScrolling = useRef(false);
+  const { addAlert } = useAlert();
   const [skeletonHeights, setSkeletonHeights] = useState([]);
 
   useEffect(() => {
@@ -49,6 +55,15 @@ const PhotoGallery = () => {
     } catch (error) {
       console.error('Error al actualizar favorito:', error);
       // Puedes agregar alertas o notificaciones aquí si quieres
+    }
+  };
+
+  const handleDescarga = async (id) => {
+    try {
+      await descargarImagen(id);
+      addAlert('Descarga completada con éxito', 'success'); // o cualquier otra forma que uses para mostrar mensajes
+    } catch (error) {
+      addAlert('Error al descargar imagen: ' + error.message);
     }
   };
 
@@ -165,10 +180,15 @@ const PhotoGallery = () => {
                     {photo.favorito ? <HeartOff /> : <Heart />}
                   </button>
 
-                  <button>
+                  {/* <button>
                     <Link />
-                  </button>
-                  <button>
+                  </button> */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDescarga(photo.id);
+                    }}
+                  >
                     <ArrowDownToLine />
                   </button>
                 </div>
@@ -190,7 +210,13 @@ const PhotoGallery = () => {
         <div className="gallery-modal-overlay">
           <div className="modal-content">
             <X className="close-button-close" onClick={handleCloseModal} />
-            <ArrowDownToLine className="close-button-dowload" />
+            <ArrowDownToLine
+              className="close-button-dowload"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDescarga(photos[activeIndex].id);
+              }}
+            />
             {photos[activeIndex].favorito ? (
               <HeartOff
                 className="close-button-favorite"
@@ -209,7 +235,7 @@ const PhotoGallery = () => {
               />
             )}
 
-            <Link className="close-button-link" />
+            {/* <Link className="close-button-link" /> */}
 
             <button onClick={handlePrev} className="arrow-left">
               &#10094;
