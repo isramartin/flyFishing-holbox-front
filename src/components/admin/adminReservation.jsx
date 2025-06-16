@@ -19,18 +19,6 @@ const AdminReservations = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const reservationsPerPage = 10; // puedes ajustar este número
 
-// const indexOfLastReservation = currentPage * reservationsPerPage;
-// const indexOfFirstReservation = indexOfLastReservation - reservationsPerPage;
-
-// const currentReservations = filteredReservations.slice(
-//   indexOfFirstReservation,
-//   indexOfLastReservation
-// );
-
-  //const totalPages = Math.ceil(filteredReservations.length / reservationsPerPage);
-
-
-  // const reservations = [
   //   {
   //     id: 'R001',
   //     name: 'Juan Pérez',
@@ -150,27 +138,6 @@ const AdminReservations = () => {
     }
   }, [isAuthenticated, token]);
 
-  // useEffect(() => {
-  //   console.log('AuthContext:', authContext);
-
-  //   // Intentar obtener el token de varias fuentes
-  //   const token =
-  //     localStorage.getItem('authToken') || // 1. LocalStorage
-  //     '';
-
-  //   console.log(
-  //     'Token obtenido:',
-  //     token ? '***' + token.slice(-4) : 'NO TOKEN'
-  //   );
-
-  //   if (!token) {
-  //     console.error('No se encontró token en ninguna fuente');
-  //     // Redirigir al login o mostrar error
-  //   } else {
-  //     setAuthToken(token);
-  //   }
-  // }, [authContext]);
-
   useEffect(() => {
     const tokenFromStorage = localStorage.getItem('authToken');
     setLocalToken(tokenFromStorage || '');
@@ -240,16 +207,7 @@ const AdminReservations = () => {
     }
   };
 
-  //  const filteredReservations =
-  //   filter === 'all'
-  //     ? reservas
-  //     : reservas.filter((res) => res.status === filter);
 
-  // const filteredReservations = reservas.filter((res) => {
-  //   const matchEstado = filter === 'all' || res.status === filter;
-  //   const matchId = searchId.trim() === '' || res.id.includes(searchId.trim());
-  //   return matchEstado && matchId;
-  // });
 
    // Filtros y paginación SIEMPRE después de los estados y useEffect
   const filteredByStatus =

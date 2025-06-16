@@ -218,6 +218,45 @@ h2 {
   transform: translatex(50%);
 }
 
+.pending {
+  background-color: #faebb9;
+  color: #c69604;
+  font-weight: bold;
+  border-radius: 50px;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 25px;
+  padding: 5px 10px;
+  transform: translatex(50%);
+}
+
+.paid {
+  background-color: #abf3bc;
+  color: #10902b;
+  font-weight: bold;
+  border-radius: 50px;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 25px;
+  padding: 5px 10px;
+  transform: translatex(50%);
+}
+
+.failed {
+  background-color: #f8d7da;
+  color: #c82333;
+  font-weight: bold;
+  border-radius: 50px;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 25px;
+  padding: 5px 10px;
+  transform: translatex(50%);
+}
+
 .status-badge {
   background: none;
   transform: translatex(-10%);
