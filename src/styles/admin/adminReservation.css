@@ -1,4 +1,3 @@
-
 .admin-reservations-container {
   width: 90%;
   min-height: 100vh;
@@ -25,28 +24,90 @@ h2 {
   margin-bottom: 20px;
 }
 
-
 .filters {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* separación entre filtros */
   align-items: center;
+  width: 100%; /* ocupar todo el espacio */
+  flex-wrap: wrap;
+  gap: 20px;
   margin-bottom: 20px;
+  padding: 0 1px; /* pequeño margen interno opcional */
+  box-sizing: border-box;
 }
 
-.filters label {
+.filter-group-horizontal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1; /* hace que cada grupo crezca */
+  min-width: 300px; /* evita que se encojan demasiado */
+}
+
+.filter-group-horizontal-id {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1; /* hace que cada grupo crezca */
+  min-width: 300px; /* evita que se encojan demasiado */
+}
+
+.filter-group-horizontal-id label {
   font-weight: 600;
   color: #495057;
+  white-space: nowrap; /* evitar que el texto del label se corte */
+  width: 130px;
 }
 
-.filters select {
-  padding: 8px;
+.filter-group-horizontal label {
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap; /* evitar que el texto del label se corte */
+  width: 130px;
+}
+
+.filter-group-horizontal select,
+.filter-group-horizontal input {
+  flex: 1;
+  padding: 8px 12px;
   border-radius: 5px;
   border: 1px solid #ced4da;
   outline: none;
   background: #fff;
-  cursor: pointer;
+  width: 200px;
 }
 
+.input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 8px 30px 8px 12px; /* espacio para el botón de limpiar */
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  outline: none;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 10px;
+  transform: translateY(65%);
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.clear-btn:hover {
+  color: #000;
+}
 
 .reservation-table {
   width: 100%;
@@ -57,7 +118,8 @@ h2 {
   overflow: hidden;
 }
 
-.reservation-table th, .reservation-table td {
+.reservation-table th,
+.reservation-table td {
   border: 1px solid #dee2e6;
   padding: 12px;
   text-align: center;
@@ -77,7 +139,6 @@ h2 {
 .reservation-table tr:hover {
   background: #e9ecef;
 }
-
 
 .reservation-table button {
   width: 40px;
@@ -115,18 +176,17 @@ h2 {
   color: #0056b3;
 }
 
-
 .pendiente {
   background-color: #faebb9;
   color: #c69604;
-   font-weight: bold;
-  border-radius: 50px; 
+  font-weight: bold;
+  border-radius: 50px;
   display: flex;
-  align-items: center; 
-  justify-content: center; 
-  width: 100px; 
-  height: 25px; 
-  padding: 5px 10px; 
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 25px;
+  padding: 5px 10px;
   transform: translatex(50%);
 }
 
@@ -134,13 +194,13 @@ h2 {
   background-color: #abf3bc;
   color: #10902b;
   font-weight: bold;
-  border-radius: 50px; 
+  border-radius: 50px;
   display: flex;
-  align-items: center; 
-  justify-content: center; 
-  width: 100px; 
-  height: 25px; 
-  padding: 5px 10px; 
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 25px;
+  padding: 5px 10px;
   transform: translatex(50%);
 }
 
@@ -148,21 +208,21 @@ h2 {
   background-color: #f8d7da;
   color: #c82333;
   font-weight: bold;
-  border-radius: 50px; 
+  border-radius: 50px;
   display: flex;
-  align-items: center; 
-  justify-content: center; 
-  width: 100px; 
-  height: 25px; 
-  padding: 5px 10px; 
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 25px;
+  padding: 5px 10px;
   transform: translatex(50%);
 }
 
 .status-badge {
   background: none;
   transform: translatex(-10%);
-  text-align:right;
-  justify-content:flex-start; 
+  text-align: right;
+  justify-content: flex-start;
 }
 
 .modal-overlay {
@@ -199,17 +259,17 @@ h2 {
   color: #333;
 }
 
-.close-button {
+.close-button-admin {
   background: none;
   border: none;
   font-size: 20px;
   cursor: pointer;
   color: #888;
   position: absolute;
-  left: 220px;
+  left: 1140px;
 }
 
-.close-button:hover {
+.close-button-admin:hover {
   color: #555;
 }
 
@@ -241,6 +301,12 @@ h2 {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

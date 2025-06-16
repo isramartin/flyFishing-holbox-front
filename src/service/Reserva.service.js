@@ -93,3 +93,124 @@ export const crearReserva = async (reservaData, token) => {
       : new Error('Error desconocido al crear reserva');
   }
 };
+
+export const obtenerTodasLasReservas = async (token) => {
+  if (!token) {
+    throw new Error('Token de autenticación no proporcionado');
+  }
+
+  console.log('Consultando todas las reservas...');
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout 10s
+
+  try {
+    const response = await fetch(`${API_URL}/api/reservas`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('La respuesta del servidor no es JSON');
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Error al obtener reservas:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorData: data,
+      });
+
+      throw new Error(
+        data.message ||
+        `Error ${response.status}: ${response.statusText || 'No se pudieron obtener las reservas'}`
+      );
+    }
+
+    console.log('Reservas obtenidas correctamente:', data);
+    return data;
+
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error.name === 'AbortError') {
+      console.error('Timeout al obtener las reservas');
+      throw new Error('La solicitud tardó demasiado. Intenta de nuevo.');
+    }
+
+    console.error('Error en obtenerTodasLasReservas:', error.message || error);
+    throw error instanceof Error
+      ? error
+      : new Error('Error desconocido al obtener las reservas');
+  }
+};
+
+
+export const obtenerReservaPorId = async (reservaId, token) => {
+  if (!reservaId || !token) {
+    throw new Error('ID de reserva o token no proporcionados');
+  }
+
+  console.log('Consultando reserva con ID:', reservaId);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos
+
+  try {
+    const response = await fetch(`${API_URL}/api/reservas/${reservaId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('La respuesta del servidor no es JSON');
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Error en respuesta al obtener reserva:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorData: data,
+      });
+
+      throw new Error(
+        data.message ||
+        `Error ${response.status}: ${response.statusText || 'No se pudo obtener la reserva'}`
+      );
+    }
+
+    console.log('Reserva obtenida exitosamente:', data);
+    return data;
+
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error.name === 'AbortError') {
+      console.error('Timeout al obtener la reserva');
+      throw new Error('La solicitud tardó demasiado. Intenta de nuevo.');
+    }
+
+    console.error('Error en obtenerReservaPorId:', error.message || error);
+    throw error instanceof Error
+      ? error
+      : new Error('Error desconocido al obtener reserva');
+  }
+};
