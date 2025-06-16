@@ -16,6 +16,19 @@ const AdminReservations = () => {
   const [cargando, setCargando] = useState(true);
   const [localToken, setLocalToken] = useState('');
   const [searchId, setSearchId] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const reservationsPerPage = 10; // puedes ajustar este número
+
+// const indexOfLastReservation = currentPage * reservationsPerPage;
+// const indexOfFirstReservation = indexOfLastReservation - reservationsPerPage;
+
+// const currentReservations = filteredReservations.slice(
+//   indexOfFirstReservation,
+//   indexOfLastReservation
+// );
+
+  //const totalPages = Math.ceil(filteredReservations.length / reservationsPerPage);
+
 
   // const reservations = [
   //   {
@@ -232,11 +245,34 @@ const AdminReservations = () => {
   //     ? reservas
   //     : reservas.filter((res) => res.status === filter);
 
-  const filteredReservations = reservas.filter((res) => {
-    const matchEstado = filter === 'all' || res.status === filter;
-    const matchId = searchId.trim() === '' || res.id.includes(searchId.trim());
-    return matchEstado && matchId;
-  });
+  // const filteredReservations = reservas.filter((res) => {
+  //   const matchEstado = filter === 'all' || res.status === filter;
+  //   const matchId = searchId.trim() === '' || res.id.includes(searchId.trim());
+  //   return matchEstado && matchId;
+  // });
+
+   // Filtros y paginación SIEMPRE después de los estados y useEffect
+  const filteredByStatus =
+    filter === 'all'
+      ? reservas
+      : reservas.filter((res) => res.status === filter);
+
+  const filteredReservations = searchId
+    ? filteredByStatus.filter((res) =>
+        res.id.toLowerCase().includes(searchId.toLowerCase())
+      )
+    : filteredByStatus;
+
+  const indexOfLastReservation = currentPage * reservationsPerPage;
+  const indexOfFirstReservation = indexOfLastReservation - reservationsPerPage;
+  const currentReservations = filteredReservations.slice(
+    indexOfFirstReservation,
+    indexOfLastReservation
+  );
+
+  const totalPages = Math.ceil(filteredReservations.length / reservationsPerPage);
+
+
 
   return (
     <div className="admin-reservations-container">
@@ -291,7 +327,7 @@ const AdminReservations = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredReservations.map((res) => (
+             {currentReservations.map((res) => (
               <tr key={res.id}>
                 <td>{res.id}</td>
                 <td>{res.name}</td>
@@ -310,6 +346,33 @@ const AdminReservations = () => {
             ))}
           </tbody>
         </table>
+
+       <div className="pagination-enhanced">
+  <button
+    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+    disabled={currentPage === 1}
+  >
+    Anterior
+  </button>
+
+  <span className="range-info">
+    {indexOfFirstReservation + 1}–
+    {Math.min(indexOfLastReservation, filteredReservations.length)} de {filteredReservations.length}
+  </span>
+
+  <span className="page-info">
+    Página {currentPage} de {totalPages}
+  </span>
+
+  <button
+    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+    disabled={currentPage === totalPages}
+  >
+    Siguiente
+  </button>
+</div>
+
+
 
         {selectedReservation && (
           <div className="modal-overlay">
