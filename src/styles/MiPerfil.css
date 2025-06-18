@@ -1,10 +1,10 @@
 :root {
-  --primary-color: #4361ee;
-  --primary-hover: #3a56d4;
-  --secondary-color: #f8f9fa;
-  --text-color: #2b2d42;
-  --text-light: #6c757d;
-  --border-color: #e9ecef;
+  --primary-color2: #4361ee;
+  --primary-hover2: #3a56d4;
+  --secondary-color2: #f8f9fa;
+  --text-color2: #2b2d42;
+  --text-light2: #6c757d;
+  --border-color2: #e9ecef;
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   --transition: all 0.25s cubic-bezier(0.3, 0, 0.4, 1);
 }
@@ -14,7 +14,7 @@ body {
   background-color: #f8fafc;
   margin: 0;
   padding: 0;
-  color: var(--text-color);
+  color: var(--text-color2);
   line-height: 1.6;
 }
 
@@ -39,7 +39,7 @@ body {
   gap: 24px;
   margin-bottom: 40px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color2);
 }
 
 .foto-perfil {
@@ -73,7 +73,7 @@ body {
   bottom: -4px;
   right: -4px;
   background-color: #ffffff;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color2);
   border-radius: 50%;
   padding: 6px;
   width: 32px;
@@ -87,9 +87,9 @@ body {
 }
 
 .cambiar-foto:hover {
-  background-color: var(--primary-color);
+  background-color: var(--primary-color2);
   color: #fff;
-  border-color: var(--primary-color);
+  border-color2: var(--primary-color2);
   transform: scale(1.1);
 }
 
@@ -97,12 +97,12 @@ body {
   margin: 0;
   font-size: 24px;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--text-color2);
 }
 
 .perfil-header p {
   margin: 8px 0 0;
-  color: var(--text-light);
+  color: var(--text-light2);
   font-size: 15px;
 }
 
@@ -111,7 +111,7 @@ body {
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  color: var(--text-light);
+  color: var(--text-light2);
   margin-top: 8px;
 }
 
@@ -130,19 +130,19 @@ body {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  color: var(--text-light);
+  color: var(--text-light2);
   transition: var(--transition);
   position: relative;
 }
 
 .perfil-tabs button:hover {
   background-color: rgba(67, 97, 238, 0.05);
-  color: var(--primary-color);
+  color: var(--primary-color2);
 }
 
 .perfil-tabs button.active {
   background-color: rgba(67, 97, 238, 0.1);
-  color: var(--primary-color);
+  color: var(--primary-color2);
   font-weight: 600;
 }
 
@@ -153,7 +153,7 @@ body {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: var(--primary-color);
+  background-color: var(--primary-color2);
 }
 
 /* Formulario */
@@ -165,13 +165,13 @@ body {
   margin: 0 0 12px;
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--text-color2);
 }
 
 .perfil-form p.subtitle {
   margin: -8px 0 25px;
   font-size: 14px;
-  color: var(--text-light);
+  color: var(--text-light2);
   line-height: 1.5;
 }
 
@@ -179,7 +179,7 @@ body {
   font-weight: 500;
   display: block;
   margin: 20px 0 8px;
-  color: var(--text-color);
+  color: var(--text-color2);
   font-size: 14px;
 }
 
@@ -188,7 +188,7 @@ body {
 .perfil-form select {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color2);
   border-radius: 8px;
   font-size: 15px;
   background-color: #fff;
@@ -199,24 +199,24 @@ body {
 .perfil-form input:not([readonly]):focus,
 .perfil-form textarea:focus,
 .perfil-form select:focus {
-  border-color: var(--primary-color);
+  border-color2: var(--primary-color2);
   outline: none;
   box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
 }
 
 .perfil-form input[readonly] {
   background-color: #f9fafb;
-  color: var(--text-light);
+  color: var(--text-light2);
   cursor: not-allowed;
-  border-color: #f1f3f5;
+  border-color2: #f1f3f5;
 }
 
 .perfil-form p.value-display {
   margin: 8px 0 0;
   padding: 12px 0;
   font-size: 15px;
-  color: var(--text-color);
-  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color2);
+  border-bottom: 1px solid var(--border-color2);
 }
 
 .input-group {
@@ -236,7 +236,7 @@ body {
   gap: 12px;
   margin-top: 40px;
   padding-top: 20px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color2);
   justify-content: flex-end;
 }
 
@@ -251,25 +251,25 @@ body {
 }
 
 .btn-guardar {
-  background-color: var(--primary-color);
+  background-color: var(--primary-color2);
   color: white;
   border: none;
 }
 
 .btn-guardar:hover {
-  background-color: var(--primary-hover);
+  background-color: var(--primary-hover2);
   transform: translateY(-1px);
 }
 
 .btn-cancelar {
   background-color: white;
-  color: var(--text-light);
-  border: 1px solid var(--border-color);
+  color: var(--text-light2);
+  border: 1px solid var(--border-color2);
 }
 
 .btn-cancelar:hover {
   background-color: #f8f9fa;
-  border-color: #dee2e6;
+  border-color2: #dee2e6;
 }
 
 /* Responsive */
