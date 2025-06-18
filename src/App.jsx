@@ -30,6 +30,7 @@ import { AlertProvider } from './components/AlertManager';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { ReservaProvider } from './context/ReservaContext';
+import { PerfilUsuario } from './components/MiPerfil.jsx';
 
 const stripePromise = loadStripe(
   'pk_test_51QDrXnAH6Ull8Wzh7xQ9CtLmsYdgoFA4dTkRI7PBXp3YNwN3pKa3PY48GnPC4R69IsczthC8pqx4lMigEpdrtsi800YxxkWh8m'
@@ -75,6 +76,7 @@ const AppContent = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/pesca" element={<Articles />} />
         <Route path="/prueba" element={<Reservaciones />} />
+        <Route path="/MiPerfil" element={<PerfilUsuario />} />
         <Route
           path="/reservaciones/reservaForm"
           element={<ReservacionesForm />}
@@ -99,6 +101,15 @@ const AppContent = () => {
           }
         />
         <Route
+          path="/admin/MiPerfil"
+          element={
+            <ProtectedRoute requiredRole="ADMIN">
+              <PerfilUsuario />
+            </ProtectedRoute>
+          }
+        />
+
+         <Route
           path="/admin/imageUploadGallery"
           element={
             <ProtectedRoute requiredRole="ADMIN">
@@ -106,7 +117,9 @@ const AppContent = () => {
             </ProtectedRoute>
           }
         />
-        \
+
+        
+        
         <Route path="*" element={<Navigate to="/" />} />{' '}
         {/* Ruta por defecto */}
       </Routes>

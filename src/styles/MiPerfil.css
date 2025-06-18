@@ -1,0 +1,185 @@
+/* Tipografía general */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f6fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* Contenedor principal */
+.perfil-wrapper {
+  max-width: 850px;
+  min-height: 85vh;
+  margin: 100px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+/* Encabezado del perfil */
+.perfil-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 35px;
+}
+
+.foto-perfil {
+  position: relative;
+  width: 90px;
+  height: 90px;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ccc, #ddd);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: #777;
+}
+
+.cambiar-foto {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  padding: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cambiar-foto:hover {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.perfil-header h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #222;
+}
+
+.perfil-header p {
+  margin: 6px 0;
+  color: #666;
+}
+
+.ubicacion {
+  font-size: 14px;
+  color: #999;
+}
+
+/* Tabs */
+.perfil-tabs {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.perfil-tabs button {
+  background: none;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #444;
+  transition: all 0.2s ease;
+}
+
+.perfil-tabs button:hover {
+  background-color: #f0f4ff;
+}
+
+.perfil-tabs button.active {
+  background-color: #007bff;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+}
+
+/* Formulario */
+.perfil-form {
+  flex-grow: 1;
+}
+
+.perfil-form h3 {
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.perfil-form p {
+  margin-bottom: 25px;
+  font-size: 14px;
+  color: #777;
+}
+
+.perfil-form label {
+  font-weight: 600;
+  display: block;
+  margin: 18px 0 6px;
+  color: #444;
+}
+
+.perfil-form input,
+.perfil-form textarea,
+.perfil-form select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #fdfdfd;
+  transition: border-color 0.2s ease;
+}
+
+.perfil-form input:focus,
+.perfil-form textarea:focus,
+.perfil-form select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.input-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.input-group > div {
+  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .perfil-wrapper {
+    padding: 20px;
+    margin: 60px 16px;
+  }
+
+  .perfil-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .perfil-tabs {
+    flex-wrap: wrap;
+  }
+
+  .input-group {
+    flex-direction: column;
+  }
+}

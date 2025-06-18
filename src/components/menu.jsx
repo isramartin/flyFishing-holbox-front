@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import Image1 from '../assets/image/logo.png';
 import { ChevronDown, User, LogOut } from 'lucide-react';
@@ -40,17 +40,21 @@ const Menu = () => {
     setUserDropdownOpen(!userDropdownOpen);
   };
 
-  const handleLogout = async () => {
-    setLogoutLoading(true);
-    try {
-      await logout();
-      setUserDropdownOpen(false);
-    } catch (error) {
-      console.error('Error en logout:', error);
-    }finally {
+ const handleLogout = async () => {
+  setLogoutLoading(true);
+  try {
+    await logout(); // <-- Aquí se limpia la sesión
+    setUserDropdownOpen(false);
+    if (role?.toUpperCase() === 'USER') {
+  navigate('/home');
+}
+  } catch (error) {
+    console.error('Error en logout:', error);
+  } finally {
     setLogoutLoading(false);
   }
-  };
+};
+
 
   // Redirección basada en el rol
   useEffect(() => {
@@ -182,8 +186,12 @@ const Menu = () => {
 
               {userDropdownOpen && (
                 <div className="user-dropdown-menu">
-                  <NavLink
-                    to="/perfil"
+                  <Link
+                    to={
+                      role?.toUpperCase() === 'ADMIN'
+                        ? '/admin/MiPerfil'
+                        : '/MiPerfil'
+                    }
                     className="dropdown-item"
                     onClick={() => {
                       closeMenu();
@@ -192,11 +200,12 @@ const Menu = () => {
                   >
                     <User size={16} className="me-2" />
                     Mi Perfil
-                  </NavLink>
+                  </Link>
+
                   <button
                     className="dropdown-item"
                     onClick={handleLogout}
-                     disabled={logoutLoading}
+                    disabled={logoutLoading}
                   >
                     <LogOut size={16} className="me-2" />
                     {logoutLoading ? 'Saliendo...' : 'Cerrar Sesión'}
