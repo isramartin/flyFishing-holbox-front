@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Portada from '../components/portada';
 import InfoPeces from '../components/infoPeces';
-import Image1 from '../assets/image/logo.png';
+import Image1 from '../assets/image/barco_pruba.png';
 import '../styles/globalContainer.css';
 
 const Home = () => {
