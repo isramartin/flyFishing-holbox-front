@@ -80,8 +80,8 @@ const ImageUploadPanel = () => {
           {previewImage ? (
             <>
               <img src={previewImage} alt="Previsualización" className="preview-image" />
-              <button className="remove-image-button" onClick={handleCancelUpload}>
-                <X />
+              <button className="remove-button-admin" onClick={handleCancelUpload}>
+                <X size={150}/>
               </button>
               <p>{selectedFile.name} ({(selectedFile.size / 1024).toFixed(2)} KB)</p>
               <button onClick={handleConfirmUpload} className="upload-button" disabled={uploading}>
@@ -119,7 +119,7 @@ const ImageUploadPanel = () => {
                     <p>{image.name}</p>
                     <button
                       onClick={() => handleRemoveImage(index)}
-                      className="remove-image-button"
+                      className="remove-button-admin"
                     >
                       <Trash2 />
                     </button>

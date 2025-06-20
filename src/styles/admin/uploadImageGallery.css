@@ -121,22 +121,31 @@
   margin-bottom: 15px;
 }
 
-.remove-image-button {
+.remove-button-admin {
   position: absolute;
   top: 10px;
   right: 10px;
   background: #dc3545;
   border: none;
   color: white;
-
-  width: 40px;
-  height: 40px;
+  z-index: 10;
+  width: 46px;
+  height: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: background 0.3s ease;
+  padding: 8px 15px;
+  border-radius: 5px;
+  gap: 5px;
 }
+
+.remove-button-admin svg {
+  width: 150px !important;
+  height: 150px !important;
+}
+
 
 .remove-image-button:hover {
   background: #c82333;
