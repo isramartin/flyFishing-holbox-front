@@ -226,7 +226,7 @@ body {
 .perfil-form input:not([readonly]):focus,
 .perfil-form textarea:focus,
 .perfil-form select:focus {
-  border-color2: var(--primary-color2);
+  border-color: var(--primary-color2);
   outline: none;
   box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
 }
@@ -235,7 +235,7 @@ body {
   background-color: #f9fafb;
   color: var(--text-light2);
   cursor: not-allowed;
-  border-color2: #f1f3f5;
+  border-color: #f1f3f5;
 }
 
 .perfil-form p.value-display {
@@ -296,7 +296,7 @@ body {
 
 .btn-cancelar:hover {
   background-color: #f8f9fa;
-  border-color2: #dee2e6;
+  border-color: #dee2e6;
 }
 
 /* Responsive */
