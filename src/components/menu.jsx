@@ -40,21 +40,20 @@ const Menu = () => {
     setUserDropdownOpen(!userDropdownOpen);
   };
 
- const handleLogout = async () => {
-  setLogoutLoading(true);
-  try {
-    await logout(); // <-- Aquí se limpia la sesión
-    setUserDropdownOpen(false);
-    if (role?.toUpperCase() === 'USER') {
-  navigate('/home');
-}
-  } catch (error) {
-    console.error('Error en logout:', error);
-  } finally {
-    setLogoutLoading(false);
-  }
-};
-
+  const handleLogout = async () => {
+    setLogoutLoading(true);
+    try {
+      await logout(); // <-- Aquí se limpia la sesión
+      setUserDropdownOpen(false);
+      if (role?.toUpperCase() === 'USER') {
+        navigate('/home');
+      }
+    } catch (error) {
+      console.error('Error en logout:', error);
+    } finally {
+      setLogoutLoading(false);
+    }
+  };
 
   // Redirección basada en el rol
   useEffect(() => {
@@ -110,23 +109,23 @@ const Menu = () => {
   });
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light fixed-top w-100">
-      <div className="container-fluid d-flex">
-        <div className="d-flex align-items-center">
+    <nav className='navbar navbar-expand-lg navbar-light fixed-top w-100'>
+      <div className='container-fluid d-flex'>
+        <div className='d-flex align-items-center'>
           <button
-            className="navbar-toggler me-2"
-            type="button"
+            className='navbar-toggler me-2'
+            type='button'
             onClick={handleToggle}
             aria-expanded={menuOpen ? 'true' : 'false'}
-            aria-label="Toggle navigation"
+            aria-label='Toggle navigation'
           >
-            <span className="navbar-toggler-icon"></span>
+            <span className='navbar-toggler-icon'></span>
           </button>
         </div>
 
-        <div className="ms-3">
-          <NavLink className="navbar-brand" to="/home">
-            <img className="logo" src={Image1} alt="Logo" />
+        <div className='ms-3'>
+          <NavLink className='navbar-brand' to='/home'>
+            <img className='logo' src={Image1} alt='Logo' />
           </NavLink>
         </div>
 
@@ -134,9 +133,9 @@ const Menu = () => {
           className={`collapse navbar-collapse ${menuOpen ? 'show' : ''} ${
             isClosing ? 'closing' : ''
           }`}
-          id="navbarNav"
+          id='navbarNav'
         >
-          <ul className="navbar-nav me-auto">
+          <ul className='navbar-nav me-auto'>
             {filteredMenuItems.map((item, index) => {
               // Ajuste solo para "Reservaciones"
               const isReservaciones = item.path.startsWith(
@@ -151,7 +150,7 @@ const Menu = () => {
                 : location.pathname === item.path;
 
               return (
-                <li className="nav-item" key={index}>
+                <li className='nav-item' key={index}>
                   <NavLink
                     to={item.path}
                     onClick={closeMenu}
@@ -165,49 +164,59 @@ const Menu = () => {
           </ul>
 
           {isAuthenticated && (
-            <div className="user-dropdown-container">
+            <div className='user-dropdown-container'>
               <button
-                className="user-menu-toggle"
+                className='user-menu-toggle'
                 onClick={toggleUserDropdown}
                 aria-expanded={userDropdownOpen}
               >
-                <span className="user-name">
-                  {user?.user?.nombre ||
-                    user?.nombre ||
-                    user?.email?.split('@')[0]}
-                </span>
                 <ChevronDown
                   size={16}
+                  strokeWidth={3}
                   className={`dropdown-icon ${
                     userDropdownOpen ? 'rotate' : ''
                   }`}
                 />
+
+                <span className='user-name'>
+                  {user?.user?.nombre ||
+                    user?.nombre ||
+                    user?.email?.split('@')[0]}
+                </span>
+
+                {user?.userPhotoUrl && (
+                  <img
+                    src={user.userPhotoUrl}
+                    alt='Foto de perfil'
+                    className='profile-pic'
+                  />
+                )}
               </button>
 
               {userDropdownOpen && (
-                <div className="user-dropdown-menu">
+                <div className='user-dropdown-menu'>
                   <Link
                     to={
                       role?.toUpperCase() === 'ADMIN'
                         ? '/admin/MiPerfil'
                         : '/MiPerfil'
                     }
-                    className="dropdown-item"
+                    className='dropdown-item'
                     onClick={() => {
                       closeMenu();
                       setUserDropdownOpen(false);
                     }}
                   >
-                    <User size={16} className="me-2" />
+                    <User size={16} className='me-2' />
                     Mi Perfil
                   </Link>
 
                   <button
-                    className="dropdown-item"
+                    className='dropdown-item'
                     onClick={handleLogout}
                     disabled={logoutLoading}
                   >
-                    <LogOut size={16} className="me-2" />
+                    <LogOut size={16} className='me-2' />
                     {logoutLoading ? 'Saliendo...' : 'Cerrar Sesión'}
                   </button>
                 </div>

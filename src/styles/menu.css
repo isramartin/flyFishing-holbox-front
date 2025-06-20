@@ -182,13 +182,13 @@
   color: #ffffff;
 }
 
-.dropdown-icon {
+/* .dropdown-icon {
   transition: transform 0.2s;
 }
 
 .dropdown-icon.rotate {
   transform: rotate(180deg);
-}
+} */
 
 .user-dropdown-menu {
   position: absolute;
@@ -220,6 +220,25 @@
   background-color: #f8f9fa;
   text-decoration: none;
 }
+
+.profile-pic {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-icon {
+  margin-right: 3px;
+  transition: transform 0.3s ease;
+  color: #ffffff; /* o el color que tú quieras */
+  
+}
+
+.dropdown-icon.rotate {
+  transform: rotate(180deg);
+}
+
 
 /* Ajustes para mobile */
 @media (max-width: 992px) {

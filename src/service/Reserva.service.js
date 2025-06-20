@@ -108,8 +108,8 @@ export const obtenerTodasLasReservas = async (token) => {
     const response = await fetch(`${API_URL}/api/reservas`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json',
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
       },
       signal: controller.signal,
     });
@@ -132,13 +132,14 @@ export const obtenerTodasLasReservas = async (token) => {
 
       throw new Error(
         data.message ||
-        `Error ${response.status}: ${response.statusText || 'No se pudieron obtener las reservas'}`
+          `Error ${response.status}: ${
+            response.statusText || 'No se pudieron obtener las reservas'
+          }`
       );
     }
 
     console.log('Reservas obtenidas correctamente:', data);
     return data;
-
   } catch (error) {
     clearTimeout(timeoutId);
 
@@ -154,7 +155,6 @@ export const obtenerTodasLasReservas = async (token) => {
   }
 };
 
-
 export const obtenerReservaPorId = async (reservaId, token) => {
   if (!reservaId || !token) {
     throw new Error('ID de reserva o token no proporcionados');
@@ -169,8 +169,8 @@ export const obtenerReservaPorId = async (reservaId, token) => {
     const response = await fetch(`${API_URL}/api/reservas/${reservaId}`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json',
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
       },
       signal: controller.signal,
     });
@@ -193,13 +193,14 @@ export const obtenerReservaPorId = async (reservaId, token) => {
 
       throw new Error(
         data.message ||
-        `Error ${response.status}: ${response.statusText || 'No se pudo obtener la reserva'}`
+          `Error ${response.status}: ${
+            response.statusText || 'No se pudo obtener la reserva'
+          }`
       );
     }
 
     console.log('Reserva obtenida exitosamente:', data);
     return data;
-
   } catch (error) {
     clearTimeout(timeoutId);
 

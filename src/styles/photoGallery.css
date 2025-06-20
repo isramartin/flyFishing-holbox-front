@@ -413,7 +413,7 @@
   transition: color 0.2s ease;
 }
 
-.close-button-favorite{
+.close-button-favorite {
   position: absolute;
   top: -100px;
   left: 1600px !important;
@@ -425,7 +425,7 @@
   transition: color 0.2s ease;
 }
 
-.close-button-dowload{
+.close-button-dowload {
   position: absolute;
   top: -100px;
   left: 1550px !important;
@@ -437,7 +437,7 @@
   transition: color 0.2s ease;
 }
 
-.close-button-link{
+.close-button-link {
   position: absolute;
   top: -100px;
   left: 1500px !important;
