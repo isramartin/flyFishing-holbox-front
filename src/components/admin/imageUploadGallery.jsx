@@ -2,8 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import '../../styles/admin/uploadImageGallery.css';
 import { Image, Upload, X, Trash2 } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
-import { uploadGalleryImage } from '../../service/galeria.service';
-import { getAllGaleria } from '../../service/galeria.service';
+import {
+  uploadGalleryImage,
+  getAllGaleria,
+  deleteGalleryImage,
+} from '../../service/galeria.service';
 
 const ImageUploadPanel = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -26,14 +29,13 @@ const ImageUploadPanel = () => {
     const fetchPhotos = async () => {
       try {
         setLoading(true);
-        // setSkeletonHeights(
-        //   Array.from(
-        //     { length: 12 },
-        //     () => Math.floor(Math.random() * 150) + 200 // alturas entre 200 y 350px
-        //   )
-        // );
         const data = await getAllGaleria();
-        setPhotos(data);
+
+        // Mantener las fotos temporales (si las hay) durante la recarga
+        setPhotos((prev) => {
+          const tempPhotos = prev.filter((p) => p.isTemp);
+          return [...tempPhotos, ...data];
+        });
       } catch (error) {
         console.error('Error fetching photos:', error);
       } finally {
@@ -107,10 +109,6 @@ const ImageUploadPanel = () => {
     ].filter(Boolean);
 
     const token = tokenSources[0];
-    console.log(
-      '🔑 Token seleccionado:',
-      token ? `***${token.slice(-4)}` : 'NO TOKEN'
-    );
 
     if (!token) {
       console.error('No se encontró token. Inicia sesión nuevamente.');
@@ -120,7 +118,26 @@ const ImageUploadPanel = () => {
     setUploading(true);
 
     try {
-      await uploadGalleryImage(
+      // Crear objeto temporal para la vista optimista
+      const tempId = `temp-${Date.now()}`; // ID temporal
+      const imageUrl = URL.createObjectURL(selectedFile);
+
+      // Actualización optimista
+      setPhotos((prev) => [
+        ...prev,
+        {
+          id: tempId,
+          imageUrl,
+          titulo,
+          descripcion,
+          lugarCreacion,
+          favorito: false,
+          isTemp: true, // Marcar como temporal
+        },
+      ]);
+
+      // Subir al servidor
+      const uploadedPhoto = await uploadGalleryImage(
         {
           file: selectedFile,
           titulo,
@@ -131,11 +148,14 @@ const ImageUploadPanel = () => {
         token
       );
 
-      const imageUrl = URL.createObjectURL(selectedFile);
-      setGalleryImages((prev) => [
-        ...prev,
-        { url: imageUrl, name: selectedFile.name },
-      ]);
+      // Reemplazar el temporal con el real
+      setPhotos((prev) =>
+        prev.map((photo) =>
+          photo.id === tempId
+            ? { ...uploadedPhoto, imageUrl: uploadedPhoto.imageUrl }
+            : photo
+        )
+      );
 
       // Limpieza
       setSelectedFile(null);
@@ -145,6 +165,8 @@ const ImageUploadPanel = () => {
       setLugarCreacion('');
     } catch (error) {
       console.error('Error al subir imagen:', error);
+      // Revertir la actualización optimista en caso de error
+      setPhotos((prev) => prev.filter((photo) => photo.id !== tempId));
       alert('Error al subir la imagen.');
     } finally {
       setUploading(false);
@@ -156,8 +178,33 @@ const ImageUploadPanel = () => {
     setPreviewImage(null);
   };
 
-  const handleRemoveImage = (index) => {
-    setGalleryImages(galleryImages.filter((_, i) => i !== index));
+  const handleRemovePhoto = async (id) => {
+    const tokenSources = [
+      localStorage.getItem('authToken'),
+      authContext?.token,
+      JSON.parse(localStorage.getItem('auth'))?.token,
+    ].filter(Boolean);
+
+    const token = tokenSources[0];
+    console.log(
+      '🔑 Token seleccionado:',
+      token ? `***${token.slice(-4)}` : 'NO TOKEN'
+    );
+
+    if (!token) {
+      console.error('No se encontró token. Inicia sesión nuevamente.');
+      return;
+    }
+
+    // const token = localStorage.getItem('authToken'); // o de tu auth context
+
+    try {
+      await deleteGalleryImage(id, token);
+      // Luego puedes actualizar el estado local para quitar la imagen de la galería:
+      setPhotos((prev) => prev.filter((img) => img.id !== id));
+    } catch (error) {
+      alert('Error al eliminar la imagen');
+    }
   };
 
   return (
@@ -246,7 +293,7 @@ const ImageUploadPanel = () => {
       </div>
 
       <div className='gallery-container-preview'>
-        {loading ? (
+        {loading && photos.length === 0 ? (
           <p className='text-muted'>Cargando imágenes...</p>
         ) : photos.length === 0 ? (
           <p className='text-muted'>No hay imágenes en la galería.</p>
@@ -254,18 +301,22 @@ const ImageUploadPanel = () => {
           <div className='gallery-masonry'>
             {photos.map((photo, index) => (
               <div className='image-card' key={photo.id || index}>
-                <div className='image-container position-relative'>
+                <div className='image-container'>
                   <img
                     src={photo.imageUrl}
                     alt={photo.titulo || `Imagen ${index + 1}`}
-                    className='img-fluid w-100'
+                    className={`img-fluid w-100 ${
+                      photo.isTemp ? 'uploading-image' : ''
+                    }`}
                   />
-                  <button
-                    className='remove-button-admin position-absolute'
-                    onClick={() => handleRemovePhoto(photo.id)}
-                  >
-                    <Trash2 />
-                  </button>
+                  {!photo.isTemp && (
+                    <button
+                      className='remove-button-admin position-absolute'
+                      onClick={() => handleRemovePhoto(photo.id)}
+                    >
+                      <Trash2 />
+                    </button>
+                  )}
                 </div>
 
                 <div className='image-overlay'>
@@ -277,6 +328,9 @@ const ImageUploadPanel = () => {
                     <small className='image-location'>
                       {photo.lugarCreacion}
                     </small>
+                    {photo.isTemp && (
+                      <div className='uploading-indicator'>Subiendo...</div>
+                    )}
                   </div>
                 </div>
               </div>

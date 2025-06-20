@@ -113,4 +113,28 @@ export const uploadGalleryImage = async (imageData, token) => {
     console.error('Error en uploadGalleryImage:', error);
     throw error;
   }
-};``
+};
+
+export const deleteGalleryImage = async (id, token) => {
+  try {
+    const response = await fetch(`${API_URL}/api/galeria/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error al eliminar imagen:', errorData);
+      throw new Error(errorData.message || 'Error al eliminar la imagen');
+    }
+
+    const result = await response.text(); // o .json() si el backend responde con JSON
+    console.log('✅ Imagen eliminada:', result);
+    return result;
+  } catch (error) {
+    console.error('🔴 Error en deleteGalleryImage:', error);
+    throw error;
+  }
+};

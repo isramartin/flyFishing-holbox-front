@@ -79,7 +79,6 @@
   display: none;
 }
 
-
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -255,7 +254,7 @@
 .image-card {
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
+  padding-top: 20px;
   background-color: #f5f5f5;
   transition: box-shadow 0.3s ease;
   display: flex;
@@ -271,12 +270,7 @@
   display: block;
 }
 
-.image-card:hover img {
-  opacity: 0.4; /* Reducir opacidad al hacer hover */
-}
-
 .image-card:hover {
-  background-color: rgba(0, 0, 0, 0.9); /* Fondo oscuro al hacer hover */
   transition: background-color 0.4s ease;
 }
 
