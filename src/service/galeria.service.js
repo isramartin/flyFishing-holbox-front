@@ -84,3 +84,33 @@ export const descargarImagen = async (id) => {
     throw error;
   }
 };
+
+export const uploadGalleryImage = async (imageData, token) => {
+  try {
+    const formData = new FormData();
+    formData.append('file', imageData.file);
+    formData.append('titulo', imageData.titulo);
+    formData.append('descripcion', imageData.descripcion);
+    formData.append('lugarCreacion', imageData.lugarCreacion);
+    formData.append('favorito', imageData.favorito?.toString() || 'false');
+
+    const response = await fetch(`${API_URL}/api/galeria/upload`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error desde el backend al subir imagen:', errorData);
+      throw new Error(errorData.message || 'Error al subir la imagen');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error en uploadGalleryImage:', error);
+    throw error;
+  }
+};``
