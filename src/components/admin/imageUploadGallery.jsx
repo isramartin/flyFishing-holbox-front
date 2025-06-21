@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import '../../styles/admin/uploadImageGallery.css';
-import { Image, Upload, X, Trash2 } from 'lucide-react';
+import { Image, Upload, X, Trash2, Edit3 } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import {
   uploadGalleryImage,
@@ -24,6 +24,22 @@ const ImageUploadPanel = () => {
   const [localToken, setLocalToken] = useState('');
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editingPhoto, setEditingPhoto] = useState(null); // objeto con los datos
+  const [editTitulo, setEditTitulo] = useState('');
+  const [editDescripcion, setEditDescripcion] = useState('');
+  const [editLugarCreacion, setEditLugarCreacion] = useState('');
+  const [editImage, setEditImage] = useState(null);
+
+  const openEditModal = (photo) => {
+    setEditingPhoto(photo);
+    setEditTitulo(photo.titulo || '');
+    setEditDescripcion(photo.descripcion || '');
+    setEditLugarCreacion(photo.lugarCreacion || '');
+    setEditImage(null); // limpiar
+    setModalVisible(true);
+  };
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -317,6 +333,13 @@ const ImageUploadPanel = () => {
                       <Trash2 />
                     </button>
                   )}
+
+                  <button
+                    className='edit-button-admin position-absolute'
+                    onClick={() => openEditModal(photo)}
+                  >
+                    <Edit3 />
+                  </button>
                 </div>
 
                 <div className='image-overlay'>
@@ -335,6 +358,62 @@ const ImageUploadPanel = () => {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {modalVisible && (
+          <div className='modal-overlay'>
+            <div className='modal-content'>
+              <h5>Editar Imagen</h5>
+              <img
+                src={
+                  editImage
+                    ? URL.createObjectURL(editImage)
+                    : editingPhoto.imageUrl
+                }
+                alt='Vista previa'
+                className='preview-image'
+              />
+
+              <input
+                type='file'
+                accept='image/*'
+                onChange={(e) => setEditImage(e.target.files[0])}
+              />
+
+              <input
+                type='text'
+                placeholder='Título'
+                value={editTitulo}
+                onChange={(e) => setEditTitulo(e.target.value)}
+              />
+              <textarea
+                placeholder='Descripción'
+                value={editDescripcion}
+                onChange={(e) => setEditDescripcion(e.target.value)}
+              />
+              <input
+                type='text'
+                placeholder='Lugar de creación'
+                value={editLugarCreacion}
+                onChange={(e) => setEditLugarCreacion(e.target.value)}
+              />
+
+              <div className='modal-actions'>
+                <button
+                  className='btn btn-primary'
+                  onClick={() => handleSaveChanges(editingPhoto.id)}
+                >
+                  Guardar cambios
+                </button>
+                <button
+                  className='btn btn-secondary'
+                  onClick={() => setModalVisible(false)}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
