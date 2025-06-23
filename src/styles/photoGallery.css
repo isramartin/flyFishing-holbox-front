@@ -189,12 +189,11 @@
 
 .thumbnail-container {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   margin-top: 20px;
   gap: 8px;
   position: relative;
-  /* padding-left: 20px; */
-  padding: 10px calc(52.5% - 30px);
+  padding: 10px calc(1%);
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
@@ -211,6 +210,7 @@
   object-fit: cover;
   border-radius: 5px;
   cursor: pointer;
+  
   flex-shrink: 0;
   transition: all 0.3s ease;
 }
