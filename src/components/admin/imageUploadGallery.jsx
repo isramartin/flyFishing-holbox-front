@@ -311,7 +311,7 @@ const ImageUploadPanel = () => {
                 className='preview-image'
               />
               <button
-                className='remove-button-admin'
+                className='remove-button'
                 onClick={handleCancelUpload}
               >
                 <X size={30} />

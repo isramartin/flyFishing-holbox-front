@@ -32,6 +32,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { ReservaProvider } from './context/ReservaContext';
 import { PerfilUsuario } from './components/MiPerfil.jsx';
 import { GalleryProvider } from './context/GalleryContext';
+import UploadInfoPesca from './components/admin/uploadInfoPesca.jsx';
 
 const stripePromise = loadStripe(
   'pk_test_51QDrXnAH6Ull8Wzh7xQ9CtLmsYdgoFA4dTkRI7PBXp3YNwN3pKa3PY48GnPC4R69IsczthC8pqx4lMigEpdrtsi800YxxkWh8m'
@@ -109,6 +110,14 @@ const AppContent = () => {
           element={
             <ProtectedRoute requiredRole='ADMIN'>
               <PerfilUsuario />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/admin/uploadInfoPesca'
+          element={
+            <ProtectedRoute requiredRole='ADMIN'>
+              <UploadInfoPesca />
             </ProtectedRoute>
           }
         />

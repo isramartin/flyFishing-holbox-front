@@ -94,11 +94,13 @@ const Menu = () => {
     { path: '/register', label: 'Registro', roles: ['GUEST'] },
     // { path: '/prueba', label: 'Prueba', roles: ['GUEST'] },
     { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['ADMIN'] },
+    
     {
       path: '/admin/imageUploadGallery',
       label: 'Upload Gallery',
       roles: ['ADMIN'],
     },
+    { path: '/admin/uploadInfoPesca', label: 'Upload Info', roles: ['ADMIN'] },
   ];
 
   const filteredMenuItems = menuItems.filter((item) => {
