@@ -193,7 +193,8 @@
   margin-top: 20px;
   gap: 8px;
   position: relative;
-  padding: 10px calc(50% - 30px);
+  /* padding-left: 20px; */
+  padding: 10px calc(52.5% - 30px);
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;

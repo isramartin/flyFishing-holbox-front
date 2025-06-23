@@ -6,7 +6,7 @@ import {
 } from '../service/galeria.service';
 import { X, ArrowDownToLine, Heart, HeartOff, Link } from 'lucide-react';
 import { useAlert } from './AlertManager';
-import { useGallery } from '../context/GalleryContext'; 
+import { useGallery } from '../context/GalleryContext';
 
 const PhotoGallery = () => {
   const [showModal, setShowModal] = useState(false);
@@ -87,7 +87,11 @@ const PhotoGallery = () => {
     const containerWidth = container.offsetWidth;
     const thumbWidth = thumb.offsetWidth;
     const thumbOffset = thumb.offsetLeft;
-    const scrollTo = thumbOffset - containerWidth / 2 + thumbWidth / 2;
+
+    let scrollTo = thumbOffset - containerWidth / 2 + thumbWidth / 2;
+
+    // ✅ Evita que scrollTo sea negativo
+    scrollTo = Math.max(0, scrollTo);
 
     container.scrollTo({
       left: scrollTo,
@@ -117,28 +121,28 @@ const PhotoGallery = () => {
 
   if (loading) {
     return (
-      <div className="gallery-container">
-        <div className="gallery-masonry">
+      <div className='gallery-container'>
+        <div className='gallery-masonry'>
           {Array.from({ length: 8 }).map((_, i) => {
             // Generamos alturas aleatorias para simular el layout masonry
             const randomHeight = Math.floor(Math.random() * 200) + 200; // Entre 200px y 400px
 
             return (
-              <div className="gallery-item skeleton-item" key={i}>
+              <div className='gallery-item skeleton-item' key={i}>
                 <div
-                  className="skeleton-image"
+                  className='skeleton-image'
                   style={{ height: `${randomHeight}px` }}
                 />
-                <div className="skeleton-overlay">
-                  <div className="skeleton-actions">
-                    <div className="skeleton-button" />
-                    <div className="skeleton-button" />
-                    <div className="skeleton-button" />
+                <div className='skeleton-overlay'>
+                  <div className='skeleton-actions'>
+                    <div className='skeleton-button' />
+                    <div className='skeleton-button' />
+                    <div className='skeleton-button' />
                   </div>
-                  <div className="skeleton-info">
-                    <div className="skeleton-title" />
-                    <div className="skeleton-description" />
-                    <div className="skeleton-location" />
+                  <div className='skeleton-info'>
+                    <div className='skeleton-title' />
+                    <div className='skeleton-description' />
+                    <div className='skeleton-location' />
                   </div>
                 </div>
               </div>
@@ -150,15 +154,15 @@ const PhotoGallery = () => {
   }
 
   if (photos.length === 0) {
-    return <div className="empty">No hay fotos disponibles</div>;
+    return <div className='empty'>No hay fotos disponibles</div>;
   }
 
   return (
-    <div className="gallery-container">
-      <div className="gallery-masonry">
+    <div className='gallery-container'>
+      <div className='gallery-masonry'>
         {photos.map((photo, index) => (
           <div
-            className="gallery-item"
+            className='gallery-item'
             key={photo.id}
             onMouseEnter={() => setHoverIndex(index)}
             onMouseLeave={() => setHoverIndex(null)}
@@ -167,11 +171,11 @@ const PhotoGallery = () => {
             <img
               src={photo.imageUrl}
               alt={photo.titulo || `Foto ${index + 1}`}
-              className="gallery-image"
+              className='gallery-image'
             />
             {hoverIndex === index && (
-              <div className="gallery-overlay">
-                <div className="gallery-actions">
+              <div className='gallery-overlay'>
+                <div className='gallery-actions'>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -193,10 +197,10 @@ const PhotoGallery = () => {
                     <ArrowDownToLine />
                   </button>
                 </div>
-                <div className="gallery-info">
+                <div className='gallery-info'>
                   <h3>{photo.titulo || 'Sin título'}</h3>
                   <p>{photo.descripcion || 'Sin descripción'}</p>
-                  <span className="gallery-location">
+                  <span className='gallery-location'>
                     {photo.lugarCreacion || 'Holbox, Q. Roo, MX'}
                   </span>
                 </div>
@@ -208,11 +212,11 @@ const PhotoGallery = () => {
 
       {/* Modal */}
       {showModal && photos.length > 0 && (
-        <div className="gallery-modal-overlay">
-          <div className="modal-content">
-            <X className="close-button-close" onClick={handleCloseModal} />
+        <div className='gallery-modal-overlay'>
+          <div className='modal-content'>
+            <X className='close-button-close' onClick={handleCloseModal} />
             <ArrowDownToLine
-              className="close-button-dowload"
+              className='close-button-dowload'
               onClick={(e) => {
                 e.stopPropagation();
                 handleDescarga(photos[activeIndex].id);
@@ -220,7 +224,7 @@ const PhotoGallery = () => {
             />
             {photos[activeIndex].favorito ? (
               <HeartOff
-                className="close-button-favorite"
+                className='close-button-favorite'
                 onClick={(e) => {
                   e.stopPropagation();
                   handleToggleFavorito(photos[activeIndex].id, true);
@@ -228,7 +232,7 @@ const PhotoGallery = () => {
               />
             ) : (
               <Heart
-                className="close-button-favorite"
+                className='close-button-favorite'
                 onClick={(e) => {
                   e.stopPropagation();
                   handleToggleFavorito(photos[activeIndex].id, false);
@@ -238,20 +242,20 @@ const PhotoGallery = () => {
 
             {/* <Link className="close-button-link" /> */}
 
-            <button onClick={handlePrev} className="arrow-left">
+            <button onClick={handlePrev} className='arrow-left'>
               &#10094;
             </button>
             <img
               src={photos[activeIndex].imageUrl}
               alt={photos[activeIndex].titulo || 'Imagen ampliada'}
-              className="modal-image"
+              className='modal-image'
             />
-            <button onClick={handleNext} className="arrow-right">
+            <button onClick={handleNext} className='arrow-right'>
               &#10095;
             </button>
 
-            <div className="thumbnails-wrapper">
-              <div className="thumbnail-container" ref={containerRef}>
+            <div className='thumbnails-wrapper'>
+              <div className='thumbnail-container' ref={containerRef}>
                 {photos.map((photo, index) => (
                   <img
                     key={photo.id}
