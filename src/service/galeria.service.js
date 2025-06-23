@@ -115,6 +115,44 @@ export const uploadGalleryImage = async (imageData, token) => {
   }
 };
 
+
+export const updateGalleryImage = async (id, data, token) => {
+  try {
+    const formData = new FormData();
+
+    if (data.file) {
+      formData.append('file', data.file); // archivo tipo File
+    }
+
+    formData.append('titulo', data.titulo);
+    formData.append('descripcion', data.descripcion);
+    formData.append('lugarCreacion', data.lugarCreacion);
+
+    const response = await fetch(`${API_URL}/api/galeria/${id}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // No pongas 'Content-Type', el navegador lo define automáticamente para FormData
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error al actualizar imagen:', errorData);
+      throw new Error(errorData.message || 'Error al actualizar la imagen');
+    }
+
+    const result = await response.json(); // o .text() si no es JSON
+    console.log('✅ Imagen actualizada:', result);
+    return result;
+  } catch (error) {
+    console.error('🔴 Error en updateGalleryImage:', error);
+    throw error;
+  }
+};
+
+
 export const deleteGalleryImage = async (id, token) => {
   try {
     const response = await fetch(`${API_URL}/api/galeria/${id}`, {

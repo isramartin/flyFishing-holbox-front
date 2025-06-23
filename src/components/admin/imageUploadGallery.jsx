@@ -6,13 +6,17 @@ import {
   uploadGalleryImage,
   getAllGaleria,
   deleteGalleryImage,
+  updateGalleryImage,
 } from '../../service/galeria.service';
+import { useAlert } from '../AlertManager';
 
 const ImageUploadPanel = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const { addAlert } = useAlert();
+  const [refreshFlag, setRefreshFlag] = useState(false);
 
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
@@ -47,7 +51,7 @@ const ImageUploadPanel = () => {
         setLoading(true);
         const data = await getAllGaleria();
 
-        // Mantener las fotos temporales (si las hay) durante la recarga
+        // Mantener imágenes temporales si las hay
         setPhotos((prev) => {
           const tempPhotos = prev.filter((p) => p.isTemp);
           return [...tempPhotos, ...data];
@@ -60,7 +64,7 @@ const ImageUploadPanel = () => {
     };
 
     fetchPhotos();
-  }, []);
+  }, [refreshFlag]); // ⬅️ se vuelve a ejecutar cuando refreshFlag cambia
 
   console.log('📸 Fotos cargadas:', photos);
 
@@ -184,6 +188,68 @@ const ImageUploadPanel = () => {
       // Revertir la actualización optimista en caso de error
       setPhotos((prev) => prev.filter((photo) => photo.id !== tempId));
       alert('Error al subir la imagen.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSaveChanges = async (id) => {
+    if (!editTitulo || !editDescripcion || !editLugarCreacion) {
+      addAlert(
+        'Completa todos los campos para actualizar la imagen.',
+        'warning'
+      );
+      return;
+    }
+
+    const tokenSources = [
+      localStorage.getItem('authToken'),
+      authContext?.token,
+      JSON.parse(localStorage.getItem('auth'))?.token,
+    ].filter(Boolean);
+
+    const token = tokenSources[0];
+
+    if (!token) {
+      addAlert('No se encontró token. Inicia sesión nuevamente.', 'error');
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const updatedPhoto = await updateGalleryImage(
+        id,
+        {
+          file: editImage || null, // opcional
+          titulo: editTitulo,
+          descripcion: editDescripcion,
+          lugarCreacion: editLugarCreacion,
+        },
+        token
+      );
+
+      // Forzar recarga del navegador al añadir timestamp al URL
+      const updatedImageUrl = `${updatedPhoto.imageUrl}?t=${Date.now()}`;
+      // Reemplazar la foto en el estado
+      setPhotos((prev) =>
+        prev.map((photo) =>
+          photo.id === id
+            ? {
+                ...updatedPhoto,
+                imageUrl: updatedImageUrl,
+              }
+            : photo
+        )
+      );
+
+      setModalVisible(false);
+      setEditImage(null);
+
+      setRefreshFlag((prev) => !prev);
+      addAlert('Imagen actualizada correctamente.', 'success');
+    } catch (error) {
+      addAlert('Error al actualizar la imagen. Intenta nuevamente.', 'error');
     } finally {
       setUploading(false);
     }
@@ -362,52 +428,60 @@ const ImageUploadPanel = () => {
         )}
 
         {modalVisible && (
-          <div className='modal-overlay'>
-            <div className='modal-content'>
-              <h5>Editar Imagen</h5>
-              <img
-                src={
-                  editImage
-                    ? URL.createObjectURL(editImage)
-                    : editingPhoto.imageUrl
-                }
-                alt='Vista previa'
-                className='preview-image'
-              />
+          <div className='modal-backdrop'>
+            <div className='modal-card'>
+              <h3>Editar Imagen</h3>
 
-              <input
-                type='file'
-                accept='image/*'
-                onChange={(e) => setEditImage(e.target.files[0])}
-              />
+              <div className='modal-body'>
+                <div className='image-section'>
+                  <img
+                    src={
+                      editImage
+                        ? URL.createObjectURL(editImage)
+                        : editingPhoto.imageUrl
+                    }
+                    alt='Vista previa'
+                  />
+                  <label className='change-image-label'>
+                    Cambiar Imagen
+                    <input
+                      type='file'
+                      accept='image/*'
+                      onChange={(e) => setEditImage(e.target.files[0])}
+                    />
+                  </label>
+                </div>
 
-              <input
-                type='text'
-                placeholder='Título'
-                value={editTitulo}
-                onChange={(e) => setEditTitulo(e.target.value)}
-              />
-              <textarea
-                placeholder='Descripción'
-                value={editDescripcion}
-                onChange={(e) => setEditDescripcion(e.target.value)}
-              />
-              <input
-                type='text'
-                placeholder='Lugar de creación'
-                value={editLugarCreacion}
-                onChange={(e) => setEditLugarCreacion(e.target.value)}
-              />
+                <div className='form-section'>
+                  <input
+                    type='text'
+                    placeholder='Título'
+                    value={editTitulo}
+                    onChange={(e) => setEditTitulo(e.target.value)}
+                  />
+                  <textarea
+                    placeholder='Descripción'
+                    value={editDescripcion}
+                    onChange={(e) => setEditDescripcion(e.target.value)}
+                  />
+                  <input
+                    type='text'
+                    placeholder='Lugar de creación'
+                    value={editLugarCreacion}
+                    onChange={(e) => setEditLugarCreacion(e.target.value)}
+                  />
+                </div>
+              </div>
 
-              <div className='modal-actions'>
+              <div className='modal-footer'>
                 <button
-                  className='btn btn-primary'
+                  className='btn-save'
                   onClick={() => handleSaveChanges(editingPhoto.id)}
                 >
-                  Guardar cambios
+                  Guardar
                 </button>
                 <button
-                  className='btn btn-secondary'
+                  className='btn-cancel'
                   onClick={() => setModalVisible(false)}
                 >
                   Cancelar

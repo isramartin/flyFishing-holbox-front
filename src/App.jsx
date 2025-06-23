@@ -31,6 +31,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { ReservaProvider } from './context/ReservaContext';
 import { PerfilUsuario } from './components/MiPerfil.jsx';
+import { GalleryProvider } from './context/GalleryContext';
 
 const stripePromise = loadStripe(
   'pk_test_51QDrXnAH6Ull8Wzh7xQ9CtLmsYdgoFA4dTkRI7PBXp3YNwN3pKa3PY48GnPC4R69IsczthC8pqx4lMigEpdrtsi800YxxkWh8m'
@@ -65,25 +66,28 @@ const AppContent = () => {
     location.pathname !== '/login' && location.pathname !== '/register';
 
   return (
-    <div className="App">
+    <div className='App'>
       {showMenuAndFooter && <Menu />}{' '}
       {/* Mostrar el menú solo si no estamos en /login */}
       <Routes>
-        <Route path="/reseña" element={<Review2 />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/register" element={<RegisterForm />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/pesca" element={<Articles />} />
-        <Route path="/prueba" element={<Reservaciones />} />
-        <Route path="/MiPerfil" element={<PerfilUsuario />} />
+        <Route path='/reseña' element={<Review2 />} />
+        <Route path='/login' element={<LoginForm />} />
+        <Route path='/register' element={<RegisterForm />} />
+        <Route path='/' element={<Home />} />
+        <Route path='/home' element={<Home />} />
+        <Route path='/pesca' element={<Articles />} />
+        <Route path='/prueba' element={<Reservaciones />} />
+        <Route path='/MiPerfil' element={<PerfilUsuario />} />
         <Route
-          path="/reservaciones/reservaForm"
-          element={<ReservacionesForm />}
+          path='/galerias'
+          element={
+            <GalleryProvider>
+              <Gallery />
+            </GalleryProvider>
+          }
         />
-        <Route path="/galerias" element={<Gallery />} />
         <Route
-          path="/reservaciones/steps/:step"
+          path='/reservaciones/steps/:step'
           element={
             <ReservaProvider>
               <Elements stripe={stripePromise}>
@@ -93,34 +97,30 @@ const AppContent = () => {
           }
         />
         <Route
-          path="/admin/reservaciones"
+          path='/admin/reservaciones'
           element={
-            <ProtectedRoute requiredRole="ADMIN">
+            <ProtectedRoute requiredRole='ADMIN'>
               <AdminReservations />
             </ProtectedRoute>
           }
         />
         <Route
-          path="/admin/MiPerfil"
+          path='/admin/MiPerfil'
           element={
-            <ProtectedRoute requiredRole="ADMIN">
+            <ProtectedRoute requiredRole='ADMIN'>
               <PerfilUsuario />
             </ProtectedRoute>
           }
         />
-
-         <Route
-          path="/admin/imageUploadGallery"
+        <Route
+          path='/admin/imageUploadGallery'
           element={
-            <ProtectedRoute requiredRole="ADMIN">
+            <ProtectedRoute requiredRole='ADMIN'>
               <ImageUploadPanel />
             </ProtectedRoute>
           }
         />
-
-        
-        
-        <Route path="*" element={<Navigate to="/" />} />{' '}
+        <Route path='*' element={<Navigate to='/' />} />{' '}
         {/* Ruta por defecto */}
       </Routes>
       {showMenuAndFooter && <Footer />}{' '}

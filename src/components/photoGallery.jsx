@@ -6,6 +6,7 @@ import {
 } from '../service/galeria.service';
 import { X, ArrowDownToLine, Heart, HeartOff, Link } from 'lucide-react';
 import { useAlert } from './AlertManager';
+import { useGallery } from '../context/GalleryContext'; 
 
 const PhotoGallery = () => {
   const [showModal, setShowModal] = useState(false);
