@@ -237,6 +237,13 @@
   width: 100%;
 }
 
+.home-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+
 @media (max-width: 768px) {
   .password-toggle-button {
     right: 610px;

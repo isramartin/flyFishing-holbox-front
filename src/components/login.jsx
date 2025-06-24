@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/login.css';
 import { AuthContext } from '../context/AuthContext';
-import { Mail, KeyRound, Eye, EyeOff } from 'lucide-react';
+import { Mail, KeyRound, Eye, EyeOff, Home } from 'lucide-react';
 import { auth, googleProvider } from '../firebase/firebase.config';
 import logoGoogle from '../assets/logoGoogle.svg';
 import { signInWithPopup } from 'firebase/auth';
@@ -74,6 +74,9 @@ const LoginForm = () => {
   return (
     <div className='login-container'>
       <div className='login-card'>
+        <Link to='/home' className='home-link'>
+          <Home />
+        </Link>
         <h2 className='login-title'>Iniciar Sesión</h2>
         <p className='forgot-password'>
           ¿No tienes una cuenta? <Link to='/register'>Regístrate aquí</Link>
