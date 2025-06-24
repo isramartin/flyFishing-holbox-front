@@ -118,7 +118,7 @@ const ImageUploadPanel = () => {
 
   const handleConfirmUpload = async () => {
     if (!selectedFile || !titulo || !descripcion || !lugarCreacion) {
-      alert('Completa todos los campos');
+      addAlert('Completa todos los campos', 'warning');
       return;
     }
 
@@ -131,7 +131,10 @@ const ImageUploadPanel = () => {
     const token = tokenSources[0];
 
     if (!token) {
-      console.error('No se encontró token. Inicia sesión nuevamente.');
+      addAlert(
+        'No se encontró token. Por favor, inicia sesión nuevamente.',
+        'error'
+      );
       return;
     }
 
@@ -177,6 +180,7 @@ const ImageUploadPanel = () => {
         )
       );
 
+      addAlert('Imagen subida correctamente', 'success');
       // Limpieza
       setSelectedFile(null);
       setPreviewImage(null);
@@ -187,7 +191,7 @@ const ImageUploadPanel = () => {
       console.error('Error al subir imagen:', error);
       // Revertir la actualización optimista en caso de error
       setPhotos((prev) => prev.filter((photo) => photo.id !== tempId));
-      alert('Error al subir la imagen.');
+       addAlert('Error al subir la imagen', 'error');
     } finally {
       setUploading(false);
     }
@@ -310,10 +314,7 @@ const ImageUploadPanel = () => {
                 alt='Previsualización'
                 className='preview-image'
               />
-              <button
-                className='remove-button'
-                onClick={handleCancelUpload}
-              >
+              <button className='remove-button' onClick={handleCancelUpload}>
                 <X size={30} />
               </button>
               <p>
@@ -340,17 +341,7 @@ const ImageUploadPanel = () => {
                 />
               </div>
 
-              <button
-                className='upload-button'
-                onClick={handleConfirmUpload}
-                disabled={
-                  !selectedFile ||
-                  !titulo ||
-                  !descripcion ||
-                  !lugarCreacion ||
-                  uploading
-                }
-              >
+              <button className='upload-button' onClick={handleConfirmUpload}>
                 <Upload /> {uploading ? 'Subiendo...' : 'Subir Imagen'}
               </button>
             </>

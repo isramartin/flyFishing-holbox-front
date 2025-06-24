@@ -2,16 +2,10 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const getAllPesca = async () => {
   try {
-    // Si el endpoint requiere autenticación, descomenta:
-    // const token = localStorage.getItem("authToken");
-    // if (!token) throw new Error("No hay token de autenticación");
-
     const response = await fetch(`${API_URL}/api/pesca/All`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
-        // Si necesita autorización:
-        // Authorization: `Bearer ${token}`,
       },
     });
 
@@ -26,5 +20,33 @@ export const getAllPesca = async () => {
   } catch (error) {
     console.error('Error en getAllPesca:', error);
     throw error; // Re-lanzamos el error para manejarlo donde se llame a la función
+  }
+};
+
+export const uploadPesca = async (file, titulo, descripcion, token) => {
+  try {
+    const formData = new FormData();
+    formData.append('file', file); // archivo tipo File
+    formData.append('titulo', titulo);
+    formData.append('descripcion', descripcion);
+
+    const response = await fetch(`${API_URL}/api/pesca/upload`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('🔴 Error del backend:', errorData);
+      throw new Error(errorData.message || 'Error al subir la imagen');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error en uploadPesca:', error);
+    throw error;
   }
 };

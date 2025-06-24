@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Upload, X, Trash2, Edit3, Image } from 'lucide-react';
 import '../../styles/admin/uploadImageGallery.css';
+import { AuthContext } from '../../context/AuthContext';
+import { uploadPesca } from '../../service/Pesca.service';
+import { useAlert } from '../AlertManager';
 
 const uploadInfoPesca = () => {
   const [previewImage, setPreviewImage] = useState(null);
@@ -11,13 +14,18 @@ const uploadInfoPesca = () => {
   const [photos, setPhotos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const { addAlert } = useAlert();
   const [modalVisible, setModalVisible] = useState(false);
   const [editingPhoto, setEditingPhoto] = useState(null);
   const [editImage, setEditImage] = useState(null);
   const [editTitulo, setEditTitulo] = useState('');
   const [editDescripcion, setEditDescripcion] = useState('');
   const [editLugarCreacion, setEditLugarCreacion] = useState('');
+
+  const authContext = useContext(AuthContext);
+  const [authToken, setAuthToken] = useState(null);
+  const { isAuthenticated, token } = useContext(AuthContext);
+  const [localToken, setLocalToken] = useState('');
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -47,19 +55,96 @@ const uploadInfoPesca = () => {
     setLugarCreacion('');
   };
 
-  const handleConfirmUpload = () => {
-    if (!selectedFile) return;
-    // Aquí se puede simular la carga
-    const newPhoto = {
-      id: Date.now(),
-      imageUrl: previewImage,
-      titulo,
-      descripcion,
-      lugarCreacion,
-      isTemp: false,
-    };
-    setPhotos([...photos, newPhoto]);
-    handleCancelUpload();
+  useEffect(() => {
+    console.log(
+      'Estado de autenticación imagen pesca PANEL ADMIN:',
+      isAuthenticated
+    );
+    console.log(
+      'Token disponible:',
+      token ? '***' + token.slice(-4) : 'No hay token'
+    );
+
+    if (!isAuthenticated || !token) {
+      console.error('Usuario no autenticado o token faltante');
+      // Redirigir al login o mostrar error
+    }
+  }, [isAuthenticated, token]);
+
+  useEffect(() => {
+    const tokenFromStorage = localStorage.getItem('authToken');
+    setLocalToken(tokenFromStorage || '');
+  }, []);
+
+  const handleConfirmUploadPesca = async () => {
+    if (!selectedFile || !titulo.trim() || !descripcion.trim()) {
+      addAlert('Completa todos los campos', 'warning');
+      return;
+    }
+
+    const tokenSources = [
+      localStorage.getItem('authToken'),
+      authContext?.token,
+      JSON.parse(localStorage.getItem('auth'))?.token,
+    ].filter(Boolean);
+
+    const token = tokenSources[0];
+
+    if (!token) {
+      console.error('No se encontró token. Inicia sesión nuevamente.');
+      addAlert(
+        'No se encontró token. Por favor, inicia sesión nuevamente.',
+        'error'
+      );
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const tempId = `temp-${Date.now()}`;
+      const imageUrl = URL.createObjectURL(selectedFile);
+
+      // Vista optimista
+      setPhotos((prev) => [
+        ...prev,
+        {
+          id: tempId,
+          imageUrl,
+          titulo,
+          descripcion,
+          isTemp: true,
+        },
+      ]);
+
+      const uploadedPhoto = await uploadPesca(
+        selectedFile,
+        titulo,
+        descripcion,
+        token // ✅ sin lugarCreacion
+      );
+
+      setPhotos((prev) =>
+        prev.map((photo) =>
+          photo.id === tempId
+            ? { ...uploadedPhoto, imageUrl: uploadedPhoto.imageUrl }
+            : photo
+        )
+      );
+
+      addAlert('Imagen subida correctamente', 'success');
+
+      setSelectedFile(null);
+      setPreviewImage(null);
+      setTitulo('');
+      setDescripcion('');
+    } catch (error) {
+      console.error('Error al subir imagen de pesca:', error);
+      setPhotos((prev) => prev.filter((photo) => photo.id !== tempId));
+      addAlert('Error al subir la imagen de pesca', 'error');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleRemovePhoto = (id) => {
@@ -139,14 +224,7 @@ const uploadInfoPesca = () => {
 
               <button
                 className='upload-button'
-                onClick={handleConfirmUpload}
-                disabled={
-                  !selectedFile ||
-                  !titulo ||
-                  !descripcion ||
-                  !lugarCreacion ||
-                  uploading
-                }
+                onClick={handleConfirmUploadPesca}
               >
                 <Upload /> {uploading ? 'Subiendo...' : 'Subir Imagen'}
               </button>
