@@ -2,7 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Upload, X, Trash2, Edit3, Image } from 'lucide-react';
 import '../../styles/admin/uploadImageGallery.css';
 import { AuthContext } from '../../context/AuthContext';
-import { uploadPesca, getAllPesca } from '../../service/Pesca.service';
+import {
+  uploadPesca,
+  getAllPesca,
+  deletePesca,
+} from '../../service/Pesca.service';
 import { useAlert } from '../AlertManager';
 
 const uploadInfoPesca = () => {
@@ -172,8 +176,33 @@ const uploadInfoPesca = () => {
     }
   };
 
-  const handleRemovePhoto = (id) => {
-    setPhotos(photos.filter((photo) => photo.id !== id));
+  const handleRemovePhoto = async (id) => {
+    const tokenSources = [
+      localStorage.getItem('authToken'),
+      authContext?.token,
+      JSON.parse(localStorage.getItem('auth'))?.token,
+    ].filter(Boolean);
+
+    const token = tokenSources[0];
+    console.log(
+      '🔑 Token seleccionado:',
+      token ? `***${token.slice(-4)}` : 'NO TOKEN'
+    );
+
+    if (!token) {
+        addAlert('No se encontró token. Inicia sesión nuevamente.', 'error');
+      console.error('No se encontró token. Inicia sesión nuevamente.');
+      return;
+    }
+
+    try {
+      await deletePesca(id, token);
+      // Luego puedes actualizar el estado local para quitar la imagen de la galería:
+      addAlert('Imagen elimida correctamente', 'success');
+      setPhotos((prev) => prev.filter((img) => img.id !== id));
+    } catch (error) {
+      addAlert('Error al eliminar la imagen', 'error');
+    }
   };
 
   const openEditModal = (photo) => {
@@ -314,7 +343,7 @@ const uploadInfoPesca = () => {
                       <strong>{photo.titulo}</strong>
                     </p>
                     <p className='image-description'>{photo.descripcion}</p>
-                  
+
                     {photo.isTemp && (
                       <div className='uploading-indicator'>Subiendo...</div>
                     )}
@@ -351,20 +380,19 @@ const uploadInfoPesca = () => {
                 </div>
 
                 <div className='form-section'>
-                    <label htmlFor="">Titulo</label>
+                  <label htmlFor=''>Titulo</label>
                   <input
                     type='text'
                     placeholder='Título'
                     value={editTitulo}
                     onChange={(e) => setEditTitulo(e.target.value)}
                   />
-                  <label htmlFor="">Descripcion</label>
+                  <label htmlFor=''>Descripcion</label>
                   <textarea
                     placeholder='Descripción'
                     value={editDescripcion}
                     onChange={(e) => setEditDescripcion(e.target.value)}
                   />
-                
                 </div>
               </div>
 

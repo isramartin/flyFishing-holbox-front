@@ -40,13 +40,35 @@ export const uploadPesca = async (file, titulo, descripcion, token) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('🔴 Error del backend:', errorData);
+      console.error('Error del backend:', errorData);
       throw new Error(errorData.message || 'Error al subir la imagen');
     }
 
     return await response.json();
   } catch (error) {
     console.error('Error en uploadPesca:', error);
+    throw error;
+  }
+};
+
+export const deletePesca = async (id, token) => {
+  try {
+    const response = await fetch(`${API_URL}/api/pesca/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('🔴 Error del backend al eliminar:', errorData);
+      throw new Error(errorData.message || 'Error al eliminar la pesca');
+    }
+
+    return await response.json(); // o `response.text()` si no devuelve JSON
+  } catch (error) {
+    console.error('Error en deletePesca:', error);
     throw error;
   }
 };
