@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Upload, X, Trash2, Edit3, Image } from 'lucide-react';
 import '../../styles/admin/uploadImageGallery.css';
 import { AuthContext } from '../../context/AuthContext';
-import { uploadPesca } from '../../service/Pesca.service';
+import { uploadPesca, getAllPesca } from '../../service/Pesca.service';
 import { useAlert } from '../AlertManager';
 
 const uploadInfoPesca = () => {
@@ -26,6 +26,9 @@ const uploadInfoPesca = () => {
   const [authToken, setAuthToken] = useState(null);
   const { isAuthenticated, token } = useContext(AuthContext);
   const [localToken, setLocalToken] = useState('');
+
+  const [articles, setArticles] = useState([]);
+  const [error, setError] = useState(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -74,6 +77,28 @@ const uploadInfoPesca = () => {
   useEffect(() => {
     const tokenFromStorage = localStorage.getItem('authToken');
     setLocalToken(tokenFromStorage || '');
+  }, []);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const data = await getAllPesca();
+        const formattedArticles = data.map((item) => ({
+          id: item.id,
+          titulo: item.titulo || `🔹 ${item.tipo}`,
+          descripcion: item.descripcion || 'Descripción no disponible',
+          imageUrl: item.imageUrl || localImages[item.tipo?.toLowerCase()],
+        }));
+        setArticles(formattedArticles);
+      } catch (err) {
+        console.error('Error fetching articles:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
   }, []);
 
   const handleConfirmUploadPesca = async () => {
@@ -250,13 +275,13 @@ const uploadInfoPesca = () => {
       </div>
 
       <div className='gallery-container-preview'>
-        {loading && photos.length === 0 ? (
+        {loading && articles.length === 0 ? (
           <p className='text-muted'>Cargando imágenes...</p>
-        ) : photos.length === 0 ? (
+        ) : articles.length === 0 ? (
           <p className='text-muted'>No hay información de pesca.</p>
         ) : (
           <div className='gallery-masonry'>
-            {photos.map((photo, index) => (
+            {articles.map((photo, index) => (
               <div className='image-card' key={photo.id || index}>
                 <div className='image-container'>
                   <img
@@ -289,9 +314,7 @@ const uploadInfoPesca = () => {
                       <strong>{photo.titulo}</strong>
                     </p>
                     <p className='image-description'>{photo.descripcion}</p>
-                    <small className='image-location'>
-                      {photo.lugarCreacion}
-                    </small>
+                  
                     {photo.isTemp && (
                       <div className='uploading-indicator'>Subiendo...</div>
                     )}
@@ -328,23 +351,20 @@ const uploadInfoPesca = () => {
                 </div>
 
                 <div className='form-section'>
+                    <label htmlFor="">Titulo</label>
                   <input
                     type='text'
                     placeholder='Título'
                     value={editTitulo}
                     onChange={(e) => setEditTitulo(e.target.value)}
                   />
+                  <label htmlFor="">Descripcion</label>
                   <textarea
                     placeholder='Descripción'
                     value={editDescripcion}
                     onChange={(e) => setEditDescripcion(e.target.value)}
                   />
-                  <input
-                    type='text'
-                    placeholder='Lugar de creación'
-                    value={editLugarCreacion}
-                    onChange={(e) => setEditLugarCreacion(e.target.value)}
-                  />
+                
                 </div>
               </div>
 

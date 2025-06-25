@@ -444,17 +444,23 @@ const ImageUploadPanel = () => {
                 </div>
 
                 <div className='form-section'>
+
+                  <label htmlFor="">Titulo</label>
                   <input
                     type='text'
                     placeholder='Título'
                     value={editTitulo}
                     onChange={(e) => setEditTitulo(e.target.value)}
                   />
+
+                  <label htmlFor="">Descripcion</label>
                   <textarea
                     placeholder='Descripción'
                     value={editDescripcion}
                     onChange={(e) => setEditDescripcion(e.target.value)}
                   />
+
+                  <label htmlFor="">Lugar de creación</label>
                   <input
                     type='text'
                     placeholder='Lugar de creación'

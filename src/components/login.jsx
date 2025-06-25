@@ -49,6 +49,7 @@ const LoginForm = () => {
       await login(email, password);
     } catch (error) {
       // El error ya está manejado en el AuthContext
+       addAlert('Error al iniciar sesion con Email', 'error');
       console.error('Login error:', error);
     } finally {
       setLoading(false);
@@ -64,7 +65,7 @@ const LoginForm = () => {
       await loginWithGoogle();
     } catch (error) {
       console.error('Google Sign-In error:', error);
-      addAlert(error.message || 'Error al iniciar con Google', 'error');
+      addAlert('Error al iniciar sesion con Google', 'error');
       setError(error.message || 'Error al iniciar con Google');
     } finally {
       setGoogleLoading(false);
