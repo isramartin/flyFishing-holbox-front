@@ -41,7 +41,7 @@ const Articles = () => {
 
   if (loading) {
     return (
-      <div className="container mt-4">
+      <div className="container">
         <h2 className="mb-4 text-center">📚 Lista de Artículos</h2>
         <div className="row">
           {[...Array(6)].map((_, index) => (
