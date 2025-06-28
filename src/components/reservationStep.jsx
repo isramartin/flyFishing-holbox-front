@@ -607,10 +607,15 @@ export const ReservationStep = () => {
                         tileClassName={({ date, view }) => {
                           if (view === 'month') {
                             const fecha = formatFechaCorta(date);
-                            const ocupada = fechasOcupadas.find(
-                              (f) => f.fecha === fecha && f.cantidad >= 2
+                            const match = fechasOcupadas.find(
+                              (f) => f.fecha === fecha
                             );
-                            return ocupada ? 'dia-ocupado' : null;
+
+                            if (match?.cantidad >= 2) {
+                              return 'dia-ocupado-completo'; // totalmente bloqueado
+                            } else if (match?.cantidad === 1) {
+                              return 'dia-ocupado-parcial'; // medio ocupado
+                            }
                           }
                           return null;
                         }}

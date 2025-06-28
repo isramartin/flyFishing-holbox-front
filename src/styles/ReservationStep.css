@@ -336,13 +336,37 @@
 }
 
 /* ----- */
-.dia-ocupado {
-  background-color: #0e00d3 !important; /* Rojo */
+
+/* Fecha totalmente ocupada */
+.dia-ocupado-completo {
+  background-color: #0e00d3 !important; /* rojo */
   color: white !important;
   border-radius: 8px;
   font-weight: bold;
-  text-decoration: line-through;
   cursor: not-allowed;
+}
+
+/* Fecha parcialmente ocupada (mitad arriba en naranja) */
+.dia-ocupado-parcial {
+  position: relative;
+}
+
+.dia-ocupado-parcial::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background-color: #0e00d3; /* naranja */
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  z-index: 0;
+}
+
+.dia-ocupado-parcial abbr {
+  position: relative;
+  z-index: 1;
 }
 
 /* ----- */
