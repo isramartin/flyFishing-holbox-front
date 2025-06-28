@@ -169,6 +169,7 @@ const uploadInfoPesca = () => {
       setPreviewImage(null);
       setTitulo('');
       setDescripcion('');
+      setRefreshFlag((prev) => !prev);
     } catch (error) {
       console.error('Error al subir imagen de pesca:', error);
       setPhotos((prev) => prev.filter((photo) => photo.id !== tempId));
@@ -201,7 +202,7 @@ const uploadInfoPesca = () => {
       await deletePesca(id, token);
       // Luego puedes actualizar el estado local para quitar la imagen de la galería:
       addAlert('Imagen elimida correctamente', 'success');
-      setPhotos((prev) => prev.filter((img) => img.id !== id));
+      setArticles((prev) => prev.filter((img) => img.id !== id));
     } catch (error) {
       addAlert('Error al eliminar la imagen', 'error');
     }

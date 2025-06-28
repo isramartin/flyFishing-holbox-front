@@ -187,6 +187,7 @@ const ImageUploadPanel = () => {
       setTitulo('');
       setDescripcion('');
       setLugarCreacion('');
+      setRefreshFlag((prev) => !prev);
     } catch (error) {
       console.error('Error al subir imagen:', error);
       // Revertir la actualización optimista en caso de error
