@@ -6,6 +6,7 @@ import {
   uploadPesca,
   getAllPesca,
   deletePesca,
+  updatePesca,
 } from '../../service/Pesca.service';
 import { useAlert } from '../AlertManager';
 
@@ -24,7 +25,8 @@ const uploadInfoPesca = () => {
   const [editImage, setEditImage] = useState(null);
   const [editTitulo, setEditTitulo] = useState('');
   const [editDescripcion, setEditDescripcion] = useState('');
-  const [editLugarCreacion, setEditLugarCreacion] = useState('');
+  const [modalError, setModalError] = useState(null);
+  const [refreshFlag, setRefreshFlag] = useState(false);
 
   const authContext = useContext(AuthContext);
   const [authToken, setAuthToken] = useState(null);
@@ -103,7 +105,7 @@ const uploadInfoPesca = () => {
     };
 
     fetchArticles();
-  }, []);
+  }, [refreshFlag]);
 
   const handleConfirmUploadPesca = async () => {
     if (!selectedFile || !titulo.trim() || !descripcion.trim()) {
@@ -190,7 +192,7 @@ const uploadInfoPesca = () => {
     );
 
     if (!token) {
-        addAlert('No se encontró token. Inicia sesión nuevamente.', 'error');
+      addAlert('No se encontró token. Inicia sesión nuevamente.', 'error');
       console.error('No se encontró token. Inicia sesión nuevamente.');
       return;
     }
@@ -206,31 +208,85 @@ const uploadInfoPesca = () => {
   };
 
   const openEditModal = (photo) => {
-    setEditingPhoto(photo);
     setEditImage(null);
-    setEditTitulo(photo.titulo);
-    setEditDescripcion(photo.descripcion);
-    setEditLugarCreacion(photo.lugarCreacion);
+    setEditTitulo(photo.titulo || '');
+    setEditDescripcion(photo.descripcion || '');
+    setEditingPhoto(photo);
     setModalVisible(true);
   };
 
-  const handleSaveChanges = (id) => {
-    setPhotos(
-      photos.map((photo) =>
-        photo.id === id
-          ? {
-              ...photo,
-              titulo: editTitulo,
-              descripcion: editDescripcion,
-              lugarCreacion: editLugarCreacion,
-              imageUrl: editImage
-                ? URL.createObjectURL(editImage)
-                : photo.imageUrl,
-            }
-          : photo
-      )
-    );
-    setModalVisible(false);
+  const handleSaveChanges = async (id) => {
+    // Validar campos requeridos
+    const titulo = editTitulo.trim();
+    const descripcion = editDescripcion.trim();
+
+    if (!titulo || !descripcion) {
+      addAlert('Completa todos los campos para actualizar.', 'warning');
+      return;
+    }
+
+    // Obtener token desde múltiples fuentes
+    const token =
+      localStorage.getItem('authToken') ||
+      authContext?.token ||
+      JSON.parse(localStorage.getItem('auth'))?.token;
+
+    if (!token) {
+      addAlert('No se encontró token. Inicia sesión nuevamente.', 'error');
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      console.log('📤 Enviando actualización:', {
+        id,
+        titulo,
+        descripcion,
+        editImage,
+      });
+
+      const updatedPesca = await updatePesca(
+        id,
+        editImage || null,
+        titulo,
+        descripcion,
+        token
+      );
+
+      console.log('✅ Respuesta del servidor:', updatedPesca);
+
+      const updatedImageUrl =
+        updatedPesca.imageUrl || editingPhoto.imageUrl || '';
+
+      // Actualizar el estado local
+      setArticles((prevArticles) =>
+        prevArticles.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                titulo,
+                descripcion,
+                imageUrl: `${updatedImageUrl}?t=${Date.now()}`,
+              }
+            : item
+        )
+      );
+
+      // Limpiar estado y UI
+      setModalVisible(false);
+      setEditImage(null);
+      setRefreshFlag((prev) => !prev);
+      addAlert('Información de pesca actualizada correctamente.', 'success');
+    } catch (error) {
+      console.error(' Error al actualizar pesca:', error);
+      addAlert(
+        error?.message || 'Error al actualizar. Intenta nuevamente.',
+        'error'
+      );
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -354,7 +410,7 @@ const uploadInfoPesca = () => {
           </div>
         )}
 
-        {modalVisible && (
+        {modalVisible && editingPhoto && (
           <div className='modal-backdrop'>
             <div className='modal-card'>
               <h3>Editar Imagen</h3>
@@ -380,20 +436,26 @@ const uploadInfoPesca = () => {
                 </div>
 
                 <div className='form-section'>
-                  <label htmlFor=''>Titulo</label>
+                  <label>Título</label>
                   <input
                     type='text'
                     placeholder='Título'
                     value={editTitulo}
                     onChange={(e) => setEditTitulo(e.target.value)}
                   />
-                  <label htmlFor=''>Descripcion</label>
+                  <label>Descripción</label>
                   <textarea
                     placeholder='Descripción'
                     value={editDescripcion}
                     onChange={(e) => setEditDescripcion(e.target.value)}
                   />
                 </div>
+
+                {modalError && (
+                  <div className='modal-error'>
+                    <p style={{ color: 'red' }}>{modalError}</p>
+                  </div>
+                )}
               </div>
 
               <div className='modal-footer'>

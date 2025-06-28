@@ -51,6 +51,55 @@ export const uploadPesca = async (file, titulo, descripcion, token) => {
   }
 };
 
+export const updatePesca = async (id, file, titulo, descripcion, token) => {
+  try {
+    const formData = new FormData();
+
+    if (file) {
+      formData.append('file', file); // archivo tipo File
+    }
+
+    formData.append('titulo', titulo);
+    formData.append('descripcion', descripcion);
+
+    const response = await fetch(`${API_URL}/api/pesca/${id}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // NUNCA pongas Content-Type con FormData: el navegador lo gestiona
+      },
+      body: formData,
+    });
+
+    // Manejo defensivo de la respuesta
+    const contentType = response.headers.get('content-type');
+    const isJson = contentType && contentType.includes('application/json');
+    const raw = await response.text();
+
+    if (!response.ok) {
+      console.error('🔴 Error del backend al actualizar:', raw);
+      throw new Error(raw || 'Error al actualizar la pesca');
+    }
+
+    // Parseamos si es JSON
+    if (isJson) {
+      return JSON.parse(raw);
+    }
+
+    // Si no es JSON, devolvemos datos mínimos para actualizar el estado local
+    return {
+      id,
+      titulo,
+      descripcion,
+      imageUrl: null, // fallback si no vino imagen
+    };
+  } catch (error) {
+    console.error('❌ Error en updatePesca:', error);
+    throw error;
+  }
+};
+
+
 export const deletePesca = async (id, token) => {
   try {
     const response = await fetch(`${API_URL}/api/pesca/${id}`, {
