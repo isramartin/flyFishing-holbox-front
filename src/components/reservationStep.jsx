@@ -34,7 +34,7 @@ import Flags from 'country-flag-icons/react/3x2'; // Importa las banderas
 import 'react-calendar/dist/Calendar.css';
 import '../styles/ReservationStep.css'; // Importamos el archivo CSS
 import iamgen1 from '../assets/image/image1.png';
-import { crearReserva } from '../service/Reserva.service';
+import { crearReserva, FechasOcupadas } from '../service/Reserva.service';
 import { AuthContext } from '../context/AuthContext';
 import { useReserva } from '../context/ReservaContext';
 
@@ -67,6 +67,7 @@ export const ReservationStep = () => {
   const { data, setData, clearReserva } = useReserva();
   const navigate = useNavigate();
   const [localToken, setLocalToken] = useState('');
+  const [fechasOcupadas, setFechasOcupadas] = useState([]);
 
   const [reservaState, setReservaState] = useState({
     loading: false, // true mientras estás pidiendo la session al backend
@@ -203,6 +204,49 @@ export const ReservationStep = () => {
       included: true,
     },
   ];
+
+  useEffect(() => {
+    const tokenSources = [
+      localStorage.getItem('authToken'),
+      authContext?.token,
+      JSON.parse(localStorage.getItem('auth'))?.token,
+    ].filter(Boolean);
+
+    const token = tokenSources[0];
+
+    if (!token) {
+      console.error('❌ No se encontró token. Inicia sesión nuevamente.');
+      return;
+    }
+
+    console.log('🔑 Token seleccionado:', `***${token.slice(-4)}`);
+
+    const cargarFechas = async () => {
+      try {
+        const fechas = await FechasOcupadas(token);
+
+        if (!Array.isArray(fechas)) {
+          console.warn('⚠️ La respuesta de fechas no es una lista:', fechas);
+          return;
+        }
+
+        if (fechas.length === 0) {
+          console.log('📭 No hay fechas ocupadas registradas.');
+        } else {
+          console.log('📅 Fechas ocupadas recibidas:', fechas);
+        }
+
+        setFechasOcupadas(fechas);
+      } catch (error) {
+        console.error(
+          '🚨 Error al cargar fechas ocupadas:',
+          error.message || error
+        );
+      }
+    };
+
+    cargarFechas();
+  }, [authContext?.token]);
 
   // Manejar la selección del paquete completo
   const handlePackageSelection = (event) => {
@@ -355,7 +399,7 @@ export const ReservationStep = () => {
       const country = getCountryFromNumber(safeValue); // Necesitarás implementar esta función
       if (country) {
         setCountryCode(country.countryCode.toLowerCase());
-      }else {
+      } else {
         setCountryCode('mx');
       }
     }
@@ -438,6 +482,10 @@ export const ReservationStep = () => {
       }
       return prevQuantities; // No cambia si ya es 0
     });
+  };
+
+  const formatFechaCorta = (date) => {
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
   };
 
   const filteredItems =
@@ -547,6 +595,25 @@ export const ReservationStep = () => {
                         value={selectedDate}
                         locale='es-ES'
                         minDate={new Date()}
+                        tileDisabled={({ date, view }) => {
+                          if (view === 'month') {
+                            const fecha = formatFechaCorta(date);
+                            return fechasOcupadas.some(
+                              (f) => f.fecha === fecha && f.cantidad >= 2
+                            );
+                          }
+                          return false;
+                        }}
+                        tileClassName={({ date, view }) => {
+                          if (view === 'month') {
+                            const fecha = formatFechaCorta(date);
+                            const ocupada = fechasOcupadas.find(
+                              (f) => f.fecha === fecha && f.cantidad >= 2
+                            );
+                            return ocupada ? 'dia-ocupado' : null;
+                          }
+                          return null;
+                        }}
                       />
                     </div>
 

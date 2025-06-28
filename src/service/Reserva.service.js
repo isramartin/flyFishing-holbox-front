@@ -155,6 +155,67 @@ export const obtenerTodasLasReservas = async (token) => {
   }
 };
 
+export const FechasOcupadas = async (token) => {
+  if (!token) {
+    throw new Error('Token de autenticación no proporcionado');
+  }
+
+  console.log('Consultando fechas ocupadas...');
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout 10s
+
+  try {
+    const response = await fetch(`${API_URL}/api/reservas/ocupadas`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('La respuesta del servidor no es JSON');
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Error al obtener fechas ocupadas:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorData: data,
+      });
+
+      throw new Error(
+        data.message ||
+          `Error ${response.status}: ${
+            response.statusText || 'No se pudieron obtener las fechas ocupadas'
+          }`
+      );
+    }
+
+    console.log('Fechas ocupadas:', data);
+    return data; // <- [{ fecha: '2025-07-01', cantidad: 2 }, ...]
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error.name === 'AbortError') {
+      console.error('Timeout al obtener fechas ocupadas');
+      throw new Error('La solicitud tardó demasiado. Intenta de nuevo.');
+    }
+
+    console.error('Error en obtenerFechasOcupadas:', error.message || error);
+    throw error instanceof Error
+      ? error
+      : new Error('Error desconocido al obtener fechas ocupadas');
+  }
+};
+
 export const obtenerReservaPorId = async (reservaId, token) => {
   if (!reservaId || !token) {
     throw new Error('ID de reserva o token no proporcionados');

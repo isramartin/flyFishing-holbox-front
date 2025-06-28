@@ -15,13 +15,13 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-family: "roboto", sans-serif;
+  font-family: 'roboto', sans-serif;
   font-weight: bold;
 }
 
 .subtitle-container {
   margin: 0 auto;
-  font-family: "montserrat", sans-serif;
+  font-family: 'montserrat', sans-serif;
   font-weight: bold;
 }
 
@@ -119,7 +119,7 @@
   width: 100%;
   display: block;
   text-align: center;
-  font-family: "montserrat", sans-serif;
+  font-family: 'montserrat', sans-serif;
   font-weight: bold;
 }
 
@@ -202,7 +202,7 @@
   width: 100%;
   border: none;
   background: transparent;
-  font-family: "Arial", sans-serif;
+  font-family: 'Arial', sans-serif;
 }
 
 .react-calendar__tile {
@@ -291,7 +291,7 @@
 .form-group {
   margin-bottom: 20px;
   text-align: left;
-  font-family: "Arial", sans-serif;
+  font-family: 'Arial', sans-serif;
 }
 
 .form-group label {
@@ -336,6 +336,14 @@
 }
 
 /* ----- */
+.dia-ocupado {
+  background-color: #0e00d3 !important; /* Rojo */
+  color: white !important;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
 
 /* ----- */
 
@@ -448,7 +456,7 @@
   background-color: #ffffff;
   border: 1px solid #c9c9c9;
   border-radius: 15px;
-  font-family: "Arial", sans-serif;
+  font-family: 'Arial', sans-serif;
   color: #34495e;
   flex-shrink: 0;
   align-self: flex-start;
@@ -1206,7 +1214,7 @@ filter-buttons button:hover {
 }
 
 .toggle-slider:before {
-  content: "";
+  content: '';
   position: absolute;
   height: 22px;
   width: 22px;
@@ -1447,7 +1455,8 @@ input:checked + .toggle-slider:before {
   border-bottom: 1px solid #e0e0e0;
 }
 
-.payment-label, .payment-amount {
+.payment-label,
+.payment-amount {
   padding-bottom: 5px; /* Espacio adicional debajo del texto */
   margin: 0; /* Eliminar márgenes por defecto */
   font-weight: 600;
@@ -1513,7 +1522,6 @@ input:checked + .toggle-slider:before {
   font-size: 0.95em;
 }
 
-
 /* Contenedor principal */
 
 .confirmation-step.modern-card {
@@ -1557,7 +1565,7 @@ input:checked + .toggle-slider:before {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 12px;
-  color: #4CAF50;
+  color: #4caf50;
 }
 
 .confirmation-details p {
@@ -1567,7 +1575,7 @@ input:checked + .toggle-slider:before {
 }
 
 .confirmation-button.modern-button {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: #ffffff;
   border: none;
   padding: 12px 24px;
@@ -1587,9 +1595,8 @@ input:checked + .toggle-slider:before {
   transform: translateY(0);
 }
 
-
 .finish-button {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   padding: 10px 20px;
