@@ -349,6 +349,7 @@
 /* Fecha parcialmente ocupada (mitad arriba en naranja) */
 .dia-ocupado-parcial {
   position: relative;
+  color: #000000 !important;
 }
 
 .dia-ocupado-parcial::before {
@@ -358,7 +359,7 @@
   left: 0;
   width: 50%;
   height: 100%;
-  background-color: #0e00d3; /* naranja */
+  background-color: #4db9dd; /* naranja */
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
   z-index: 0;
