@@ -189,7 +189,7 @@
   flex: 1;
   padding: 20px;
   border-radius: 10px;
-  background: #ffffff;
+  background: #ecf3f9;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
   justify-content: center;
@@ -213,7 +213,8 @@
 }
 
 .react-calendar__tile:enabled:hover {
-  background: #e3e8fd;
+  background: #a9dafa;
+  color: #1920f7;
 }
 
 .react-calendar__tile--active {
@@ -221,6 +222,12 @@
   color: white;
   font-weight: bold;
   border-radius: 8px;
+}
+
+.react-calendar__tile--active:hover {
+  background: #0f0f0f !important;
+  color: white !important;
+  cursor: default; /* opcional, para evitar el efecto pointer */
 }
 
 .react-calendar__tile--disabled {
@@ -350,7 +357,15 @@
 .dia-ocupado-parcial {
   position: relative;
   color: #000000 !important;
+  font-weight: bold !important;
+  
 }
+
+/* Prioriza el estilo cuando tiene ambas clases */
+.react-calendar__tile--active.dia-ocupado-parcial {
+  color: #ffffff !important;
+}
+
 
 .dia-ocupado-parcial::before {
   content: '';
@@ -359,7 +374,7 @@
   left: 0;
   width: 50%;
   height: 100%;
-  background-color: #4db9dd; /* naranja */
+  background-color: #39a8ed; /* naranja */
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
   z-index: 0;
