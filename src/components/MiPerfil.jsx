@@ -1,6 +1,21 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { getUsuarioById } from '../service/User.service';
+import { obtenerMisReservas } from '../service/Reserva.service';
+import {
+  FileDown,
+  ScrollText,
+  ListCheck,
+  CalendarDays,
+  Clock3,
+  Users,
+  Package,
+  User,
+  Mail,
+  PhoneCall,
+  CreditCard,
+  Users2,
+} from 'lucide-react';
 import '../styles/MiPerfil.css';
 
 export const PerfilUsuario = () => {
@@ -13,6 +28,9 @@ export const PerfilUsuario = () => {
   const [usuario, setUsuario] = useState(null);
   const [error, setError] = useState(null);
   const [cargandoUsuario, setCargandoUsuario] = useState(true);
+  const [reservas, setReservas] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [totalReservas, setTotalReservas] = useState(0);
 
   const [datosUsuario, setDatosUsuario] = useState({
     id: '',
@@ -41,6 +59,66 @@ export const PerfilUsuario = () => {
     const tokenFromStorage = localStorage.getItem('authToken');
     setLocalToken(tokenFromStorage || '');
   }, []);
+
+  useEffect(() => {
+    const tokenSources = [
+      localStorage.getItem('authToken'),
+      authContext?.token,
+      JSON.parse(localStorage.getItem('auth'))?.token,
+    ].filter(Boolean);
+
+    const token = tokenSources[0];
+    console.log(
+      '🔑 Token seleccionado:',
+      token ? `***${token.slice(-4)}` : 'NO TOKEN'
+    );
+
+    if (!token) {
+      const errorMsg =
+        'No se encontró token de autenticación. Por favor inicie sesión nuevamente.';
+      console.error(errorMsg);
+      setError(errorMsg);
+      setCargando(false);
+      return;
+    }
+
+    const cargarMisReservas = async () => {
+      try {
+        const data = await obtenerMisReservas(token);
+        console.log('Reservas personales desde backend:', data);
+
+        const reservasFormateadas = data.reservas.map((res) => ({
+          id: res.id,
+          name: res.nombreCompleto,
+          email: res.email,
+          phone: res.numeroTelefono,
+          people: res.numeroPersonas,
+          date: res.fechaReserva,
+          time: res.hora,
+          status: res.paymentStatus,
+          notes: res.alquilar ? 'Alquiler de equipo' : 'Sin equipo',
+          total: res.totalPagar,
+          payment: res.payment,
+          equipoPrecio: res.equipo_precio,
+          metodoPago: res.paymentMethod,
+          pdf: res.pdfUrl,
+          paymentDate: res.paymentDate?.seconds
+            ? new Date(res.paymentDate.seconds * 1000).toLocaleString()
+            : null,
+        }));
+
+        setReservas(reservasFormateadas);
+        setTotalReservas(data.total);
+      } catch (err) {
+        console.error('Error al obtener reservas del usuario:', err.message);
+        setError(err.message);
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    cargarMisReservas();
+  }, [authContext?.token]);
 
   useEffect(() => {
     const tokenSources = [
@@ -260,11 +338,112 @@ export const PerfilUsuario = () => {
       case 'reservas':
         return (
           <div className='perfil-form'>
-            <h3>Mis Reservas</h3>
-            <p>Aquí se mostrarán tus reservas.</p>
-            <p style={{ color: '#888' }}>
-              <em>No tienes reservas por el momento.</em>
-            </p>
+            <div className='reservas-header'>
+              <h3>
+                <ScrollText size={35} /> Mis Reservas
+              </h3>
+              <p className='subtitulo'>
+                Consulta y gestiona tus reservas activas
+              </p>
+              <hr className='reserva-separador' />
+            </div>
+
+            {cargando ? (
+              <p className='reserva-mensaje'>⏳ Cargando tus reservas...</p>
+            ) : error ? (
+              <p className='reserva-error'>❌ {error}</p>
+            ) : reservas.length === 0 ? (
+              <p className='reserva-mensaje'>
+                📭 No tienes reservas registradas.
+              </p>
+            ) : (
+              <>
+                <p className='reserva-total'>
+                  <ListCheck /> <strong>{totalReservas}</strong> reserva(s)
+                  encontradas
+                </p>
+
+                <div className='reservas-grid'>
+                  {reservas.map((reserva) => (
+                    <div key={reserva.id} className='reserva-card'>
+                      <span className={`reserva-status ${reserva.status}`}>
+                        {reserva.status === 'paid'
+                          ? 'Pagado'
+                          : reserva.status === 'pending'
+                          ? 'Pendiente'
+                          : 'Fallido'}
+                      </span>
+
+                      <div className='reserva-body'>
+                        <div className='reserva-info'>
+                          <p>
+                            <strong>
+                              <CalendarDays size={15} /> Fecha:
+                            </strong>{' '}
+                            {reserva.date}
+                          </p>
+                          <p>
+                            <strong>
+                              <Clock3 /> Hora:
+                            </strong>{' '}
+                            {reserva.time}
+                          </p>
+                          <p>
+                            <strong>
+                              <Users2 /> Personas:
+                            </strong>{' '}
+                            {reserva.people}
+                          </p>
+                          <p>
+                            <strong>
+                              <Package /> Equipo:
+                            </strong>{' '}
+                            {reserva.notes}
+                          </p>
+                          <p>
+                            <strong>
+                              <User /> Nombre:
+                            </strong>{' '}
+                            {reserva.name}
+                          </p>
+                          <p>
+                            <strong>
+                              <Mail /> Correo:
+                            </strong>{' '}
+                            {reserva.email}
+                          </p>
+                          <p>
+                            <strong>
+                              <PhoneCall /> Teléfono:
+                            </strong>{' '}
+                            {reserva.phone}
+                          </p>
+                          <p>
+                            <strong>
+                              <CreditCard /> Total:
+                            </strong>{' '}
+                            ${reserva.total}
+                          </p>
+                        </div>
+                      </div>
+
+                      {reserva.pdf && (
+                        <div className='reserva-footer'>
+                          <a
+                            className='reserva-comprobante'
+                            href={reserva.pdf}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                          >
+                            <FileDown /> Descargar comprobante
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         );
 

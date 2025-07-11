@@ -207,9 +207,7 @@ const AdminReservations = () => {
     }
   };
 
-
-
-   // Filtros y paginación SIEMPRE después de los estados y useEffect
+  // Filtros y paginación SIEMPRE después de los estados y useEffect
   const filteredByStatus =
     filter === 'all'
       ? reservas
@@ -228,51 +226,50 @@ const AdminReservations = () => {
     indexOfLastReservation
   );
 
-  const totalPages = Math.ceil(filteredReservations.length / reservationsPerPage);
-
-
+  const totalPages = Math.ceil(
+    filteredReservations.length / reservationsPerPage
+  );
 
   return (
-    <div className="admin-reservations-container">
-      <div className="admin-reservations">
+    <div className='admin-reservations-container'>
+      <div className='admin-reservations'>
         <h2>Panel de Administrador - Reservaciones</h2>
-       <div className="filters">
-  <div className="filter-group-horizontal">
-    <label htmlFor="estado">Filtrar por estado:</label>
-    <select id="estado" onChange={(e) => setFilter(e.target.value)}>
-      <option value="all">Todos</option>
-      <option value="pending">Pendiente</option>
-      <option value="paid">Confirmada</option>
-      <option value="failed">Cancelada</option>
-    </select>
-  </div>
+        <div className='filters'>
+          <div className='filter-group-horizontal'>
+            <label htmlFor='estado'>Filtrar por estado:</label>
+            <select id='estado' onChange={(e) => setFilter(e.target.value)}>
+              <option value='all'>Todos</option>
+              <option value='pending'>Pendiente</option>
+              <option value='paid'>Confirmada</option>
+              <option value='failed'>Cancelada</option>
+            </select>
+          </div>
 
-  <div className="filter-group-horizontal-id">
-  <label htmlFor="searchId">Buscar por ID:</label>
-  <div className="input-wrapper">
-    <input
-      id="searchId"
-      type="text"
-      placeholder="ID de reserva"
-      value={searchId}
-      onChange={(e) => setSearchId(e.target.value)}
-    />
-    {searchId && (
-      <button
-        type="button"
-        className="clear-btn"
-        onClick={() => setSearchId('')}
-        title="Limpiar búsqueda"
-      >
-        ×
-      </button>
-    )}
-  </div>
-</div>
+          <div className='filter-group-horizontal-id'>
+            <label htmlFor='searchId'>Buscar por ID:</label>
+            <div className='input-wrapper'>
+              <input
+                id='searchId'
+                type='text'
+                placeholder='ID de reserva'
+                value={searchId}
+                onChange={(e) => setSearchId(e.target.value)}
+              />
+              {searchId && (
+                <button
+                  type='button'
+                  className='clear-btn'
+                  onClick={() => setSearchId('')}
+                  title='Limpiar búsqueda'
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
 
-</div>
-
-        <table className="reservation-table">
+        <table className='reservation-table'>
           <thead>
             <tr>
               <th>ID</th>
@@ -285,7 +282,7 @@ const AdminReservations = () => {
             </tr>
           </thead>
           <tbody>
-             {currentReservations.map((res) => (
+            {currentReservations.map((res) => (
               <tr key={res.id}>
                 <td>{res.id}</td>
                 <td>{res.name}</td>
@@ -305,55 +302,56 @@ const AdminReservations = () => {
           </tbody>
         </table>
 
-       <div className="pagination-enhanced">
-  <button
-    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-    disabled={currentPage === 1}
-  >
-    Anterior
-  </button>
+        <div className='pagination-enhanced'>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Anterior
+          </button>
 
-  <span className="range-info">
-    {indexOfFirstReservation + 1}–
-    {Math.min(indexOfLastReservation, filteredReservations.length)} de {filteredReservations.length}
-  </span>
+          <span className='range-info'>
+            {indexOfFirstReservation + 1}–
+            {Math.min(indexOfLastReservation, filteredReservations.length)} de{' '}
+            {filteredReservations.length}
+          </span>
 
-  <span className="page-info">
-    Página {currentPage} de {totalPages}
-  </span>
+          <span className='page-info'>
+            Página {currentPage} de {totalPages}
+          </span>
 
-  <button
-    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-    disabled={currentPage === totalPages}
-  >
-    Siguiente
-  </button>
-</div>
-
-
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+          >
+            Siguiente
+          </button>
+        </div>
 
         {selectedReservation && (
-          <div className="modal-overlay">
-            <div className="modal-container">
-              <div className="modal-header">
+          <div className='modal-overlay'>
+            <div className='modal-container'>
+              <div className='modal-header'>
                 <h3>Detalles de la Reservación</h3>
                 <button
-                  className="close-button-admin"
+                  className='close-button-admin'
                   onClick={() => setSelectedReservation(null)}
                 >
                   ✖
                 </button>
               </div>
-              <div className="modal-body">
-                <div className="details-grid">
-                  <div className="detail-item">
-                    <span className="detail-label">ID de Reservación</span>
-                    <span className="detail-value">
+              <div className='modal-body'>
+                <div className='details-grid'>
+                  <div className='detail-item'>
+                    <span className='detail-label'>ID de Reservación</span>
+                    <span className='detail-value'>
                       {selectedReservation.id}
                     </span>
                   </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Estado</span>
+                  <div className='detail-item'>
+                    <span className='detail-label'>Estado</span>
                     <span
                       className={`status-badge ${getStatusColor(
                         selectedReservation.status
@@ -362,45 +360,45 @@ const AdminReservations = () => {
                       {selectedReservation.status}
                     </span>
                   </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Nombre</span>
-                    <span className="detail-value">
+                  <div className='detail-item'>
+                    <span className='detail-label'>Nombre</span>
+                    <span className='detail-value'>
                       {selectedReservation.name}
                     </span>
                   </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Email</span>
-                    <span className="detail-value">
+                  <div className='detail-item'>
+                    <span className='detail-label'>Email</span>
+                    <span className='detail-value'>
                       {selectedReservation.email}
                     </span>
                   </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Teléfono</span>
-                    <span className="detail-value">
+                  <div className='detail-item'>
+                    <span className='detail-label'>Teléfono</span>
+                    <span className='detail-value'>
                       {selectedReservation.phone}
                     </span>
                   </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Fecha</span>
-                    <span className="detail-value">
+                  <div className='detail-item'>
+                    <span className='detail-label'>Fecha</span>
+                    <span className='detail-value'>
                       {selectedReservation.date}
                     </span>
                   </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Hora</span>
-                    <span className="detail-value">
+                  <div className='detail-item'>
+                    <span className='detail-label'>Hora</span>
+                    <span className='detail-value'>
                       {selectedReservation.time}
                     </span>
                   </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Personas</span>
-                    <span className="detail-value">
+                  <div className='detail-item'>
+                    <span className='detail-label'>Personas</span>
+                    <span className='detail-value'>
                       {selectedReservation.people}
                     </span>
                   </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Renta</span>
-                    <span className="detail-value">
+                  <div className='detail-item'>
+                    <span className='detail-label'>Renta</span>
+                    <span className='detail-value'>
                       {selectedReservation.notes || 'Sin notas adicionales'}
                     </span>
                   </div>

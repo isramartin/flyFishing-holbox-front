@@ -299,6 +299,123 @@ body {
   border-color: #dee2e6;
 }
 
+
+.reservas-header {
+  margin-bottom: 1rem;
+}
+
+.reservas-header h3 {
+  font-size: 2rem;
+  color: #222;
+}
+
+.subtitulo {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 0.2rem;
+}
+
+.reserva-separador {
+  border: none;
+  border-top: 2px solid #eee;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.reserva-mensaje, .reserva-error, .reserva-total {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+.reservas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2rem;
+}
+
+.reserva-card {
+  position: relative;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.8rem 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.3s ease;
+}
+
+.reserva-card:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+.reserva-status {
+  position: absolute;
+  top: 2rem;
+  right: 5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  background-color: #ccc;
+  color: #222;
+}
+
+.reserva-status.paid {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.reserva-status.pending {
+  background-color: #fff3cd;
+  color: #664d03;
+}
+
+.reserva-status.failed,
+.reserva-status.error {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.reserva-body {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.reserva-info {
+  flex: 1;
+  min-width: 150px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.reserva-info p {
+  margin: 0.3rem 0;
+}
+
+.reserva-footer {
+  text-align: left;
+}
+
+.reserva-comprobante {
+  display: inline-block;
+  background-color: #1f2c8e;
+  color: rgb(238, 238, 238);
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.3s ease;
+  
+}
+
+
+
+
 /* Responsive */
 @media (max-width: 768px) {
   .perfil-wrapper {

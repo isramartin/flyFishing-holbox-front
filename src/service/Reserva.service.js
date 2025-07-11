@@ -155,6 +155,68 @@ export const obtenerTodasLasReservas = async (token) => {
   }
 };
 
+export const obtenerMisReservas = async (token) => {
+  if (!token) {
+    throw new Error('Token de autenticación no proporcionado');
+  }
+
+  console.log('Consultando las reservas del usuario...');
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout de 10s
+
+  try {
+    const response = await fetch(`${API_URL}/api/reservas/misReservas`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('La respuesta del servidor no es JSON');
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Error al obtener reservas del usuario:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorData: data,
+      });
+
+      throw new Error(
+        data.message ||
+          `Error ${response.status}: ${
+            response.statusText ||
+            'No se pudieron obtener las reservas del usuario'
+          }`
+      );
+    }
+
+    console.log('Reservas del usuario obtenidas correctamente:', data);
+    return data;
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error.name === 'AbortError') {
+      console.error('Timeout al obtener las reservas del usuario');
+      throw new Error('La solicitud tardó demasiado. Intenta de nuevo.');
+    }
+
+    console.error('Error en obtenerMisReservas:', error.message || error);
+    throw error instanceof Error
+      ? error
+      : new Error('Error desconocido al obtener las reservas del usuario');
+  }
+};
+
 export const FechasOcupadas = async (token) => {
   if (!token) {
     throw new Error('Token de autenticación no proporcionado');
