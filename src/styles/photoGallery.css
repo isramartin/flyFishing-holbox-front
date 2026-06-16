@@ -1,4 +1,4 @@
-/* Contenedor principal */
+
 .gallery-container {
   max-width: 100%;
   min-height: 95vh;
@@ -9,15 +9,15 @@
   justify-content: center;
 }
 
-/* Masonry Grid */
+
 .gallery-masonry {
-  column-count: 4; /* Ajustable */
+  column-count: 4; 
   column-gap: 15px;
   width: 90%;
   margin: 0 auto;
 }
 
-/* Imagen con efecto Masonry */
+
 .gallery-item {
   display: inline-block;
   width: 100%;
@@ -28,7 +28,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Imagen dentro de la galería */
+
 .gallery-image {
   width: 100%;
   height: auto;
@@ -42,7 +42,7 @@
   transform: scale(1.05);
 }
 
-/* Overlay con gradiente */
+
 .gallery-overlay {
   position: absolute;
   top: 0;
@@ -64,7 +64,7 @@
   opacity: 1;
 }
 
-/* Botones de acción */
+
 .gallery-actions {
   position: absolute;
   top: 10px;
@@ -87,7 +87,7 @@
   background: rgba(255, 255, 255, 0.5);
 }
 
-/* Información del texto */
+
 .gallery-info {
   font-size: 14px;
 }
@@ -109,7 +109,7 @@
   font-size: 12px;
 }
 
-/* Modal */
+
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
@@ -145,13 +145,133 @@
 }
 
 .modal-content {
-  position: relative;
+  position: relative;        
   padding: 20px;
   border-radius: 10px;
   max-width: 90%;
-  max-height: 70vh;
+  max-height: 90vh;          
   z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+
+.modal-action-bar {
+  position: absolute;
+  top: -40px;                
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Estilo común para todos los íconos de acción */
+.close-button-close,
+.close-button-favorite,
+.close-button-dowload,
+.close-button-link {
+  /* Quitamos el posicionamiento absoluto individual con left: XXXX */
+  position: static !important;  /* sobreescribe los valores anteriores */
+  top: auto !important;
+  left: auto !important;
+ 
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  color: white;
+  z-index: 10;
+  transition: color 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+ 
+.close-button-close:hover,
+.close-button-favorite:hover,
+.close-button-dowload:hover,
+.close-button-link:hover {
+  color: #4d6eff;
+  transform: scale(1.15);
+}
+ 
+/* Flechas — también se corrigen para no perderse en móvil */
+.arrow-left,
+.arrow-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.4);
+  border: none;
+  color: white;
+  font-size: 28px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 5;
+  transition: background 0.2s;
+}
+ 
+.arrow-left  { left: -60px; }
+.arrow-right { right: -60px; }
+ 
+.arrow-left:hover,
+.arrow-right:hover { background: rgba(0,0,0,0.7); }
+ 
+/* Imagen modal */
+.modal-image {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+ 
+/* ── Responsive ───────────────────────────── */
+@media (max-width: 900px) {
+  .arrow-left  { left: -36px; font-size: 22px; padding: 6px 10px; }
+  .arrow-right { right: -36px; font-size: 22px; padding: 6px 10px; }
+}
+ 
+@media (max-width: 600px) {
+  /* En móvil las flechas van dentro del overlay, no fuera */
+  .arrow-left  { left: 4px; }
+  .arrow-right { right: 4px; }
+ 
+  .modal-content {
+    max-width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+  }
+ 
+  .modal-action-bar {
+    top: -44px;
+    gap: 10px;
+  }
+ 
+  .close-button-close,
+  .close-button-favorite,
+  .close-button-dowload,
+  .close-button-link {
+    width: 30px;
+    height: 30px;
+  }
+ 
+  .modal-image { max-height: 50vh; }
+}
+ 
+@media (max-width: 400px) {
+  .modal-action-bar { gap: 8px; }
+ 
+  .close-button-close,
+  .close-button-favorite,
+  .close-button-dowload {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+
+
 
 .modal-image {
   max-width: 100%;
@@ -159,7 +279,7 @@
   object-fit: contain;
 }
 
-/* Flechas de navegación */
+
 .arrow-left,
 .arrow-right {
   position: absolute;
@@ -179,7 +299,7 @@
   right: 25vh;
 }
 
-/* Miniaturas */
+
 
 .thumbnails-wrapper {
   width: 100%;
@@ -197,7 +317,7 @@
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch; /* Para suavizado en iOS */
+  -webkit-overflow-scrolling: touch; 
 }
 
 .thumbnail-container::-webkit-scrollbar {
@@ -225,7 +345,7 @@
   opacity: 0.5;
 }
 
-/* Responsividad */
+
 @media (max-width: 1024px) {
   .gallery-masonry {
     column-count: 3;
@@ -248,7 +368,7 @@
   }
 
   .gallery-modal-overlay {
-    overflow: hidden; /* Previene scroll no deseado */
+    overflow: hidden; 
   }
 }
 
@@ -272,33 +392,33 @@
   }
 }
 
-/* Skeleton styles */
-/* Skeleton Loading - Versión Grande */
+
+
 .skeleton-item {
   position: relative;
   width: 100%;
-  margin-bottom: 45px; /* Más espacio entre elementos */
-  border-radius: 12px; /* Bordes más redondeados */
+  margin-bottom: 45px; 
+  border-radius: 12px; 
   background-color: #f0f0f0;
   animation: pulse 1.5s infinite ease-in-out;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
   overflow: hidden;
-  border: 1px solid #e0e0e0; /* Borde sutil */
+  border: 1px solid #e0e0e0; 
 }
 
 .skeleton-image {
   width: 100%;
-  height: 380px; /* Altura aumentada */
+  height: 380px; 
   background-color: #e0e0e0;
   border-radius: 12px 12px 0 0;
 }
 
 .skeleton-overlay {
-  padding: 25px; /* Más padding */
+  padding: 25px; 
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 15px; /* Más separación */
+  gap: 15px; 
   background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
   height: 100%;
   box-sizing: border-box;
@@ -306,15 +426,15 @@
 
 .skeleton-actions {
   position: absolute;
-  top: 20px; /* Más abajo */
-  right: 20px; /* Más a la izquierda */
+  top: 20px; 
+  right: 20px; 
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Más separación */
+  gap: 15px; 
 }
 
 .skeleton-button {
-  width: 42px; /* Botones más grandes */
+  width: 42px; 
   height: 42px;
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 5px;
@@ -324,25 +444,25 @@
 .skeleton-info {
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Más separación */
-  margin-top: 35px; /* Más margen superior */
+  gap: 15px; 
+  margin-top: 35px; 
 }
 
 .skeleton-title,
 .skeleton-description,
 .skeleton-location {
-  height: 18px; /* Más altos */
+  height: 18px; 
   background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 8px; /* Más redondeados */
+  border-radius: 8px; 
 }
 
 .skeleton-title {
-  width: 80%; /* Más anchos */
-  height: 24px; /* Más alto */
+  width: 80%; 
+  height: 24px; 
 }
 
 .skeleton-description {
-  width: 100%; /* Ocupa todo el ancho */
+  width: 100%; 
   height: 16px;
 }
 
@@ -357,7 +477,7 @@
     opacity: 0.95;
   }
   50% {
-    background-color: #e8e8e8; /* Contraste más marcado */
+    background-color: #e8e8e8; 
     opacity: 1;
   }
   100% {
@@ -366,7 +486,7 @@
   }
 }
 
-/* Efecto de brillo mejorado */
+
 .skeleton-image::after {
   content: '';
   position: absolute;
@@ -384,7 +504,7 @@
   z-index: 1;
 }
 
-/* Animación del shimmer más lenta */
+
 @keyframes shimmer {
   0% {
     transform: translateX(-150%);
@@ -394,7 +514,7 @@
   }
 }
 
-/* Texto con variación de ancho para más realismo */
+
 .skeleton-description:nth-child(odd) {
   width: 95%;
 }

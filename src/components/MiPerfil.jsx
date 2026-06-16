@@ -31,6 +31,7 @@ export const PerfilUsuario = () => {
   const [reservas, setReservas] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [totalReservas, setTotalReservas] = useState(0);
+  const [rol, setRol] = useState(null);
 
   const [datosUsuario, setDatosUsuario] = useState({
     id: '',
@@ -134,12 +135,15 @@ export const PerfilUsuario = () => {
 
     const token = tokenSources[0];
     const userId = authSources[0]?.user.id;
+    const userRol = authSources[0]?.user.rol;
 
     console.log(
       '🔑 Token seleccionado:',
       token ? `***${token.slice(-4)}` : 'NO TOKEN'
     );
     console.log('🆔 UserID seleccionado:', userId || 'NO USER ID');
+    console.log('🆔 Userrol :', userRol || 'NO USER ROL');
+    setRol(userRol);
 
     if (!token || !userId) {
       const errorMsg =
@@ -359,8 +363,8 @@ export const PerfilUsuario = () => {
             ) : (
               <>
                 <p className='reserva-total'>
-                  <ListCheck /> <strong>{totalReservas}</strong> reserva(s)
-                  encontradas
+                  <ListCheck size={20} /> <strong>{totalReservas}</strong>{' '}
+                  reserva(s) encontradas
                 </p>
 
                 <div className='reservas-grid'>
@@ -384,43 +388,43 @@ export const PerfilUsuario = () => {
                           </p>
                           <p>
                             <strong>
-                              <Clock3 /> Hora:
+                              <Clock3 size={15} /> Hora:
                             </strong>{' '}
                             {reserva.time}
                           </p>
                           <p>
                             <strong>
-                              <Users2 /> Personas:
+                              <Users2 size={15} /> Personas:
                             </strong>{' '}
                             {reserva.people}
                           </p>
                           <p>
                             <strong>
-                              <Package /> Equipo:
+                              <Package size={15} /> Equipo:
                             </strong>{' '}
                             {reserva.notes}
                           </p>
                           <p>
                             <strong>
-                              <User /> Nombre:
+                              <User size={15} /> Nombre:
                             </strong>{' '}
                             {reserva.name}
                           </p>
                           <p>
                             <strong>
-                              <Mail /> Correo:
+                              <Mail size={15} /> Correo:
                             </strong>{' '}
                             {reserva.email}
                           </p>
                           <p>
                             <strong>
-                              <PhoneCall /> Teléfono:
+                              <PhoneCall size={15} /> Teléfono:
                             </strong>{' '}
                             {reserva.phone}
                           </p>
                           <p>
                             <strong>
-                              <CreditCard /> Total:
+                              <CreditCard size={15} /> Total:
                             </strong>{' '}
                             ${reserva.total}
                           </p>
@@ -498,12 +502,14 @@ export const PerfilUsuario = () => {
         >
           Seguridad
         </button>
-        <button
-          className={tabActiva === 'reservas' ? 'active' : ''}
-          onClick={() => setTabActiva('reservas')}
-        >
-          Reservas
-        </button>
+        {rol !== 'ADMIN' && (
+          <button
+            className={tabActiva === 'reservas' ? 'active' : ''}
+            onClick={() => setTabActiva('reservas')}
+          >
+            Reservas
+          </button>
+        )}
       </div>
 
       {/* Contenido según la pestaña activa */}

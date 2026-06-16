@@ -1,141 +1,173 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Portada from '../components/portada';
 import InfoPeces from '../components/infoPeces';
 import Image1 from '../assets/image/barco_pruba.png';
+import {
+  ShieldCheck, Fish, CalendarDays, Waves, Handshake,
+} from 'lucide-react';
 import '../styles/globalContainer.css';
 
+// ── ID del video de YouTube ──────────────────────────────────────────────────
+const YT_VIDEO_ID = 'i_P-ZW_q0wM';
+
 const Home = () => {
+  const containerRef = useRef(null); // div wrapper del iframe
+  const playerRef    = useRef(null); // instancia YT.Player
+  const [ytReady, setYtReady] = useState(false);
+
+  // 1. Cargar el script de la YouTube IFrame API una sola vez
+  useEffect(() => {
+    if (window.YT && window.YT.Player) {
+      setYtReady(true);
+      return;
+    }
+
+    const tag = document.createElement('script');
+    tag.src   = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+
+    // La API llama a esta función global cuando está lista
+    window.onYouTubeIframeAPIReady = () => setYtReady(true);
+
+    return () => {
+      window.onYouTubeIframeAPIReady = null;
+    };
+  }, []);
+
+  // 2. Crear el player cuando la API esté lista
+  useEffect(() => {
+    if (!ytReady || !containerRef.current) return;
+
+    playerRef.current = new window.YT.Player(containerRef.current, {
+      videoId: YT_VIDEO_ID,
+      width:   '100%',
+      height:  '100%',
+      playerVars: {
+        autoplay:       0,   // no autoplay al cargar
+        mute:           1,   // mute requerido para autoplay en navegadores
+        controls:       1,
+        modestbranding: 1,
+        rel:            0,
+      },
+    });
+  }, [ytReady]);
+
+  // 3. IntersectionObserver: play al entrar, pause al salir
+  useEffect(() => {
+    if (!ytReady) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const player = playerRef.current;
+          if (!player || typeof player.playVideo !== 'function') return;
+
+          if (entry.isIntersecting) {
+            player.playVideo();
+          } else {
+            player.pauseVideo();
+          }
+        });
+      },
+      { threshold: 0.5 } // 50% visible = play
+    );
+
+    // Observamos el contenedor (el iframe lo crea la API dentro de él)
+    const el = containerRef.current?.parentElement;
+    if (el) observer.observe(el);
+
+    return () => { if (el) observer.unobserve(el); };
+  }, [ytReady]);
+
   return (
-    <div className="home-container">
-      <div>
-        <Portada />
-      </div>
+    <div className='home-container'>
+      <Portada />
 
-      <section className="info-section">
+      {/* ── Sección video ── */}
+      <section className='info-section'>
         <h2>Descubre Todo lo que Ofrecemos</h2>
-        <p>
-          Navega por nuestra plataforma para encontrar contenido exclusivo,
-          guardar tus favoritos y descargar imágenes de alta calidad.
-        </p>
-        <div className="info-cards">
-          <div className="info-card">
-            <span role="img" aria-label="galería">
-              🖼️
-            </span>
-            <h3>Explora Galerías</h3>
-            <p>Disfruta de una colección visual cuidadosamente seleccionada.</p>
-          </div>
-          <div className="info-card">
-            <span role="img" aria-label="descarga">
-              ⬇️
-            </span>
-            <h3>Descargas Fáciles</h3>
-            <p>Guarda imágenes directamente en tu dispositivo con un clic.</p>
-          </div>
-          <div className="info-card">
-            <span role="img" aria-label="favoritos">
-              ❤️
-            </span>
-            <h3>Marca Favoritos</h3>
-            <p>Guarda tus imágenes preferidas para tenerlas siempre a mano.</p>
-          </div>
 
-          <div className="info-card">
-            <span role="img" aria-label="favoritos">
-              📝
-            </span>
-            <h3>Escribe Una Reseña</h3>
-            <p>
-              Despues de disfrutar tu experiencia con nosotros galanos una
-              critica constructiva.
-            </p>
+        {/* Wrapper con aspect-ratio 16:9 — responsive */}
+        <div className='video-wrapper'>
+          {/* La API de YouTube reemplaza este div con el iframe */}
+          <div ref={containerRef} className='video-inner' />
+        </div>
+      </section>
+
+      {/* ── Por qué reservar ── */}
+      <section className='service-section'>
+        <h2>¿Por Qué Reservar con Nosotros?</h2>
+        <p>
+          Nuestra plataforma está diseñada para facilitarte la mejor experiencia
+          en fly fishing. Reserva tus días de pesca en los mejores lugares, con
+          guías expertos y equipamiento de calidad, todo desde un mismo lugar.
+        </p>
+
+        <div className='service-cards'>
+          <div className='service-card'>
+            <span className='service-icon'><div className='icon-wrapper'><ShieldCheck /></div></span>
+            <h3>Seguridad Garantizada</h3>
+            <p>Protegemos tus datos y aseguramos que tu experiencia sea privada y segura.</p>
+          </div>
+          <div className='service-card'>
+            <span className='service-icon'><Fish /></span>
+            <h3>Guías Expertos</h3>
+            <p>Conéctate con profesionales que conocen los mejores spots y técnicas de pesca.</p>
+          </div>
+          <div className='service-card'>
+            <span className='service-icon'><CalendarDays /></span>
+            <h3>Reservas Simples</h3>
+            <p>Planifica y reserva tu jornada de pesca en pocos pasos, sin complicaciones.</p>
+          </div>
+          <div className='service-card'>
+            <span className='service-icon'><Waves /></span>
+            <h3>Equipamiento de Calidad</h3>
+            <p>Accede a equipo profesional disponible para alquiler o compra según tu necesidad.</p>
+          </div>
+          <div className='service-card'>
+            <span className='service-icon'><Handshake /></span>
+            <h3>Atención Personalizada</h3>
+            <p>Estamos para ayudarte en cada paso, desde la reserva hasta la experiencia en el río.</p>
           </div>
         </div>
       </section>
 
-     <section className="service-section">
-  <h2>¿Por Qué Reservar con Nosotros?</h2>
-  <p>
-    Nuestra plataforma está diseñada para facilitarte la mejor experiencia en fly fishing. Reserva tus días de pesca en los mejores lugares, con guías expertos y equipamiento de calidad, todo desde un mismo lugar.
-  </p>
+      {/* ── Embarcación ── */}
+      <section className='boat-info-section'>
+        <div className='boat-section-top'>
+          <p className='boat-eyebrow'>Su embarcación y salidas</p>
+          <h2 className='section-title'>Embarcación y Horarios de Salida</h2>
+          <div className='gold-rule' />
+        </div>
 
-  <div className="service-cards">
+        <div className='boat-details'>
+          <div className='boat-image-container'>
+            <img className='boat-image' src={Image1} alt='Embarcación de Fly Fishing' />
+            <div className='boat-image-scrim' />
+            <div className='boat-image-footer'>
+              <span className='vessel-tag'>✦ Fly Fishing Premium</span>
+              <h3 className='vessel-name'>Tarpon Fighters</h3>
+              <p className='vessel-loc'>Península de Yucatán · México</p>
+            </div>
+          </div>
 
-     <div className="service-card">
-      <span role="img" aria-label="seguridad" className="service-icon">🔒</span>
-      <h3>Seguridad Garantizada</h3>
-      <p>Protegemos tus datos y aseguramos que tu experiencia sea privada y segura.</p>
-    </div>
-
-    <div className="service-card">
-      <span role="img" aria-label="guías expertos" className="service-icon">🎣</span>
-      <h3>Guías Expertos</h3>
-      <p>Conéctate con profesionales que conocen los mejores spots y técnicas de pesca.</p>
-    </div>
-
-    <div className="service-card">
-      <span role="img" aria-label="reservas fáciles" className="service-icon">📅</span>
-      <h3>Reservas Simples</h3>
-      <p>Planifica y reserva tu jornada de pesca en pocos pasos, sin complicaciones.</p>
-    </div>
- 
-    <div className="service-card">
-      <span role="img" aria-label="equipamiento" className="service-icon">🛶</span>
-      <h3>Equipamiento de Calidad</h3>
-      <p>Accede a equipo profesional disponible para alquiler o compra según tu necesidad.</p>
-    </div>
-
-    <div className="service-card">
-      <span role="img" aria-label="soporte" className="service-icon">🤝</span>
-      <h3>Atención Personalizada</h3>
-      <p>Estamos para ayudarte en cada paso, desde la reserva hasta la experiencia en el río.</p>
-    </div>
-  </div>
-
-  {/* <button className="btn-primary" onClick={() => alert('¡Próximamente podrás reservar con nosotros!')}>
-    Reserva Ahora
-  </button> */}
-</section>
-
-<section className="boat-info-section">
-  <h2 className="section-title">Embarcación y Horarios de Salida</h2>
-  
-  <div className="boat-details">
-    <div className="boat-image-container">
-      <img className="boat-image" src={Image1} alt="Embarcación de Fly Fishing" />
-    </div>
-
-    <div className="boat-description">
-      <h3 className="boat-name">Embarcación "Tarpon Fighters" 🎣</h3>
-      <p className="boat-text">
-        Disfruta de una experiencia premium en fly fishing con nuestra embarcación equipada para tu comodidad y seguridad.
-      </p>
-
-      <ul className="boat-features">
-        <li>👥 Capacidad para 3 personas</li>
-        <li>🦺 Equipo de seguridad incluido</li>
-        <li>🎣 Renta de equipo de pesca en caso de no contrar con uno propio</li>
-        <li>🧑‍✈️ Guías expertos a bordo</li>
-        {/* <li>🧭 Sistema de navegación GPS</li> */}
-      </ul>
-    </div>
-  </div>
-
-  <div className="schedule">
-    <h3 className="schedule-title">Horarios de Salida</h3>
-    <div className="schedule-cards">
-      <div className="schedule-card">⏰ 6:00 AM - Unico Horario</div>
-      {/* <div className="schedule-card">⏰ 10:00 AM - Mediodía</div>
-      <div className="schedule-card">⏰ 3:00 PM - Vespertina</div>
-      <div className="schedule-card">🌙 6:00 PM - Nocturna (temporada alta)</div> */}
-    </div>
-    <p className="schedule-note">Llega 15 minutos antes para embarcar sin contratiempos.</p>
-  </div>
-</section>
-
-
-
-      
+          <div className='boat-description'>
+            <span className='boat-badge'>🎣 Fly Fishing Premium</span>
+            <p className='boat-label'>Sobre la embarcación</p>
+            <p className='boat-text'>
+              Vive una experiencia única de pesca deportiva a bordo de una
+              embarcación diseñada para brindarte comodidad, seguridad y el
+              mejor desempeño en cada salida.
+            </p>
+            <ul className='boat-features'>
+              <li><span>👥</span><div><strong>Capacidad</strong><p>Hasta 3 personas</p></div></li>
+              <li><span>🦺</span><div><strong>Seguridad</strong><p>Equipo completo incluido</p></div></li>
+              <li><span>🎣</span><div><strong>Equipo de pesca</strong><p>Disponible para renta si no cuentas con el tuyo</p></div></li>
+              <li><span>🧑‍✈️</span><div><strong>Guías expertos</strong><p>Acompañamiento profesional durante la experiencia</p></div></li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

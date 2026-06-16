@@ -13,12 +13,15 @@
   /* max-width: 1100px; */
   margin: 3rem auto;
   text-align: center;
+   /* background: #f4f1eb; */
 }
 
 .info-section h2 {
+   font-family: 'Cormorant Garamond', serif;
   font-size: 4rem;
   color: #0b3d91;
   margin-bottom: 1rem;
+  
 }
 
 .info-section p {
@@ -67,68 +70,129 @@
   color: #666;
 }
 
+/* ── Service Section ── */
 .service-section {
-  padding: 3rem 1rem;
-  /* background-color: #f9f9f9; */
+  font-family: 'Inter', sans-serif;
+  padding: 5rem 2rem;
   text-align: center;
-  /* max-width: 900px; */
-  margin: 0 auto 3rem auto;
-  /* border-radius: 8px; */
-  /* box-shadow: 0 4px 8px rgb(0 0 0 / 0.05); */
+}
+
+.service-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #BA7517;
+  margin: 0 0 10px;
 }
 
 .service-section h2 {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-  color: #005184;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 38px;
+  font-weight: 600;
+  color: #0d1b2a;
+  line-height: 1.15;
+  margin: 0 0 12px;
 }
 
-.service-section p {
-  font-size: 1.1rem;
-  margin-bottom: 2rem;
-  color: #444;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
+.service-gold-rule {
+  width: 44px;
+  height: 2px;
+  background: #BA7517;
+  margin: 0 auto 1.5rem;
 }
 
+.service-section > p {
+  font-size: 14px;
+  color: #777;
+  font-weight: 300;
+  line-height: 1.75;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+
+/* ── Cards grid ── */
 .service-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .service-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .service-cards {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .service-card {
-  background: white;
-  flex: 1 1 220px;
-  max-width: 250px;
-  padding: 1.8rem 1rem;
-  border-radius: 10px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.132);
-  transition: transform 0.2s ease;
+  background: #ffffff;
+  border: 1px solid #ece8de;
+  border-radius: 16px;
+  padding: 1.75rem 1.25rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* quita backdrop-filter y box-shadow pesado */
 }
 
 .service-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(13, 27, 42, 0.12);
 }
 
+/* ── Ícono navy ── */
 .service-icon {
-  font-size: 2.8rem;
-  margin-bottom: 1rem;
-  color: #0078b3;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0; /* oculta el span wrapper, el svg hereda color */
+}
+
+.icon-style {
+  width: 20px;
+  height: 20px;
+  color: #EF9F27;   /* ícono dorado sobre fondo navy */
+  stroke-width: 1.8;
+}
+
+/* ── Card body ── */
+.service-card-num {
+  font-size: 10px;
+  font-weight: 500;
+  color: #BA7517;
+  letter-spacing: 0.1em;
+  margin: 0 0 4px;
 }
 
 .service-card h3 {
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
-  color: #003a5d;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #0d1b2a;
+  line-height: 1.25;
+  margin: 0 0 6px;
 }
 
 .service-card p {
-  font-size: 1rem;
-  color: #555;
+  font-size: 11.5px;
+  color: #888;
+  font-weight: 300;
+  line-height: 1.6;
+  margin: 0;
 }
 
 .btn-primary {
@@ -258,8 +322,270 @@
     flex-direction: column;
   }
 
-  .boat-description, 
+  .boat-description,
   .boat-image-container {
     max-width: 100%;
   }
+}
+
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+
+.boat-info-section {
+  font-family: 'Inter', sans-serif;
+
+  padding: 5rem 2rem;
+}
+
+.boat-section-top {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.boat-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #BA7517;
+  margin: 0 0 10px;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 38px;
+  font-weight: 600;
+  color: #0d1b2a;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.gold-rule {
+  width: 44px;
+  height: 2px;
+  background: #BA7517;
+  margin: 14px auto 0;
+}
+
+/* ─── FIX 1: altura fija en el card para que ambos paneles sean iguales ─── */
+.boat-details {
+  display: grid;
+  grid-template-columns: 45fr 55fr;  /* ← fr en lugar de % */
+  gap: 0;
+  align-items: stretch;
+  min-height: 460px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 60px rgba(13, 27, 42, 0.15);
+  max-width: 960px;
+  width: 100%;          /* ← asegura que ocupa todo el ancho disponible */
+  margin: 0 auto;
+  background: #ffffff;  /* ← tapa cualquier hueco residual */
+}
+
+@media (max-width: 700px) {
+  .boat-details {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+
+/* ─── FIX 2: imagen con inset:0 para cubrir todo el panel ─── */
+.boat-image-container {
+  position: relative;
+  overflow: hidden;        /* recorta la imagen dentro del panel */
+  background: #0d1b2a;
+  min-height: 460px;   /* ← esto faltaba, sin él el contenedor colapsa a 0px */
+  height: 100%; 
+}
+
+.boat-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+}
+
+.boat-image-scrim {
+  position: absolute;
+  inset: 0;
+  /* ─── FIX 3: scrim solo desde abajo, no oscurece toda la foto ─── */
+  background: linear-gradient(
+    to top,
+    rgba(13, 27, 42, 0.90) 0%,
+    rgba(13, 27, 42, 0.30) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.boat-image-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem 1.75rem;
+  z-index: 2;
+}
+
+.vessel-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(239, 159, 39, 0.45);
+  background: rgba(239, 159, 39, 0.1);
+  color: #EF9F27;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 11px;
+  border-radius: 20px;
+  margin-bottom: 9px;
+}
+
+.vessel-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.vessel-loc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 300;
+  margin: 4px 0 0;
+  letter-spacing: 0.04em;
+}
+
+/* ── Info panel ── */
+.boat-description {
+  background: #ffffff;
+  padding: 2.5rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: auto;
+  min-width: 0;   /* ← evita que el contenido desborde la columna del grid */
+}
+
+.boat-badge {
+  display: inline-block;
+  background: #FAEEDA;
+  color: #854F0B;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 1.1rem;
+  width: fit-content;
+}
+
+.boat-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #BA7517;
+  margin: 0 0 8px;
+}
+
+.boat-text {
+  font-size: 13px;
+  color: #555;
+  font-weight: 300;
+  line-height: 1.7;
+  border-left: 2px solid #EF9F27;
+  padding-left: 13px;
+  margin: 0 0 1.75rem;
+}
+
+.boat-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.boat-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  background: #f8f5ef;
+  border: 1px solid #ece8de;
+  border-radius: 11px;
+  padding: 11px 10px;
+}
+
+.boat-features li > span {
+  width: 34px;
+  height: 34px;
+  background: #0d1b2a;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.boat-features li > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.boat-features li strong {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #0d1b2a;
+  line-height: 1.3;
+  display: block;
+}
+
+.boat-features li p {
+  font-size: 10.5px;
+  color: #888;
+  font-weight: 300;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ── Video YouTube responsivo ── */
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 2rem auto 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(13,27,42,.18);
+  /* aspect-ratio 16:9 */
+  aspect-ratio: 16 / 9;
+}
+
+.video-inner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* el iframe que inyecta la API de YouTube */
+.video-inner iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
 }

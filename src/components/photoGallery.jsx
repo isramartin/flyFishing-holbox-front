@@ -211,45 +211,52 @@ const PhotoGallery = () => {
       </div>
 
       {/* Modal */}
+      {/* Modal — reemplaza el bloque showModal en tu PhotoGallery.jsx */}
       {showModal && photos.length > 0 && (
         <div className='gallery-modal-overlay'>
           <div className='modal-content'>
-            <X className='close-button-close' onClick={handleCloseModal} />
-            <ArrowDownToLine
-              className='close-button-dowload'
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDescarga(photos[activeIndex].id);
-              }}
-            />
-            {photos[activeIndex].favorito ? (
-              <HeartOff
-                className='close-button-favorite'
+            {/* ── Barra de botones: posición relativa al modal-content ── */}
+            <div className='modal-action-bar'>
+              <ArrowDownToLine
+                className='close-button-dowload'
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleToggleFavorito(photos[activeIndex].id, true);
+                  handleDescarga(photos[activeIndex].id);
                 }}
               />
-            ) : (
-              <Heart
-                className='close-button-favorite'
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleToggleFavorito(photos[activeIndex].id, false);
-                }}
-              />
-            )}
 
-            {/* <Link className="close-button-link" /> */}
+              {photos[activeIndex].favorito ? (
+                <HeartOff
+                  className='close-button-favorite'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleFavorito(photos[activeIndex].id, true);
+                  }}
+                />
+              ) : (
+                <Heart
+                  className='close-button-favorite'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleFavorito(photos[activeIndex].id, false);
+                  }}
+                />
+              )}
+
+              <X className='close-button-close' onClick={handleCloseModal} />
+            </div>
+            {/* ───────────────────────────────────────────────────────── */}
 
             <button onClick={handlePrev} className='arrow-left'>
               &#10094;
             </button>
+
             <img
               src={photos[activeIndex].imageUrl}
               alt={photos[activeIndex].titulo || 'Imagen ampliada'}
               className='modal-image'
             />
+
             <button onClick={handleNext} className='arrow-right'>
               &#10095;
             </button>
@@ -262,9 +269,7 @@ const PhotoGallery = () => {
                     src={photo.imageUrl}
                     alt={`Thumbnail ${index + 1}`}
                     onClick={() => setActiveIndex(index)}
-                    className={`thumbnail ${
-                      index === activeIndex ? 'active' : 'inactive'
-                    }`}
+                    className={`thumbnail ${index === activeIndex ? 'active' : 'inactive'}`}
                   />
                 ))}
               </div>

@@ -6,8 +6,6 @@ import {
   AlignJustify,
   LayoutGrid,
   CirclePlus,
-  LockKeyhole,
-  TriangleAlert,
 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { useAlert } from './AlertManager';
@@ -19,12 +17,9 @@ const Review2 = () => {
   const [fetchOnMount, setFetchOnMount] = useState(true);
   const [error, setError] = useState(null);
   const authContext = useContext(AuthContext);
-  const [authToken, setAuthToken] = useState(null);
-  const { isAuthenticated, user, token } = useContext(AuthContext);
-  const { token: contextToken } = useContext(AuthContext);
-  const [localToken, setLocalToken] = useState('');
+  const { isAuthenticated } = useContext(AuthContext);
   const { addAlert } = useAlert();
-  // Estados para el formulario
+
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [review, setReview] = useState('');
@@ -35,51 +30,9 @@ const Review2 = () => {
 
   const minChars = 50;
   const maxChars = 150;
-
   const groups = ['Parejas', 'Familia', 'Amigos', 'Solo'];
   const ratingLabels = ['Pésimo', 'Malo', 'Bueno', 'Muy bueno', 'Excelente'];
 
-  useEffect(() => {
-    console.log('Estado de autenticación review:', isAuthenticated);
-    console.log(
-      'Token disponible:',
-      token ? '***' + token.slice(-4) : 'No hay token'
-    );
-
-    if (!isAuthenticated || !token) {
-      console.error('Usuario no autenticado o token faltante');
-      // Redirigir al login o mostrar error
-    }
-  }, [isAuthenticated, token]);
-
-  useEffect(() => {
-    console.log('AuthContext:', authContext);
-
-    // Intentar obtener el token de varias fuentes
-    const token =
-      localStorage.getItem('authToken') ||
-      (authContext && authContext.token) ||
-      '';
-
-    console.log(
-      'Token obtenido:',
-      token ? '***' + token.slice(-4) : 'NO TOKEN'
-    );
-
-    if (!token) {
-      console.error('No se encontró token en ninguna fuente');
-      // Redirigir al login o mostrar error
-    } else {
-      setAuthToken(token);
-    }
-  }, [authContext]);
-
-  useEffect(() => {
-    const tokenFromStorage = localStorage.getItem('authToken');
-    setLocalToken(tokenFromStorage || '');
-  }, []);
-
-  // Obtener reseñas de la API
   useEffect(() => {
     const fetchResenas = async () => {
       if (fetchOnMount) setLoading(true);
@@ -93,13 +46,10 @@ const Review2 = () => {
         setFetchOnMount(false);
       }
     };
-
     fetchResenas();
   }, [nuevaResenaPublicada]);
 
-  const handleRating = (index) => {
-    setRating(index + 1);
-  };
+  const handleRating = (index) => setRating(index + 1);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -117,33 +67,18 @@ const Review2 = () => {
       opinion: review,
     };
 
-    // Obtener token
+    // Token opcional: si existe se manda, si no se envía como invitado
     const tokenSources = [
       localStorage.getItem('authToken'),
       authContext?.token,
       JSON.parse(localStorage.getItem('auth'))?.token,
     ].filter(Boolean);
 
-    const token = tokenSources[0];
-    console.log(
-      '🔑 Token seleccionado:',
-      token ? `***${token.slice(-4)}` : 'NO TOKEN'
-    );
-
-    if (!token) {
-      const errorMsg =
-        'No se encontró token de autenticación. Por favor inicie sesión nuevamente.';
-      console.error(errorMsg);
-      throw new Error(errorMsg);
-    }
+    const token = tokenSources[0] || null;
 
     try {
-      console.log('🟡 resenaData que se enviará:', resenaData);
-      console.log('🟢 Token usado:', token);
-
       await createResena(resenaData, token);
       addAlert('¡Reseña enviada con éxito!', 'success');
-      // Reiniciar formulario
       setRating(0);
       setHover(0);
       setDate('');
@@ -156,24 +91,16 @@ const Review2 = () => {
     }
   };
 
-  // Función para obtener el color de la línea según el estado
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
-      case 'excelente':
-        return '#4CAF50'; // Verde - Excelente
-      case 'muy bueno':
-        return '#8BC34A'; // Verde claro - Muy bueno
-      case 'bueno':
-        return '#FFC107'; // Amarillo - Bueno
-      case 'regular':
-        return '#FF9800'; // Naranja - Regular
-      case 'malo':
-        return '#F44336'; // Rojo - Malo
+      case 'excelente':  return '#4CAF50';
+      case 'muy bueno':  return '#8BC34A';
+      case 'bueno':      return '#FFC107';
+      case 'regular':    return '#FF9800';
+      case 'malo':       return '#F44336';
       case 'pésimo':
-      case 'pesimo':
-        return '#9E9E9E'; // Gris - Pésimo
-      default:
-        return '#4CAF50'; // Verde por defecto
+      case 'pesimo':     return '#9E9E9E';
+      default:           return '#4CAF50';
     }
   };
 
@@ -185,21 +112,14 @@ const Review2 = () => {
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   };
 
-  // Calcular estadísticas
   const promedio =
     resenas.length > 0
-      ? (
-          resenas.reduce((sum, resena) => sum + resena.calificacion, 0) /
-          resenas.length
-        ).toFixed(1)
+      ? (resenas.reduce((sum, r) => sum + r.calificacion, 0) / resenas.length).toFixed(1)
       : 0;
 
   const satisfechos =
     resenas.length > 0
-      ? Math.round(
-          (resenas.filter((r) => r.calificacion >= 4).length / resenas.length) *
-            100
-        )
+      ? Math.round((resenas.filter((r) => r.calificacion >= 4).length / resenas.length) * 100)
       : 0;
 
   return (
@@ -212,38 +132,28 @@ const Review2 = () => {
           satisfacción.
         </p>
 
-        {/* Tarjetas de opinión o Skeleton */}
         <div className="d-flex card-flex-wrap justify-content-center gap-4">
           {loading ? (
-            <>
-              {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="card-opinion rounded p-3 bg-white shadow-lg skeleton-card"
-                >
-                  <div className="skeleton-line short" />
-                  <div className="skeleton-stars" />
-                  <div className="skeleton-line medium" />
-                </div>
-              ))}
-            </>
+            [...Array(3)].map((_, i) => (
+              <div key={i} className="card-opinion rounded p-3 bg-white shadow-lg skeleton-card">
+                <div className="skeleton-line short" />
+                <div className="skeleton-stars" />
+                <div className="skeleton-line medium" />
+              </div>
+            ))
           ) : (
             <>
               <div className="card-opinion rounded p-1 text-center bg-white shadow-lg">
                 <h3 className="valorP text-primary">{promedio}</h3>
                 <div className="estrellas text-warning">
-                  {'⭐'.repeat(Math.round(promedio))}
-                  {'☆'.repeat(5 - Math.round(promedio))}
+                  {'⭐'.repeat(Math.round(promedio))}{'☆'.repeat(5 - Math.round(promedio))}
                 </div>
                 <p className="etiqueta text-muted">Calificación Promedio</p>
               </div>
               <div className="card-opinion rounded p-3 text-center bg-white shadow-lg">
                 <h3 className="valorC text-info">{satisfechos}%</h3>
                 <div className="barra-progreso bg-light">
-                  <div
-                    className="progreso bg-info"
-                    style={{ width: `${satisfechos}%` }}
-                  ></div>
+                  <div className="progreso bg-info" style={{ width: `${satisfechos}%` }} />
                 </div>
                 <p className="etiqueta text-muted">Clientes Satisfechos</p>
               </div>
@@ -261,58 +171,35 @@ const Review2 = () => {
       <div className="op-container">
         <ul className="nav">
           <li>
-            <button
-              className={`tab-op ${activeTab === 'Mosaico' ? 'active' : ''}`}
-              onClick={() => setActiveTab('Mosaico')}
-            >
-              <AlignJustify />
-              Mosaico
+            <button className={`tab-op ${activeTab === 'Mosaico' ? 'active' : ''}`} onClick={() => setActiveTab('Mosaico')}>
+              <AlignJustify /> Mosaico
             </button>
           </li>
           <li>
-            <button
-              className={`tab-op ${activeTab === 'Lista' ? 'active' : ''}`}
-              onClick={() => setActiveTab('Lista')}
-            >
-              <LayoutGrid />
-              Lista
+            <button className={`tab-op ${activeTab === 'Lista' ? 'active' : ''}`} onClick={() => setActiveTab('Lista')}>
+              <LayoutGrid /> Lista
             </button>
           </li>
           <li>
-            <button
-              className={`tab-op ${
-                activeTab === 'Agregar Reseña' ? 'active' : ''
-              }`}
-              onClick={() => setActiveTab('Agregar Reseña')}
-            >
-              <CirclePlus />
-              Agregar Reseña
+            <button className={`tab-op ${activeTab === 'Agregar Reseña' ? 'active' : ''}`} onClick={() => setActiveTab('Agregar Reseña')}>
+              <CirclePlus /> Agregar Reseña
             </button>
           </li>
         </ul>
       </div>
 
-      {/* Contenido de las pestañas */}
+      {/* Contenido pestañas */}
       <div className="tab-content w-75">
         {loading ? (
-          // Skeletons para contenido según pestaña activa y cantidad de resenas (mínimo 3 skeletons)
           activeTab === 'Lista' ? (
             <div className="card-list-container">
               {[...Array(resenas.length || 3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="card skeleton-card p-3"
-                  style={{ height: 'auto' }}
-                >
+                <div key={i} className="card skeleton-card p-3" style={{ height: 'auto' }}>
                   <div className="d-flex align-items-center gap-3 mb-2">
                     <div className="skeleton-avatar" />
                     <div className="w-100 d-flex justify-content-between align-items-center">
-                      <div>
-                        <div className="skeleton-line medium" />
-                        <div className="skeleton-line short" />
-                      </div>
-                      <div className="skeleton-badge" />{' '}
-                      {/* Skeleton para badge de estado */}
+                      <div><div className="skeleton-line medium" /><div className="skeleton-line short" /></div>
+                      <div className="skeleton-badge" />
                     </div>
                   </div>
                   <div className="skeleton-stars" />
@@ -325,20 +212,12 @@ const Review2 = () => {
           ) : (
             <div className="card-grid-container">
               {[...Array(resenas.length || 3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="card skeleton-card p-3"
-                  style={{ height: 'auto' }}
-                >
+                <div key={i} className="card skeleton-card p-3" style={{ height: 'auto' }}>
                   <div className="d-flex align-items-center gap-3 mb-2">
                     <div className="skeleton-avatar" />
                     <div className="w-100 d-flex justify-content-between align-items-center">
-                      <div>
-                        <div className="skeleton-line medium" />
-                        <div className="skeleton-line short" />
-                      </div>
-                      <div className="skeleton-badge" />{' '}
-                      {/* Skeleton para badge de estado */}
+                      <div><div className="skeleton-line medium" /><div className="skeleton-line short" /></div>
+                      <div className="skeleton-badge" />
                     </div>
                   </div>
                   <div className="skeleton-stars" />
@@ -354,33 +233,19 @@ const Review2 = () => {
             {activeTab === 'Mosaico' && (
               <div className="card-grid-container">
                 {resenas.map((resena) => (
-                  <div
-                    key={resena.id}
-                    className="card"
-                    style={{
-                      '--status-color': getStatusColor(resena.status),
-                      '--status-color-opacity': getStatusColorWithOpacity(
-                        resena.status,
-                        0.3
-                      ),
-                    }}
-                  >
+                  <div key={resena.id} className="card" style={{
+                    '--status-color': getStatusColor(resena.status),
+                    '--status-color-opacity': getStatusColorWithOpacity(resena.status, 0.3),
+                  }}>
                     <div className="card-user">
                       <img src={resena.userPhotoUrl} alt="Usuario" />
                       <div className="card-user-info">
-                        <span className="card-user-name">
-                          {resena.userName}
-                        </span>
-                        <span className="card-user-date">
-                          {resena.fechaVisita} · {resena.acompanante}
-                        </span>
+                        <span className="card-user-name">{resena.userName}</span>
+                        <span className="card-user-date">{resena.fechaVisita} · {resena.acompanante}</span>
                       </div>
                       <span className="card-user-badge">{resena.status}</span>
                     </div>
-                    <div className="card-stars">
-                      {'★'.repeat(resena.calificacion)}
-                      {'☆'.repeat(5 - resena.calificacion)}
-                    </div>
+                    <div className="card-stars">{'★'.repeat(resena.calificacion)}{'☆'.repeat(5 - resena.calificacion)}</div>
                     <h3 className="card-title">{resena.titulo}</h3>
                     <p className="card-content">{resena.opinion}</p>
                   </div>
@@ -391,27 +256,16 @@ const Review2 = () => {
             {activeTab === 'Lista' && (
               <div className="card-list-container">
                 {resenas.map((resena) => (
-                  <div
-                    key={resena.id}
-                    className="card"
-                    style={{ '--status-color': getStatusColor(resena.status) }}
-                  >
+                  <div key={resena.id} className="card" style={{ '--status-color': getStatusColor(resena.status) }}>
                     <div className="card-user">
                       <img src={resena.userPhotoUrl} alt="Usuario" />
                       <div className="card-user-info">
-                        <span className="card-user-name">
-                          {resena.userName}
-                        </span>
-                        <span className="card-user-date">
-                          {resena.fechaVisita} · {resena.acompanante}
-                        </span>
+                        <span className="card-user-name">{resena.userName}</span>
+                        <span className="card-user-date">{resena.fechaVisita} · {resena.acompanante}</span>
                       </div>
                       <span className="card-user-badge">{resena.status}</span>
                     </div>
-                    <div className="card-stars">
-                      {'★'.repeat(resena.calificacion)}
-                      {'☆'.repeat(5 - resena.calificacion)}
-                    </div>
+                    <div className="card-stars">{'★'.repeat(resena.calificacion)}{'☆'.repeat(5 - resena.calificacion)}</div>
                     <h3 className="card-title">{resena.titulo}</h3>
                     <p className="card-content">{resena.opinion}</p>
                   </div>
@@ -421,115 +275,72 @@ const Review2 = () => {
           </>
         )}
 
-        {activeTab === 'Agregar Reseña' &&
-          (isAuthenticated ? (
-            <div className="review-box">
-              <h2>¿Cómo calificarías tu experiencia?</h2>
-              <div className="left-column">
-                <div className="star-rating">
-                  {[...Array(5)].map((_, index) => (
-                    <span
-                      key={index}
-                      className={
-                        index < (hover || rating) ? 'star selected' : 'star'
-                      }
-                      onClick={() => handleRating(index)}
-                      onMouseEnter={() => setHover(index + 1)}
-                      onMouseLeave={() => setHover(0)}
-                    >
-                      ★
-                    </span>
-                  ))}
-                  <p className="rating-text">
-                    {hover > 0
-                      ? ratingLabels[hover - 1]
-                      : rating > 0
-                      ? ratingLabels[rating - 1]
-                      : 'Selecciona una calificación'}
-                  </p>
-                </div>
-                <label>¿Cuándo fuiste?</label>
-                <select value={date} onChange={(e) => setDate(e.target.value)}>
-                  <option value="">Seleccione una opción</option>
-                  <option value="Enero">Enero</option>
-                  <option value="Febrero">Febrero</option>
-                  <option value="Marzo">Marzo</option>
-                </select>
-                <label>¿Con quién fuiste?</label>
-                <div className="group-selection">
-                  {groups.map((g) => (
-                    <button
-                      key={g}
-                      className={group === g ? 'selected' : ''}
-                      onClick={() => setGroup(g)}
-                    >
-                      {g}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="right-column">
-                <label>Título de tu opinión</label>
-                <input
-                  type="text"
-                  placeholder="Cuéntanos un poco sobre tu experiencia"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-                <label>Escribe tu opinión</label>
-                <textarea
-                  placeholder="Escribe tu reseña..."
-                  value={review}
-                  onChange={(e) => {
-                    const text = e.target.value;
-                    if (text.length <= maxChars) {
-                      setReview(text);
-                    }
-                  }}
-                  style={{
-                    borderColor:
-                      review.length > 0 && review.length < minChars
-                        ? 'red'
-                        : '#ccc',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    outline: 'none',
-                    padding: '8px',
-                    width: '100%',
-                    borderRadius: '4px',
-                  }}
-                ></textarea>
-
-                <div style={{ fontSize: '0.9em', marginTop: '4px' }}>
-                  Caracteres: {review.length}/{maxChars}
-                  {review.length === maxChars && (
-                    <span style={{ color: 'red', marginLeft: '8px' }}>
-                      Has alcanzado el máximo permitido.
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="button-container">
-                <button type="submit" onClick={handleSubmit}>
-                  Enviar Reseña
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="auth-warning">
-              <div className="auth-warning-card">
-                <h2 className="auth-warning-title">
-                  <TriangleAlert className="alert-icon-block" /> Sesión no
-                  iniciada
-                </h2>
-                <p className="auth-warning-message">
-                  Para escribir una reseña, necesitas iniciar sesión en tu
-                  cuenta.
+        {/* ── Formulario: accesible sin login ── */}
+        {activeTab === 'Agregar Reseña' && (
+          <div className="review-box">
+            <h2>¿Cómo calificarías tu experiencia?</h2>
+            <div className="left-column">
+              <div className="star-rating">
+                {[...Array(5)].map((_, index) => (
+                  <span
+                    key={index}
+                    className={index < (hover || rating) ? 'star selected' : 'star'}
+                    onClick={() => handleRating(index)}
+                    onMouseEnter={() => setHover(index + 1)}
+                    onMouseLeave={() => setHover(0)}
+                  >★</span>
+                ))}
+                <p className="rating-text">
+                  {hover > 0 ? ratingLabels[hover - 1] : rating > 0 ? ratingLabels[rating - 1] : 'Selecciona una calificación'}
                 </p>
-                <LockKeyhole className="lock-icon-block" />
+              </div>
+              <label>¿Cuándo fuiste?</label>
+              <select value={date} onChange={(e) => setDate(e.target.value)}>
+                <option value="">Seleccione una opción</option>
+                <option value="Enero">Enero</option>
+                <option value="Febrero">Febrero</option>
+                <option value="Marzo">Marzo</option>
+              </select>
+              <label>¿Con quién fuiste?</label>
+              <div className="group-selection">
+                {groups.map((g) => (
+                  <button key={g} className={group === g ? 'selected' : ''} onClick={() => setGroup(g)}>
+                    {g}
+                  </button>
+                ))}
               </div>
             </div>
-          ))}
+            <div className="right-column">
+              <label>Título de tu opinión</label>
+              <input
+                type="text"
+                placeholder="Cuéntanos un poco sobre tu experiencia"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <label>Escribe tu opinión</label>
+              <textarea
+                placeholder="Escribe tu reseña..."
+                value={review}
+                onChange={(e) => { if (e.target.value.length <= maxChars) setReview(e.target.value); }}
+                style={{
+                  borderColor: review.length > 0 && review.length < minChars ? 'red' : '#ccc',
+                  borderWidth: '1px', borderStyle: 'solid', outline: 'none',
+                  padding: '8px', width: '100%', borderRadius: '4px',
+                }}
+              />
+              <div style={{ fontSize: '0.9em', marginTop: '4px' }}>
+                Caracteres: {review.length}/{maxChars}
+                {review.length === maxChars && (
+                  <span style={{ color: 'red', marginLeft: '8px' }}>Has alcanzado el máximo permitido.</span>
+                )}
+              </div>
+            </div>
+            <div className="button-container">
+              <button type="submit" onClick={handleSubmit}>Enviar Reseña</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
