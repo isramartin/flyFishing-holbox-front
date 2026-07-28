@@ -62,7 +62,7 @@ export const ReservationStep = () => {
   }, [stepNumber]);
 
   const calculateTotal = () => {
-    const basePrice = 1000;
+    const basePrice = 12;
     const equipmentPrice = data.alquilarEquipo ? 500 : 0;
     return { basePrice, equipmentPrice, total: basePrice + equipmentPrice };
   };
@@ -152,7 +152,7 @@ export const ReservationStep = () => {
           nombreCompleto: data.name,
           email: data.email,
           numeroTelefono: data.phone,
-          precio: 1000,
+          precio: 12,
           equipo: { alquilar: data.alquilarEquipo, precio: data.alquilarEquipo ? 500 : 0 },
           esInvitado: !token,  // true si no hay sesión iniciada
         };

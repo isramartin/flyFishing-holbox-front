@@ -35,7 +35,7 @@ import { GalleryProvider } from './context/GalleryContext';
 import UploadInfoPesca from './components/admin/uploadInfoPesca.jsx';
 
 const stripePromise = loadStripe(
-  'pk_test_51QDrXnAH6Ull8Wzh7xQ9CtLmsYdgoFA4dTkRI7PBXp3YNwN3pKa3PY48GnPC4R69IsczthC8pqx4lMigEpdrtsi800YxxkWh8m'
+  'pk_test_51Til0cELVk22If2vpoTvG0ObDWxrKqSc4Wq7mgUuRwrSFzaqHjAyoeREzs8LrofTB7mIctv65r3SBmwAAtoWOODF00SPuxPC9r'
 );
 
 stripePromise
