@@ -1,25 +1,18 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const crearReserva = async (reservaData, token) => {
-  if (!reservaData || !token) {
-    throw new Error('Datos de reserva o token no proporcionados');
+export const crearReserva = async (reservaData) => {
+  if (!reservaData) {
+    throw new Error('No se proporcionaron los datos de la reserva');
   }
 
-  console.log('Iniciando creación de reserva con datos:', {
-    ...reservaData,
-    token: token ? `...${token.slice(-4)}` : 'none',
-  });
-
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout 10s
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
 
   try {
-    // Asegúrate que esta URL coincide con la ruta de tu backend
-    const response = await fetch(`${API_URL}/api/reservas`, {
+    const response = await fetch(`${API_URL}/api/reservas/save`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(reservaData),
       signal: controller.signal,
@@ -27,7 +20,53 @@ export const crearReserva = async (reservaData, token) => {
 
     clearTimeout(timeoutId);
 
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || `Error ${response.status}: ${response.statusText}`
+      );
+    }
+
+    return data;
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error.name === 'AbortError') {
+      throw new Error('La solicitud tardó demasiado. Intenta nuevamente.');
+    }
+
+    if (error.message.includes('Failed to fetch')) {
+      throw new Error('No fue posible conectar con el servidor.');
+    }
+
+    throw error;
+  }
+};
+
+export const buscarReservaPorCodigo = async (codigo) => {
+  if (!codigo) {
+    throw new Error('Código de reserva no proporcionado');
+  }
+
+  console.log('Buscando reserva con código:', codigo);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const response = await fetch(
+      `${API_URL}/api/reservas/codigo/${encodeURIComponent(codigo)}`,
+      {
+        method: 'GET',
+        signal: controller.signal,
+      }
+    );
+
+    clearTimeout(timeoutId);
+
     const contentType = response.headers.get('content-type');
+
     if (!contentType || !contentType.includes('application/json')) {
       throw new Error('Respuesta del servidor no es JSON');
     }
@@ -35,7 +74,7 @@ export const crearReserva = async (reservaData, token) => {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('Error en respuesta:', {
+      console.error('Error al buscar reserva:', {
         status: response.status,
         statusText: response.statusText,
         errorData: data,
@@ -44,53 +83,30 @@ export const crearReserva = async (reservaData, token) => {
       throw new Error(
         data.message ||
           `Error ${response.status}: ${
-            response.statusText || 'Error al crear reserva'
+            response.statusText || 'Error al buscar la reserva'
           }`
       );
     }
 
-    if (!data.sessionId || !data.sessionUrl || !data.reservaId) {
-      console.error('Respuesta inválida del servidor:', data);
-      throw new Error(
-        'La respuesta del servidor no contiene los datos esperados'
-      );
-    }
+    console.log('Reserva encontrada:', data);
 
-    console.log('Reserva creada exitosamente:', {
-      reservaId: data.reservaId,
-      sessionId: data.sessionId,
-      sessionUrl: data.sessionUrl,
-    });
-
-    return {
-      reservaId: data.reservaId,
-      sessionId: data.sessionId,
-      sessionUrl: data.sessionUrl,
-    };
+    return data;
   } catch (error) {
     clearTimeout(timeoutId);
 
     if (error.name === 'AbortError') {
-      console.error('Timeout al crear reserva: La solicitud tardó demasiado');
-      throw new Error(
-        'La solicitud tardó demasiado. Por favor intenta nuevamente'
-      );
+      throw new Error('La solicitud tardó demasiado. Inténtalo nuevamente.');
     }
-
-    console.error('Error en crearReserva:', {
-      error: error instanceof Error ? error.message : error,
-      stack: error instanceof Error ? error.stack : undefined,
-    });
 
     if (error.message.includes('Failed to fetch')) {
       throw new Error(
-        'Problema de conexión. Verifica tu internet e intenta nuevamente'
+        'Problema de conexión. Verifica tu internet e intenta nuevamente.'
       );
     }
 
     throw error instanceof Error
       ? error
-      : new Error('Error desconocido al crear reserva');
+      : new Error('Error desconocido al buscar la reserva.');
   }
 };
 
@@ -217,11 +233,7 @@ export const obtenerMisReservas = async (token) => {
   }
 };
 
-export const FechasOcupadas = async (token) => {
-  if (!token) {
-    throw new Error('Token de autenticación no proporcionado');
-  }
-
+export const FechasOcupadas = async () => {
   console.log('Consultando fechas ocupadas...');
 
   const controller = new AbortController();
@@ -231,7 +243,6 @@ export const FechasOcupadas = async (token) => {
     const response = await fetch(`${API_URL}/api/reservas/ocupadas`, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`,
         Accept: 'application/json',
       },
       signal: controller.signal,
