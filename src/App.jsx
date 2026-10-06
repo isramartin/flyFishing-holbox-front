@@ -34,8 +34,7 @@ import { PerfilUsuario } from './components/MiPerfil.jsx';
 import { GalleryProvider } from './context/GalleryContext';
 import Terms from './views/terms.jsx';
 import UploadInfoPesca from './components/admin/uploadInfoPesca.jsx';
-import Privacy from './views/Privacy.jsx';
-
+import Privacy from './views/privacy.jsx';
 
 function App() {
   return (
