@@ -6,20 +6,28 @@ import { ChevronDown, User, LogOut } from 'lucide-react';
 import '../styles/menu.css';
 
 const Menu = () => {
-  const [menuOpen, setMenuOpen]             = useState(false);
-  const [isClosing, setIsClosing]           = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [logoutLoading, setLogoutLoading]   = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
-  const location  = useLocation();
-  const navigate  = useNavigate();
-  const { isAuthenticated, role, logout, loading: authLoading, user } =
-    useContext(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const {
+    isAuthenticated,
+    role,
+    logout,
+    loading: authLoading,
+    user,
+  } = useContext(AuthContext);
 
   /* ── helpers ── */
   const closeMenu = () => {
     setIsClosing(true);
-    setTimeout(() => { setMenuOpen(false); setIsClosing(false); }, 300);
+    setTimeout(() => {
+      setMenuOpen(false);
+      setIsClosing(false);
+    }, 300);
   };
 
   const handleToggle = () => (menuOpen ? closeMenu() : setMenuOpen(true));
@@ -43,28 +51,39 @@ const Menu = () => {
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
       const path = location.pathname;
-      const r    = role?.toUpperCase();
-      if (r === 'ADMIN' && !path.startsWith('/admin'))        navigate('/admin/reservaciones');
-      else if (r === 'USER' && path.startsWith('/admin'))     navigate('/home');
+      const r = role?.toUpperCase();
+      if (r === 'ADMIN' && !path.startsWith('/admin'))
+        navigate('/admin/reservaciones');
+      else if (r === 'USER' && path.startsWith('/admin')) navigate('/home');
       else if (!isAuthenticated && path.startsWith('/admin')) navigate('/home');
     }
   }, [isAuthenticated, role, authLoading, navigate, location]);
 
   /* cierra el menú al cambiar de ruta */
-  useEffect(() => { if (menuOpen) closeMenu(); }, [location]);
+  useEffect(() => {
+    if (menuOpen) closeMenu();
+  }, [location]);
 
   /* ── items ── */
   const menuItems = [
-    { path: '/home',                   label: 'Home',         roles: ['USER', 'GUEST'] },
-    { path: '/pesca',                  label: 'Pesca',        roles: ['USER', 'GUEST'] },
-    { path: '/reservaciones/steps/1',  label: 'Reservaciones',roles: ['USER', 'GUEST'] },
-    { path: '/galerias',               label: 'Galerías',     roles: ['USER', 'GUEST'] },
-    { path: '/reseña',                 label: 'Reseñas',      roles: ['USER', 'GUEST'] },
-    { path: '/login',                  label: 'Login',        roles: ['GUEST'] },
-    { path: '/register',               label: 'Registro',     roles: ['GUEST'] },
-    { path: '/admin/reservaciones',    label: 'Admin Panel',  roles: ['ADMIN'] },
-    { path: '/admin/imageUploadGallery', label: 'Upload Gallery', roles: ['ADMIN'] },
-    { path: '/admin/uploadInfoPesca',  label: 'Upload Info',  roles: ['ADMIN'] },
+    { path: '/home', label: 'Home', roles: ['USER', 'GUEST'] },
+    { path: '/pesca', label: 'Pesca', roles: ['USER', 'GUEST'] },
+    {
+      path: '/reservaciones/steps/1',
+      label: 'Reservaciones',
+      roles: ['USER', 'GUEST'],
+    },
+    { path: '/galerias', label: 'Galerías', roles: ['USER', 'GUEST'] },
+    { path: '/reseña', label: 'Reseñas', roles: ['USER', 'GUEST'] },
+    { path: '/login', label: 'Login', roles: ['GUEST'] },
+    { path: '/register', label: 'Registro', roles: ['GUEST'] },
+    { path: '/admin/reservaciones', label: 'Admin Panel', roles: ['ADMIN'] },
+    {
+      path: '/admin/imageUploadGallery',
+      label: 'Upload Gallery',
+      roles: ['ADMIN'],
+    },
+    { path: '/admin/uploadInfoPesca', label: 'Upload Info', roles: ['ADMIN'] },
   ];
 
   const filtered = menuItems.filter((item) =>
@@ -73,10 +92,25 @@ const Menu = () => {
       : item.roles.includes(role?.toUpperCase())
   );
 
-  return (
-    <nav className='navbar navbar-expand-lg fixed-top w-100'>
-      <div className='container-fluid d-flex'>
+  const [scrolled, setScrolled] = useState(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  return (
+    <nav
+      className={`navbar navbar-expand-lg fixed-top w-100 ${scrolled ? 'scrolled' : ''}`}
+    >
+      <div className='container-fluid d-flex'>
         {/* Toggler móvil */}
         <button
           className='navbar-toggler me-3'
@@ -101,12 +135,12 @@ const Menu = () => {
           <ul className='navbar-nav me-auto'>
             {filtered.map((item, i) => {
               const isReserv = item.path.startsWith('/reservaciones/steps/');
-              const isHome   = item.path === '/home';
-              const active   = isHome
+              const isHome = item.path === '/home';
+              const active = isHome
                 ? location.pathname === '/' || location.pathname === '/home'
                 : isReserv
-                ? location.pathname.startsWith('/reservaciones/steps/')
-                : location.pathname === item.path;
+                  ? location.pathname.startsWith('/reservaciones/steps/')
+                  : location.pathname === item.path;
 
               return (
                 <li className='nav-item' key={i}>
@@ -138,14 +172,27 @@ const Menu = () => {
                     className='profile-pic'
                   />
                 ) : (
-                  <div className='profile-pic d-flex align-items-center justify-content-center'
-                    style={{ background: 'rgba(239,159,39,.2)', border: '1px solid rgba(239,159,39,.4)', fontSize: 13, color: '#EF9F27', fontWeight: 500 }}>
-                    {(user?.user?.nombre || user?.nombre || user?.email || 'U')[0].toUpperCase()}
+                  <div
+                    className='profile-pic d-flex align-items-center justify-content-center'
+                    style={{
+                      background: 'rgba(239,159,39,.2)',
+                      border: '1px solid rgba(239,159,39,.4)',
+                      fontSize: 13,
+                      color: '#EF9F27',
+                      fontWeight: 500,
+                    }}
+                  >
+                    {(user?.user?.nombre ||
+                      user?.nombre ||
+                      user?.email ||
+                      'U')[0].toUpperCase()}
                   </div>
                 )}
 
                 <span className='user-name'>
-                  {user?.user?.nombre || user?.nombre || user?.email?.split('@')[0]}
+                  {user?.user?.nombre ||
+                    user?.nombre ||
+                    user?.email?.split('@')[0]}
                 </span>
 
                 <ChevronDown
@@ -158,9 +205,16 @@ const Menu = () => {
               {userDropdownOpen && (
                 <div className='user-dropdown-menu'>
                   <Link
-                    to={role?.toUpperCase() === 'ADMIN' ? '/admin/MiPerfil' : '/MiPerfil'}
+                    to={
+                      role?.toUpperCase() === 'ADMIN'
+                        ? '/admin/MiPerfil'
+                        : '/MiPerfil'
+                    }
                     className='dropdown-item'
-                    onClick={() => { closeMenu(); setUserDropdownOpen(false); }}
+                    onClick={() => {
+                      closeMenu();
+                      setUserDropdownOpen(false);
+                    }}
                   >
                     <User size={15} />
                     Mi Perfil
@@ -179,7 +233,6 @@ const Menu = () => {
             </div>
           )}
         </div>
-
       </div>
     </nav>
   );

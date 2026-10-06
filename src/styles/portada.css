@@ -10,7 +10,10 @@
   --transition: all 0.3s ease-in-out;
 }
 
-/* Reset y estilos base */
+/* =========================
+   HERO / PORTADA
+========================= */
+
 .hero {
   width: 100%;
   height: 100vh;
@@ -20,175 +23,287 @@
   justify-content: center;
 }
 
+
 .hero-image {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  top: 0;
-  left: 0;
-  /* transition: opacity 0.10s ease-in-out; */
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
 }
 
-.hero-image.fade {
-  opacity: 0.7;
+/* Capa oscura sobre la fotografía */
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(5, 25, 29, 0.48) 0%,
+            rgba(5, 31, 35, 0.30) 38%,
+            rgba(4, 28, 32, 0.48) 70%,
+            rgba(3, 21, 25, 0.72) 100%
+        );
 }
 
-/* Overlay */
+/* =========================
+   CONTENIDO
+========================= */
+
 .hero-overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: var(--text-light);
-  background: var(--overlay-dark);
-  padding: 2rem;
-  z-index: 2;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 40px;
+    box-sizing: border-box;
+
+    color: #fff;
+    text-align: center;
 }
 
-.hero-overlay h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(3rem, 8vw, 10rem);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 1rem;
-  /* margin-top: 25rem; */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  animation: fadeInDown 1s ease-out;
+.hero-content {
+    width: 100%;
+    max-width: 1100px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin-top: 20px;
 }
 
-.hero-overlay h2 {
-  font-family: 'Audiowide', cursive;
-  font-size: clamp(1rem, 2.5vw, 2.5rem);
-  font-weight: 400;
-  line-height: 1.6;
-  max-width: 80%;
-  color: var(--text-light);
-  margin: 1rem auto 2rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  animation: fadeInUp 1s ease-out 0.3s both;
+/* =========================
+   ETIQUETA SUPERIOR
+========================= */
+
+.hero-eyebrow {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #915b14;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    line-height: 1;
+
+    text-transform: uppercase;
+
+    animation: fadeInDown 1s ease-out;
 }
 
-/* Botón */
+/* =========================
+   TITULO
+========================= */
+
+.hero-content h1 {
+    margin: 0;
+
+    color: #fff;
+
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(5rem, 10vw, 9rem);
+    font-weight: 500;
+    line-height: .9;
+    letter-spacing: -3px;
+
+    white-space: nowrap;
+
+    text-transform: uppercase;
+
+    text-shadow:
+        0 4px 20px rgba(0, 0, 0, .28);
+
+    animation: fadeInDown 1s ease-out;
+}
+
+/* =========================
+   DESCRIPCIÓN
+========================= */
+
+.hero-description {
+    max-width: 650px;
+
+    margin: 28px auto 30px;
+
+    color: rgba(255, 255, 255, .92);
+
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+
+    text-shadow:
+        0 2px 8px rgba(0, 0, 0, .45);
+
+    animation: fadeInUp 1s ease-out .2s both;
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    animation: fadeInUp 1s ease-out .4s both;
+}
+
+.btn-reservar,
+.btn-guia {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 42px;
+    box-sizing: border-box;
+
+    padding: 0 21px;
+
+    border-radius: 30px;
+
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .3px;
+
+    text-decoration: none;
+
+    transition:
+        background .25s ease,
+        border-color .25s ease,
+        transform .25s ease;
+}
+
+/* Botón principal */
+
 .btn-reservar {
-  display: inline-block;
-  padding: 0.8rem 1.8rem;
-  background-color: var(--primary-color);
-  color: white;
-  font-size: clamp(0.9rem, 1.2vw, 1.2rem);
-  font-weight: bold;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: var(--transition);
-  animation: fadeIn 1s ease-out 0.6s both;
-  z-index: 3;
+    gap: 12px;
+
+    background: #f47745;
+    color: #fff;
+
+    border: 1px solid #f47745;
 }
 
 .btn-reservar:hover {
-  background-color: var(--primary-dark);
-  transform: scale(1.05);
+    background: #e96534;
+    border-color: #e96534;
+    transform: translateY(-2px);
 }
 
-/* Cuadros de imágenes */
-.hero-boxes {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 3;
+.btn-arrow {
+    font-size: 14px;
+    line-height: 1;
 }
 
-.box {
-  position: absolute;
-  width: 12vw;
-  height: 12vw;
-  min-width: 100px;
-  min-height: 100px;
-  max-width: 220px;
-  max-height: 220px;
-  background: var(--box-bg);
-  border-radius: 10px;
-  box-shadow: var(--box-shadow);
-  border: 3px solid var(--accent-color);
-  overflow: hidden;
-  transition: var(--transition);
+/* Botón secundario */
+
+.btn-guia {
+    background: rgba(255, 255, 255, .03);
+
+    color: #fff;
+
+    border: 1px solid rgba(255, 255, 255, .45);
+
+    backdrop-filter: blur(4px);
 }
 
-.box:hover {
-  transform: scale(1.05);
-  border-color: var(--primary-color);
+.btn-guia:hover {
+    background: rgba(255, 255, 255, .12);
+    border-color: rgba(255, 255, 255, .75);
+    transform: translateY(-2px);
 }
 
-.box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity 0.5s ease-in-out;
+/* =========================
+   INDICADOR INFERIOR
+========================= */
+
+.hero-bottom {
+    position: absolute;
+
+    left: 42px;
+    bottom: 24px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    z-index: 4;
 }
 
-.box img.fade {
-  opacity: 0.5;
+.hero-bottom-line {
+    width: 32px;
+    height: 1px;
+
+    background: rgba(255, 255, 255, .65);
 }
 
-/* Posicionamiento de los cuadros */
-.top-left {
-  top: 10%;
-  left: 10%;
+.hero-bottom-text {
+    color: rgba(255, 255, 255, .78);
+
+    font-family: Arial, sans-serif;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
 }
 
-.top-right {
-  top: 10%;
-  right: 10%;
-}
+/* =========================
+   ANIMACIONES
+========================= */
 
-.bottom-left {
-  bottom: 10%;
-  left: 10%;
-}
-
-.bottom-right {
-  bottom: 10%;
-  right: 10%;
-}
-
-/* Animaciones */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Responsive */

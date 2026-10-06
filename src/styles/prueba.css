@@ -21,40 +21,12 @@
   width: 90%;
   min-height: 100vh;
   margin: 0 auto;
-  margin-top: 80px;
   margin-bottom: 50px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   font-family: var(--font-sans);
-}
-
-/* ══════════════════════════════════════════
-   HEADER DE ESTADÍSTICAS
-══════════════════════════════════════════ */
-.opiniones-container {
-  background: var(--navy) !important;
-  padding: 2.5rem 2rem !important;
-  border-radius: 20px !important;
-  width: 72.5% !important;
-  height: auto !important;
-  margin: 0 auto;
-  box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
-}
-
-/* patrón diagonal navy igual que el hero */
-.opiniones-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    45deg, transparent, transparent 40px,
-    rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 80px
-  );
-  pointer-events: none;
 }
 
 .titulo {
@@ -77,8 +49,8 @@
 
 /* cards de estadísticas */
 .card-opinion {
-  background: rgba(255,255,255,0.06) !important;
-  border: 1px solid rgba(239,159,39,0.25) !important;
+  background: rgb(255, 255, 255) !important;
+  border: 1px solid rgba(96, 60, 7, 0.856) !important;
   border-radius: 14px !important;
   width: 200px;
   min-height: 130px;
@@ -530,6 +502,296 @@ label {
   width: 60px; height: 20px;
   border-radius: 20px;
   background: rgba(13,27,42,0.10);
+}
+
+/* ══════════════════════════════════════════
+   CONTENEDOR
+══════════════════════════════════════════ */
+
+.opiniones-container {
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* ══════════════════════════════════════════
+   RESUMEN
+══════════════════════════════════════════ */
+
+.review-summary {
+
+    width: min(1120px, 90%);
+
+    margin: 0 auto;
+
+    padding: 75px 0 70px;
+
+    position: relative;
+}
+
+
+/* ══════════════════════════════════════════
+   ENCABEZADO
+══════════════════════════════════════════ */
+
+.review-summary-heading {
+
+    text-align: center;
+
+    margin-bottom: 48px;
+}
+
+.review-summary-heading span {
+
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #b47a29;
+
+    font-family: var(--font-sans);
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+}
+
+.review-summary-heading h2 {
+
+    margin: 0;
+
+    color: var(--navy);
+
+    font-family: var(--font-serif);
+
+    font-size: 32px;
+
+    font-weight: 400;
+
+    line-height: 1.1;
+}
+
+
+/* pequeña línea debajo */
+
+.review-summary-heading::after {
+
+    content: '';
+
+    display: block;
+
+    width: 34px;
+    height: 2px;
+
+    margin: 18px auto 0;
+
+    background: #c58a3a;
+}
+
+
+/* ══════════════════════════════════════════
+   ESTADÍSTICAS
+══════════════════════════════════════════ */
+
+.review-summary-stats {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    border-top: 1px solid #ded8ce;
+
+    border-bottom: 1px solid #ded8ce;
+}
+
+
+/* ══════════════════════════════════════════
+   ITEM
+══════════════════════════════════════════ */
+
+.review-summary-item {
+
+    position: relative;
+
+    min-height: 155px;
+
+    padding: 30px 25px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    box-sizing: border-box;
+}
+
+
+/* separador */
+
+.review-summary-item:not(:last-child)::after {
+
+    content: '';
+
+    position: absolute;
+
+    top: 28px;
+    right: 0;
+
+    width: 1px;
+    height: calc(100% - 56px);
+
+    background: #ded8ce;
+}
+
+
+/* ══════════════════════════════════════════
+   NÚMEROS
+══════════════════════════════════════════ */
+
+.review-summary-number {
+
+    color: var(--navy);
+
+    font-family: var(--font-serif);
+
+    font-size: 52px;
+
+    font-weight: 400;
+
+    line-height: 1;
+
+    letter-spacing: -1px;
+}
+
+
+/* segundo número */
+
+.review-summary-item:nth-child(2)
+.review-summary-number {
+
+    color: #4e9584;
+}
+
+
+/* ══════════════════════════════════════════
+   ESTRELLAS
+══════════════════════════════════════════ */
+
+.review-summary-stars {
+
+    margin-top: 10px;
+
+    color: #c58a3a;
+
+    font-size: 12px;
+
+    letter-spacing: 2px;
+}
+
+
+/* ══════════════════════════════════════════
+   PROGRESO
+══════════════════════════════════════════ */
+
+.review-summary-progress {
+
+    width: 130px;
+
+    height: 3px;
+
+    margin-top: 13px;
+
+    background: #dedbd4;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+.review-summary-progress span {
+
+    display: block;
+
+    height: 100%;
+
+    background: #4e9584;
+
+    border-radius: inherit;
+
+    transition: width .5s ease;
+}
+
+
+/* ══════════════════════════════════════════
+   SÍMBOLO
+══════════════════════════════════════════ */
+
+.review-summary-symbol {
+
+    margin-top: 10px;
+
+    color: #c58a3a;
+
+    font-size: 12px;
+}
+
+
+/* ══════════════════════════════════════════
+   LABEL
+══════════════════════════════════════════ */
+
+.review-summary-label {
+
+    margin-top: 14px;
+
+    color: #7d8283;
+
+    font-family: var(--font-sans);
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+.review-summary-icon {
+    width: 34px;
+    height: 34px;
+
+    margin-bottom: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #c58a3a;
+
+    border: 1px solid rgba(197, 138, 58, .35);
+
+    border-radius: 50%;
+
+    background: rgba(197, 138, 58, .04);
+}
+
+.review-summary-stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    margin-top: 10px;
+
+    color: #c58a3a;
 }
 
 @keyframes shimmer {

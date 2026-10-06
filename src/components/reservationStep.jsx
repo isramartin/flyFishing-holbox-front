@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-phone-number-input/style.css';
@@ -34,14 +34,18 @@ import {
 } from 'lucide-react';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/ReservationStep.css';
-import iamgen1 from '../assets/image/image1.png';
 import {
   crearReserva,
   FechasOcupadas,
   buscarReservaPorCodigo,
+  capturarPagoPayPal,
 } from '../service/Reserva.service';
 import { AuthContext } from '../context/AuthContext';
 import { useReserva } from '../context/ReservaContext';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
+import { useAlert } from './AlertManager';
+import PageHeader from './PageHeader';
+import imagen1 from '../assets/image/image1.png';
 
 const steps = [
   'Fecha y Hora',
@@ -75,19 +79,54 @@ export const ReservationStep = () => {
   const [buscandoReserva, setBuscandoReserva] = useState(false);
   const [reservaEncontrada, setReservaEncontrada] = useState(null);
   const [errorBusqueda, setErrorBusqueda] = useState('');
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
+  const [paymentError, setPaymentError] = useState(null);
+  const [paypalSession, setPaypalSession] = useState(null);
+  const [paypalSdk, setPaypalSdk] = useState(null);
+  const paypalButtonRef = useRef(null);
+  const { addAlert } = useAlert();
+
   // const reserva = await buscarReservaPorCodigo(codigoBusqueda);
 
   // Sin sesión o con sesión: el flujo es el mismo.
   // Si hay token se usa; si no, se reserva como invitado automáticamente.
 
-  const [reservaState, setReservaState] = useState({
-    loading: false,
-    error: null,
-    reservaId: null,
-    sessionUrl: null,
-    sessionId: null,
-    paymentStatus: null,
-    paymentDetails: null,
+  useEffect(() => {
+    if (token) {
+      console.log('🔐 TOKEN DISPONIBLE PARA PAYPAL:', `***${token.slice(-6)}`);
+    } else {
+      console.log('🔐 TOKEN PARA PAYPAL: NO DISPONIBLE');
+    }
+  }, [token]);
+
+  const [reservaState, setReservaState] = useState(() => {
+    const saved = sessionStorage.getItem('paypalReserva');
+
+    console.log('📦 SESSION STORAGE:', saved);
+
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+
+        console.log('📦 RESERVA RECUPERADA:', parsed);
+
+        return parsed;
+      } catch (error) {
+        console.error('Error leyendo paypalReserva:', error);
+      }
+    }
+
+    return {
+      loading: false,
+      error: null,
+      reservaId: null,
+      codigoReserva: null,
+      orderId: null,
+      approveUrl: null,
+      paymentStatus: null,
+      paymentDetails: null,
+    };
   });
 
   useEffect(() => {
@@ -99,10 +138,11 @@ export const ReservationStep = () => {
   }, [stepNumber]);
 
   const calculateTotal = () => {
-    const basePrice = 12;
+    const basePrice = 2;
     const equipmentPrice = data.alquilarEquipo ? 500 : 0;
     return { basePrice, equipmentPrice, total: basePrice + equipmentPrice };
   };
+
   const totals = calculateTotal();
 
   useEffect(() => {
@@ -146,7 +186,7 @@ export const ReservationStep = () => {
       price: 150,
       max: 5,
       category: 'Equipo',
-      img: iamgen1,
+      img: imagen1,
     },
     {
       name: 'Cámara acuática',
@@ -186,6 +226,10 @@ export const ReservationStep = () => {
     },
   ];
 
+  console.log('🔐 TOKEN AUTH CONTEXT:', token);
+  console.log('👤 AUTHENTICATED:', isAuthenticated);
+  console.log('👤 USER:', user);
+
   const handlePackageSelection = (event) => {
     setData((prev) => ({ ...prev, alquilarEquipo: event.target.checked }));
   };
@@ -220,7 +264,7 @@ export const ReservationStep = () => {
           nombreCompleto: data.name,
           email: data.email,
           numeroTelefono: data.phone,
-          precio: totals.total,
+          precio: 2,
           equipo: {
             alquilar: data.alquilarEquipo,
             precio: data.alquilarEquipo ? 500 : 0,
@@ -229,12 +273,53 @@ export const ReservationStep = () => {
 
         const response = await crearReserva(reservaData);
 
-        setReservaState((prev) => ({
-          ...prev,
+        console.log('==============================');
+        console.log('RESPUESTA CREAR RESERVA');
+        console.log(response);
+        console.log('ORDER ID:', response?.orderId);
+        console.log('RESERVA ID:', response?.reservaId);
+        console.log('CÓDIGO:', response?.codigoReserva);
+        console.log('==============================');
+
+        if (!response?.success) {
+          throw new Error(
+            response?.message || 'No fue posible crear la reserva.'
+          );
+        }
+
+        if (!response?.reservaId) {
+          throw new Error('El backend no devolvió el ID de la reserva.');
+        }
+
+        if (!response?.orderId) {
+          throw new Error('El backend no devolvió el orderId de PayPal.');
+        }
+
+        const nuevaReservaState = {
           loading: false,
-          reserva: response,
           error: null,
-        }));
+
+          reservaId: response.reservaId,
+          codigoReserva: response.codigoReserva,
+
+          orderId: response.orderId,
+          approveUrl: response.approveUrl,
+
+          paymentStatus: response.paymentStatus,
+          paymentDetails: null,
+        };
+
+        console.log('GUARDANDO RESERVA PARA PAYPAL:', nuevaReservaState);
+
+        sessionStorage.setItem(
+          'paypalReserva',
+          JSON.stringify(nuevaReservaState)
+        );
+
+        setReservaState(nuevaReservaState);
+
+        setPaymentCompleted(false);
+        setPaymentError(null);
 
         setError(null);
 
@@ -364,10 +449,11 @@ export const ReservationStep = () => {
 
   return (
     <div className='reserva-container'>
-      <h1 className='title-container'>Reservación de Tour</h1>
-      <p className='subtitle-container'>
-        Reserve su experiencia en pocos pasos
-      </p>
+      <PageHeader
+        image={imagen1}
+        title='Reservación de Tour'
+        subtitle='Reserve su experiencia en pocos pasos'
+      />
 
       <div className='steps-container'>
         <div className='steps'>
@@ -1101,108 +1187,268 @@ export const ReservationStep = () => {
 
             {stepNumber === 5 && (
               <div className='pending-payment-step modern-card'>
-                <h2 className='confirmation-title'>
-                  ¡Solicitud de reserva recibida!
-                </h2>
+                {!paymentCompleted ? (
+                  <>
+                    <h2 className='confirmation-title'>Completa tu pago</h2>
 
-                <p className='confirmation-subtitle'>
-                  Hemos apartado tu fecha de manera temporal mientras realizas
-                  el pago por transferencia bancaria.
-                </p>
+                    <p className='confirmation-subtitle'>
+                      Tu reserva fue registrada correctamente. Completa el pago
+                      mediante PayPal para confirmar tu reservación.
+                    </p>
 
-                <div className='alert-box'>
-                  <strong>Importante</strong>
+                    <div className='info-card'>
+                      <h3>Detalles de tu reserva</h3>
 
-                  <p>
-                    Dispones de <strong>24 horas</strong> para realizar tu
-                    transferencia. Después de ese tiempo, la reserva será
-                    cancelada automáticamente y la fecha volverá a estar
-                    disponible.
-                  </p>
-                </div>
+                      <p>
+                        <strong>Código</strong>
+                        <span>{reservaState.codigoReserva || '---'}</span>
+                      </p>
 
-                <div className='info-card'>
-                  <h3>Detalles de tu reserva</h3>
+                      <p>
+                        <strong>Fecha</strong>
+                        <span>{data?.date}</span>
+                      </p>
 
-                  <p>
-                    <strong>Código</strong>
-                    <span>{reservaState.reserva?.codigoReserva}</span>
-                  </p>
+                      <p>
+                        <strong>Hora</strong>
+                        <span>{data?.time}</span>
+                      </p>
 
-                  <p>
-                    <strong>Fecha</strong>
-                    <span>{data?.date}</span>
-                  </p>
+                      <p>
+                        <strong>Personas</strong>
+                        <span>{data?.guests}</span>
+                      </p>
 
-                  <p>
-                    <strong>Hora</strong>
-                    <span>{data?.time}</span>
-                  </p>
+                      <p>
+                        <strong>Total a pagar</strong>
+                        <span>${totals.total} MXN</span>
+                      </p>
+                    </div>
 
-                  <p>
-                    <strong>Personas</strong>
-                    <span>{data?.guests}</span>
-                  </p>
+                    <div className='info-card paypal-payment-card'>
+                      <h3>Pago seguro con PayPal</h3>
 
-                  <p>
-                    <strong>Total a pagar</strong>
-                    <span>${totals.total}</span>
-                  </p>
-                </div>
+                      <p>Realiza tu pago de forma segura utilizando PayPal.</p>
 
-                <div className='info-card'>
-                  <h3>Datos para la transferencia</h3>
+                      {paymentError && (
+                        <div className='alert-box error'>
+                          <strong>Error</strong>
 
-                  <p>
-                    <strong>Banco:</strong>
-                    <span>BBVA</span>
-                  </p>
+                          <p>{paymentError}</p>
+                        </div>
+                      )}
 
-                  <p>
-                    <strong>Beneficiario:</strong>
-                    <span>Fly Fishing Holbox</span>
-                  </p>
+                      {!reservaState.orderId && (
+                        <div className='alert-box error'>
+                          <strong>No se encontró la orden de PayPal.</strong>
 
-                  <p>
-                    <strong>Cuenta:</strong>
-                    <span>0123456789</span>
-                  </p>
+                          <p>
+                            No podemos iniciar el pago porque la orden de PayPal
+                            no está disponible.
+                          </p>
+                        </div>
+                      )}
 
-                  <p>
-                    <strong>CLABE:</strong>
-                    <span>012345678901234567</span>
-                  </p>
+                      {reservaState.orderId && (
+                        <PayPalScriptProvider
+                          options={{
+                            clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
+                            currency: 'MXN',
+                            intent: 'capture',
+                            locale: 'es_MX',
+                          }}
+                        >
+                          <div className='paypal-button-container'>
+                            <PayPalButtons
+                              style={{
+                                layout: 'vertical',
+                                shape: 'rect',
+                                label: 'paypal',
+                                height: 48,
+                              }}
+                              disabled={paymentLoading}
+                              forceReRender={[reservaState.orderId]}
+                              createOrder={() => {
+                                console.log(
+                                  'PayPal createOrder →',
+                                  reservaState.orderId
+                                );
 
-                  <p>
-                    <strong>Referencia:</strong>
-                    <span>{reservaState.reserva?.codigoReserva}</span>
-                  </p>
-                </div>
+                                return reservaState.orderId;
+                              }}
+                              onApprove={async (data) => {
+                                try {
+                                  setPaymentLoading(true);
+                                  setPaymentError(null);
 
-                <div className='email-notice'>
-                  <h3>Revisa tu correo electrónico</h3>
+                                  const orderId =
+                                    data?.orderID || reservaState.orderId;
 
-                  <p>
-                    Hemos enviado un correo a <strong>{data?.email}</strong> con
-                    las instrucciones para realizar la transferencia y tu código
-                    de reserva.
-                  </p>
+                                  if (!orderId) {
+                                    addAlert(
+                                      'No se encontró el ID de la orden de PayPal.',
+                                      'error'
+                                    );
+                                    return;
+                                  }
 
-                  <p>
-                    Si no encuentras el correo, revisa tu carpeta de spam o
-                    correo no deseado.
-                  </p>
-                </div>
+                                  if (!token) {
+                                    addAlert(
+                                      'No se encontró el token de autenticación.',
+                                      'error'
+                                    );
+                                    return;
+                                  }
 
-                <button
-                  className='confirmation-button modern-button'
-                  onClick={() => {
-                    clearReserva();
-                    navigate('/');
-                  }}
-                >
-                  Finalizar
-                </button>
+                                  const result = await capturarPagoPayPal(
+                                    orderId,
+                                    token
+                                  );
+
+                                  console.log(
+                                    '✅ RESPUESTA CAPTURA PAYPAL:',
+                                    result
+                                  );
+
+                                  if (!result?.success) {
+                                    throw new Error(
+                                      result?.error ||
+                                        result?.message ||
+                                        'El pago no pudo completarse.'
+                                    );
+                                  }
+
+                                  addAlert(
+                                    '¡Pago realizado correctamente! Tu reserva ha sido confirmada.',
+                                    'success'
+                                  );
+
+                                  setPaymentCompleted(true);
+                                } catch (error) {
+                                  console.error(
+                                    '❌ Error al capturar PayPal:',
+                                    error
+                                  );
+
+                                  addAlert(
+                                    error?.message ||
+                                      'No fue posible completar el pago.',
+                                    'error'
+                                  );
+
+                                  setPaymentError(
+                                    error?.message ||
+                                      'No fue posible completar el pago.'
+                                  );
+                                } finally {
+                                  setPaymentLoading(false);
+                                }
+                              }}
+                            />
+                          </div>
+                        </PayPalScriptProvider>
+                      )}
+
+                      {paymentLoading && (
+                        <div className='payment-loading'>
+                          <p>Procesando tu pago...</p>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  /*
+                   * ================================
+                   * PAGO COMPLETADO
+                   * ================================
+                   */
+
+                  <>
+                    <h2 className='confirmation-title'>¡Reserva confirmada!</h2>
+
+                    <p className='confirmation-subtitle'>
+                      Tu pago se realizó correctamente y tu reserva ha sido
+                      confirmada.
+                    </p>
+
+                    <div className='alert-box success'>
+                      <strong>¡Pago realizado correctamente!</strong>
+
+                      <p>
+                        Hemos procesado tu pago mediante PayPal. Tu comprobante
+                        de reservación ha sido generado y enviado a tu correo
+                        electrónico.
+                      </p>
+                    </div>
+
+                    <div className='info-card'>
+                      <h3>Detalles de tu reserva</h3>
+
+                      <p>
+                        <strong>Código</strong>
+
+                        <span>{reservaState.codigoReserva}</span>
+                      </p>
+
+                      <p>
+                        <strong>Fecha</strong>
+
+                        <span>{data?.date}</span>
+                      </p>
+
+                      <p>
+                        <strong>Hora</strong>
+
+                        <span>{data?.time}</span>
+                      </p>
+
+                      <p>
+                        <strong>Personas</strong>
+
+                        <span>{data?.guests}</span>
+                      </p>
+
+                      <p>
+                        <strong>Total pagado</strong>
+
+                        <span>${totals.total} MXN</span>
+                      </p>
+
+                      <p>
+                        <strong>Método de pago</strong>
+
+                        <span>PayPal</span>
+                      </p>
+                    </div>
+
+                    <div className='email-notice'>
+                      <h3>Revisa tu correo electrónico</h3>
+
+                      <p>
+                        Hemos enviado el comprobante de tu reservación a{' '}
+                        <strong>{data?.email}</strong>.
+                      </p>
+
+                      <p>
+                        Si no encuentras el correo, revisa tu carpeta de spam o
+                        correo no deseado.
+                      </p>
+                    </div>
+
+                    <button
+                      className='confirmation-button modern-button'
+                      onClick={() => {
+                        sessionStorage.removeItem('paypalReserva');
+
+                        clearReserva();
+
+                        navigate('/');
+                      }}
+                    >
+                      Finalizar
+                    </button>
+                  </>
+                )}
               </div>
             )}
 

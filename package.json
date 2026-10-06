@@ -13,6 +13,7 @@
     "@fontsource/montserrat": "^5.2.5",
     "@fontsource/open-sans": "^5.2.5",
     "@fontsource/roboto": "^5.2.5",
+    "@paypal/react-paypal-js": "^10.5.0",
     "@react-firebase/auth": "^0.2.10",
     "@stripe/react-stripe-js": "^3.7.0",
     "@stripe/stripe-js": "^7.3.1",

@@ -24,10 +24,10 @@
    CONTENEDOR PRINCIPAL
 ══════════════════════════════════════════ */
 .reserva-container {
-  width: 95%;
+  width: 100%;
   min-height: 100vh;
   margin: 0 auto;
-  margin-top: 90px;
+  margin-top: 0;
   margin-bottom: 50px;
   display: flex;
   flex-direction: column;
@@ -35,26 +35,99 @@
   font-family: var(--font-sans);
 }
 
+.reservation-header {
+    position: relative;
+
+    width: 100%;
+    min-height: 250px;
+
+    padding: 95px 0 35px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-sizing: border-box;
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    overflow: hidden;
+    
+}
+
+/* Capa oscura sobre la fotografía */
+.reservation-header::before {
+    content: '';
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(7, 24, 32, .62) 0%,
+            rgba(13, 27, 42, .72) 100%
+        );
+
+    z-index: 0;
+}
+
+/* Contenido */
+.reservation-header-content {
+    position: relative;
+    z-index: 2;
+
+    top: -18px;
+
+    text-align: center;
+}
+
+/* Línea dorada */
+.reservation-header::after {
+    content: '';
+
+    position: absolute;
+
+    bottom: 24px;
+    left: 50%;
+
+    width: 42px;
+    height: 2px;
+
+    transform: translateX(-50%);
+
+    background: #c58a3a;
+
+    z-index: 3;
+}
+
 .title-container {
-  font-family: var(--font-serif);
-  font-size: 42px;
-  font-weight: 600;
-  color: var(--navy);
-  letter-spacing: 0.01em;
-  margin-bottom: 6px;
-  background: none;
-  -webkit-text-fill-color: var(--navy);
+    margin: 0;
+
+    color: #fff;
+
+    font-family: var(--font-serif);
+    font-size: clamp(38px, 5vw, 58px);
+    font-weight: 400;
+
+    line-height: 1.1;
+    letter-spacing: -.5px;
 }
 
 .subtitle-container {
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 300;
-  color: var(--text-muted);
-  margin-bottom: 0;
-  letter-spacing: 0.04em;
-}
+    margin: 12px 0 0;
 
+    color: rgba(255, 255, 255, .78);
+
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 400;
+
+    letter-spacing: .5px;
+    line-height: 1.6;
+}
 /* ══════════════════════════════════════════
    BARRA DE PASOS
 ══════════════════════════════════════════ */
@@ -1910,9 +1983,9 @@ PENDING PAYMENT
 
   padding: 17px 20px 17px 22px;
 
-  background: #fcf8ef;
+  background: #effcf2;
 
-  border: 1px solid #eee2c9;
+  border: 1px solid #c9eecb;
 
   border-radius: 11px;
 }
@@ -1930,7 +2003,7 @@ PENDING PAYMENT
 
   border-radius: 4px;
 
-  background: #c49a55;
+  background: #55c476;
 }
 
 .alert-box strong:first-child {
@@ -1938,7 +2011,7 @@ PENDING PAYMENT
 
   margin-bottom: 5px;
 
-  color: #8a6b35;
+  color: #468a35;
 
   font-size: 13px;
 

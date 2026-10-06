@@ -7,6 +7,8 @@ import {
 import { X, ArrowDownToLine, Heart, HeartOff, Link } from 'lucide-react';
 import { useAlert } from './AlertManager';
 import { useGallery } from '../context/GalleryContext';
+import imagen1 from '../assets/image/image1.png';
+import PageHeader from './PageHeader';
 
 const PhotoGallery = () => {
   const [showModal, setShowModal] = useState(false);
@@ -158,125 +160,134 @@ const PhotoGallery = () => {
   }
 
   return (
-    <div className='gallery-container'>
-      <div className='gallery-masonry'>
-        {photos.map((photo, index) => (
-          <div
-            className='gallery-item'
-            key={photo.id}
-            onMouseEnter={() => setHoverIndex(index)}
-            onMouseLeave={() => setHoverIndex(null)}
-            onClick={(e) => handleImageClick(index, e)}
-          >
-            <img
-              src={photo.imageUrl}
-              alt={photo.titulo || `Foto ${index + 1}`}
-              className='gallery-image'
-            />
-            {hoverIndex === index && (
-              <div className='gallery-overlay'>
-                <div className='gallery-actions'>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggleFavorito(photo.id, photo.favorito);
-                    }}
-                  >
-                    {photo.favorito ? <HeartOff /> : <Heart />}
-                  </button>
+    <div className='gallery-page'>
+      <PageHeader
+        image={imagen1}
+        eyebrow='MOMENTOS DE HOLBOX'
+        title='Galería'
+        subtitle='Descubre algunos de los momentos que hacen única cada jornada.'
+      />
 
-                  {/* <button>
+      <div className='gallery-container'>
+        <div className='gallery-masonry'>
+          {photos.map((photo, index) => (
+            <div
+              className='gallery-item'
+              key={photo.id}
+              onMouseEnter={() => setHoverIndex(index)}
+              onMouseLeave={() => setHoverIndex(null)}
+              onClick={(e) => handleImageClick(index, e)}
+            >
+              <img
+                src={photo.imageUrl}
+                alt={photo.titulo || `Foto ${index + 1}`}
+                className='gallery-image'
+              />
+              {hoverIndex === index && (
+                <div className='gallery-overlay'>
+                  <div className='gallery-actions'>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleFavorito(photo.id, photo.favorito);
+                      }}
+                    >
+                      {photo.favorito ? <HeartOff /> : <Heart />}
+                    </button>
+
+                    {/* <button>
                     <Link />
                   </button> */}
-                  <button
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDescarga(photo.id);
+                      }}
+                    >
+                      <ArrowDownToLine />
+                    </button>
+                  </div>
+                  <div className='gallery-info'>
+                    <h3>{photo.titulo || 'Sin título'}</h3>
+                    <p>{photo.descripcion || 'Sin descripción'}</p>
+                    <span className='gallery-location'>
+                      {photo.lugarCreacion || 'Holbox, Q. Roo, MX'}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Modal */}
+        {/* Modal — reemplaza el bloque showModal en tu PhotoGallery.jsx */}
+        {showModal && photos.length > 0 && (
+          <div className='gallery-modal-overlay'>
+            <div className='modal-content'>
+              {/* ── Barra de botones: posición relativa al modal-content ── */}
+              <div className='modal-action-bar'>
+                <ArrowDownToLine
+                  className='close-button-dowload'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDescarga(photos[activeIndex].id);
+                  }}
+                />
+
+                {photos[activeIndex].favorito ? (
+                  <HeartOff
+                    className='close-button-favorite'
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDescarga(photo.id);
+                      handleToggleFavorito(photos[activeIndex].id, true);
                     }}
-                  >
-                    <ArrowDownToLine />
-                  </button>
-                </div>
-                <div className='gallery-info'>
-                  <h3>{photo.titulo || 'Sin título'}</h3>
-                  <p>{photo.descripcion || 'Sin descripción'}</p>
-                  <span className='gallery-location'>
-                    {photo.lugarCreacion || 'Holbox, Q. Roo, MX'}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+                  />
+                ) : (
+                  <Heart
+                    className='close-button-favorite'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleFavorito(photos[activeIndex].id, false);
+                    }}
+                  />
+                )}
 
-      {/* Modal */}
-      {/* Modal — reemplaza el bloque showModal en tu PhotoGallery.jsx */}
-      {showModal && photos.length > 0 && (
-        <div className='gallery-modal-overlay'>
-          <div className='modal-content'>
-            {/* ── Barra de botones: posición relativa al modal-content ── */}
-            <div className='modal-action-bar'>
-              <ArrowDownToLine
-                className='close-button-dowload'
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDescarga(photos[activeIndex].id);
-                }}
+                <X className='close-button-close' onClick={handleCloseModal} />
+              </div>
+              {/* ───────────────────────────────────────────────────────── */}
+
+              <button onClick={handlePrev} className='arrow-left'>
+                &#10094;
+              </button>
+
+              <img
+                src={photos[activeIndex].imageUrl}
+                alt={photos[activeIndex].titulo || 'Imagen ampliada'}
+                className='modal-image'
               />
 
-              {photos[activeIndex].favorito ? (
-                <HeartOff
-                  className='close-button-favorite'
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleToggleFavorito(photos[activeIndex].id, true);
-                  }}
-                />
-              ) : (
-                <Heart
-                  className='close-button-favorite'
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleToggleFavorito(photos[activeIndex].id, false);
-                  }}
-                />
-              )}
+              <button onClick={handleNext} className='arrow-right'>
+                &#10095;
+              </button>
 
-              <X className='close-button-close' onClick={handleCloseModal} />
-            </div>
-            {/* ───────────────────────────────────────────────────────── */}
-
-            <button onClick={handlePrev} className='arrow-left'>
-              &#10094;
-            </button>
-
-            <img
-              src={photos[activeIndex].imageUrl}
-              alt={photos[activeIndex].titulo || 'Imagen ampliada'}
-              className='modal-image'
-            />
-
-            <button onClick={handleNext} className='arrow-right'>
-              &#10095;
-            </button>
-
-            <div className='thumbnails-wrapper'>
-              <div className='thumbnail-container' ref={containerRef}>
-                {photos.map((photo, index) => (
-                  <img
-                    key={photo.id}
-                    src={photo.imageUrl}
-                    alt={`Thumbnail ${index + 1}`}
-                    onClick={() => setActiveIndex(index)}
-                    className={`thumbnail ${index === activeIndex ? 'active' : 'inactive'}`}
-                  />
-                ))}
+              <div className='thumbnails-wrapper'>
+                <div className='thumbnail-container' ref={containerRef}>
+                  {photos.map((photo, index) => (
+                    <img
+                      key={photo.id}
+                      src={photo.imageUrl}
+                      alt={`Thumbnail ${index + 1}`}
+                      onClick={() => setActiveIndex(index)}
+                      className={`thumbnail ${index === activeIndex ? 'active' : 'inactive'}`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #693939;
+  background-color: #f7f8f8;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -22,6 +22,7 @@ a {
 body {
   margin: 0;
   min-height: 100vh;
+  
 }
 
 button {

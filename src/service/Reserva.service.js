@@ -6,7 +6,7 @@ export const crearReserva = async (reservaData) => {
   }
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
 
   try {
     const response = await fetch(`${API_URL}/api/reservas/save`, {
@@ -18,22 +18,28 @@ export const crearReserva = async (reservaData) => {
       signal: controller.signal,
     });
 
-    clearTimeout(timeoutId);
-
     const data = await response.json();
 
-    if (!response.ok) {
+    if (!response.ok || !data.success) {
       throw new Error(
-        data.message || `Error ${response.status}: ${response.statusText}`
+        data.error ||
+          data.message ||
+          `Error ${response.status}: ${response.statusText}`
+      );
+    }
+
+    if (!data.reservaId || !data.orderId || !data.approveUrl) {
+      throw new Error(
+        'La reserva fue procesada, pero faltan los datos de PayPal.'
       );
     }
 
     return data;
   } catch (error) {
-    clearTimeout(timeoutId);
-
     if (error.name === 'AbortError') {
-      throw new Error('La solicitud tardó demasiado. Intenta nuevamente.');
+      throw new Error(
+        'La solicitud tardó demasiado. Comprueba el estado de tu reserva antes de intentarlo nuevamente.'
+      );
     }
 
     if (error.message.includes('Failed to fetch')) {
@@ -41,9 +47,86 @@ export const crearReserva = async (reservaData) => {
     }
 
     throw error;
+  } finally {
+    clearTimeout(timeoutId);
   }
 };
 
+export const capturarPagoPayPal = async (orderId, token) => {
+  if (!orderId) {
+    throw new Error('No se proporcionó el ID de la orden de PayPal');
+  }
+
+  if (!token) {
+    throw new Error('Token de autenticación no proporcionado');
+  }
+
+  console.log('Capturando pago PayPal:', orderId);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+  try {
+    const response = await fetch(
+      `${API_URL}/api/reservas/paypal/orders/${orderId}/capture`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        signal: controller.signal,
+      }
+    );
+
+    clearTimeout(timeoutId);
+
+    const contentType = response.headers.get('content-type');
+
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('La respuesta del servidor no es JSON');
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Error al capturar pago PayPal:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorData: data,
+      });
+
+      throw new Error(
+        data.message ||
+          data.error ||
+          `Error ${response.status}: ${
+            response.statusText || 'No se pudo completar el pago'
+          }`
+      );
+    }
+
+    console.log('Pago PayPal capturado correctamente:', data);
+
+    return data;
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error.name === 'AbortError') {
+      console.error('Timeout al capturar pago PayPal');
+
+      throw new Error(
+        'La solicitud de pago tardó demasiado. Verifica el estado de tu reserva.'
+      );
+    }
+
+    console.error('Error en capturarPagoPayPal:', error.message || error);
+
+    throw error instanceof Error
+      ? error
+      : new Error('Error desconocido al capturar el pago');
+  }
+};
 export const buscarReservaPorCodigo = async (codigo) => {
   if (!codigo) {
     throw new Error('Código de reserva no proporcionado');

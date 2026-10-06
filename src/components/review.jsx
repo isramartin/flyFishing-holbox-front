@@ -2,13 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { getAllResenas, createResena } from '../service/Reseña.service';
 import '../styles/prueba.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  AlignJustify,
-  LayoutGrid,
-  CirclePlus,
-} from 'lucide-react';
+import { AlignJustify, LayoutGrid, CirclePlus } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { useAlert } from './AlertManager';
+import PageHeader from './PageHeader';
+import imagen1 from '../assets/image/image1.png';
+
+import { Star, Users, MessageCircle } from 'lucide-react';
 
 const Review2 = () => {
   const [activeTab, setActiveTab] = useState('Mosaico');
@@ -93,14 +93,21 @@ const Review2 = () => {
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
-      case 'excelente':  return '#4CAF50';
-      case 'muy bueno':  return '#8BC34A';
-      case 'bueno':      return '#FFC107';
-      case 'regular':    return '#FF9800';
-      case 'malo':       return '#F44336';
+      case 'excelente':
+        return '#4CAF50';
+      case 'muy bueno':
+        return '#8BC34A';
+      case 'bueno':
+        return '#FFC107';
+      case 'regular':
+        return '#FF9800';
+      case 'malo':
+        return '#F44336';
       case 'pésimo':
-      case 'pesimo':     return '#9E9E9E';
-      default:           return '#4CAF50';
+      case 'pesimo':
+        return '#9E9E9E';
+      default:
+        return '#4CAF50';
     }
   };
 
@@ -114,235 +121,372 @@ const Review2 = () => {
 
   const promedio =
     resenas.length > 0
-      ? (resenas.reduce((sum, r) => sum + r.calificacion, 0) / resenas.length).toFixed(1)
+      ? (
+          resenas.reduce((sum, r) => sum + r.calificacion, 0) / resenas.length
+        ).toFixed(1)
       : 0;
 
   const satisfechos =
     resenas.length > 0
-      ? Math.round((resenas.filter((r) => r.calificacion >= 4).length / resenas.length) * 100)
+      ? Math.round(
+          (resenas.filter((r) => r.calificacion >= 4).length / resenas.length) *
+            100
+        )
       : 0;
 
   return (
-    <div className="prueba-container">
-      <div className="opiniones-container text-center p-3 rounded">
-        <h2 className="titulo">Galería de Opiniones</h2>
-        <p className="descripcion">
-          Explora nuestra colección de experiencias compartidas por clientes
-          reales. Cada opinión es una pieza única en nuestro mosaico de
-          satisfacción.
-        </p>
+    <>
+      <PageHeader
+        image={imagen1}
+        eyebrow='EXPERIENCIAS REALES'
+        title='Galería de Opiniones'
+        subtitle='Explora las experiencias compartidas por nuestros clientes.'
+      />
 
-        <div className="d-flex card-flex-wrap justify-content-center gap-4">
+      <div className='prueba-container'>
+        <div className='opiniones-container'>
+          <div className='review-summary'>
+            <div className='review-summary-heading'>
+              <span>LA EXPERIENCIA</span>
+
+              <h2>Lo que dicen nuestros clientes</h2>
+            </div>
+
+            <div className='review-summary-stats'>
+              {loading ? (
+                [...Array(3)].map((_, i) => (
+                  <div key={i} className='review-summary-item skeleton-card'>
+                    <div className='skeleton-line short' />
+                    <div className='skeleton-stars' />
+                    <div className='skeleton-line medium' />
+                  </div>
+                ))
+              ) : (
+                <>
+                  {/* CALIFICACIÓN PROMEDIO */}
+                  <div className='review-summary-item'>
+                    <div className='review-summary-icon'>
+                      <Star size={17} strokeWidth={1.5} />
+                    </div>
+
+                    <span className='review-summary-number'>{promedio}</span>
+
+                    <div className='review-summary-stars'>
+                      {[...Array(5)].map((_, index) => (
+                        <Star
+                          key={index}
+                          size={13}
+                          strokeWidth={1.7}
+                          fill={
+                            index < Math.round(promedio)
+                              ? 'currentColor'
+                              : 'none'
+                          }
+                        />
+                      ))}
+                    </div>
+
+                    <span className='review-summary-label'>
+                      CALIFICACIÓN PROMEDIO
+                    </span>
+                  </div>
+
+                  {/* CLIENTES SATISFECHOS */}
+                  <div className='review-summary-item'>
+                    <div className='review-summary-icon'>
+                      <Users size={18} strokeWidth={1.5} />
+                    </div>
+
+                    <span className='review-summary-number'>
+                      {satisfechos}%
+                    </span>
+
+                    <div className='review-summary-progress'>
+                      <span
+                        style={{
+                          width: `${satisfechos}%`,
+                        }}
+                      />
+                    </div>
+
+                    <span className='review-summary-label'>
+                      CLIENTES SATISFECHOS
+                    </span>
+                  </div>
+
+                  {/* RESEÑAS TOTALES */}
+                  <div className='review-summary-item'>
+                    <div className='review-summary-icon'>
+                      <MessageCircle size={18} strokeWidth={1.5} />
+                    </div>
+
+                    <span className='review-summary-number'>
+                      {resenas.length}
+                    </span>
+
+                    <span className='review-summary-label'>
+                      RESEÑAS TOTALES
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Pestañas */}
+        <div className='op-container'>
+          <ul className='nav'>
+            <li>
+              <button
+                className={`tab-op ${activeTab === 'Mosaico' ? 'active' : ''}`}
+                onClick={() => setActiveTab('Mosaico')}
+              >
+                <AlignJustify /> Mosaico
+              </button>
+            </li>
+            <li>
+              <button
+                className={`tab-op ${activeTab === 'Lista' ? 'active' : ''}`}
+                onClick={() => setActiveTab('Lista')}
+              >
+                <LayoutGrid /> Lista
+              </button>
+            </li>
+            <li>
+              <button
+                className={`tab-op ${activeTab === 'Agregar Reseña' ? 'active' : ''}`}
+                onClick={() => setActiveTab('Agregar Reseña')}
+              >
+                <CirclePlus /> Agregar Reseña
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        {/* Contenido pestañas */}
+        <div className='tab-content w-75'>
           {loading ? (
-            [...Array(3)].map((_, i) => (
-              <div key={i} className="card-opinion rounded p-3 bg-white shadow-lg skeleton-card">
-                <div className="skeleton-line short" />
-                <div className="skeleton-stars" />
-                <div className="skeleton-line medium" />
+            activeTab === 'Lista' ? (
+              <div className='card-list-container'>
+                {[...Array(resenas.length || 3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className='card skeleton-card p-3'
+                    style={{ height: 'auto' }}
+                  >
+                    <div className='d-flex align-items-center gap-3 mb-2'>
+                      <div className='skeleton-avatar' />
+                      <div className='w-100 d-flex justify-content-between align-items-center'>
+                        <div>
+                          <div className='skeleton-line medium' />
+                          <div className='skeleton-line short' />
+                        </div>
+                        <div className='skeleton-badge' />
+                      </div>
+                    </div>
+                    <div className='skeleton-stars' />
+                    <div className='skeleton-line long' />
+                    <div className='skeleton-line medium' />
+                    <div className='skeleton-line short' />
+                  </div>
+                ))}
               </div>
-            ))
+            ) : (
+              <div className='card-grid-container'>
+                {[...Array(resenas.length || 3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className='card skeleton-card p-3'
+                    style={{ height: 'auto' }}
+                  >
+                    <div className='d-flex align-items-center gap-3 mb-2'>
+                      <div className='skeleton-avatar' />
+                      <div className='w-100 d-flex justify-content-between align-items-center'>
+                        <div>
+                          <div className='skeleton-line medium' />
+                          <div className='skeleton-line short' />
+                        </div>
+                        <div className='skeleton-badge' />
+                      </div>
+                    </div>
+                    <div className='skeleton-stars' />
+                    <div className='skeleton-line long' />
+                    <div className='skeleton-line medium' />
+                    <div className='skeleton-line short' />
+                  </div>
+                ))}
+              </div>
+            )
           ) : (
             <>
-              <div className="card-opinion rounded p-1 text-center bg-white shadow-lg">
-                <h3 className="valorP text-primary">{promedio}</h3>
-                <div className="estrellas text-warning">
-                  {'⭐'.repeat(Math.round(promedio))}{'☆'.repeat(5 - Math.round(promedio))}
+              {activeTab === 'Mosaico' && (
+                <div className='card-grid-container'>
+                  {resenas.map((resena) => (
+                    <div
+                      key={resena.id}
+                      className='card'
+                      style={{
+                        '--status-color': getStatusColor(resena.status),
+                        '--status-color-opacity': getStatusColorWithOpacity(
+                          resena.status,
+                          0.3
+                        ),
+                      }}
+                    >
+                      <div className='card-user'>
+                        <img src={resena.userPhotoUrl} alt='Usuario' />
+                        <div className='card-user-info'>
+                          <span className='card-user-name'>
+                            {resena.userName}
+                          </span>
+                          <span className='card-user-date'>
+                            {resena.fechaVisita} · {resena.acompanante}
+                          </span>
+                        </div>
+                        <span className='card-user-badge'>{resena.status}</span>
+                      </div>
+                      <div className='card-stars'>
+                        {'★'.repeat(resena.calificacion)}
+                        {'☆'.repeat(5 - resena.calificacion)}
+                      </div>
+                      <h3 className='card-title'>{resena.titulo}</h3>
+                      <p className='card-content'>{resena.opinion}</p>
+                    </div>
+                  ))}
                 </div>
-                <p className="etiqueta text-muted">Calificación Promedio</p>
-              </div>
-              <div className="card-opinion rounded p-3 text-center bg-white shadow-lg">
-                <h3 className="valorC text-info">{satisfechos}%</h3>
-                <div className="barra-progreso bg-light">
-                  <div className="progreso bg-info" style={{ width: `${satisfechos}%` }} />
+              )}
+
+              {activeTab === 'Lista' && (
+                <div className='card-list-container'>
+                  {resenas.map((resena) => (
+                    <div
+                      key={resena.id}
+                      className='card'
+                      style={{
+                        '--status-color': getStatusColor(resena.status),
+                      }}
+                    >
+                      <div className='card-user'>
+                        <img src={resena.userPhotoUrl} alt='Usuario' />
+                        <div className='card-user-info'>
+                          <span className='card-user-name'>
+                            {resena.userName}
+                          </span>
+                          <span className='card-user-date'>
+                            {resena.fechaVisita} · {resena.acompanante}
+                          </span>
+                        </div>
+                        <span className='card-user-badge'>{resena.status}</span>
+                      </div>
+                      <div className='card-stars'>
+                        {'★'.repeat(resena.calificacion)}
+                        {'☆'.repeat(5 - resena.calificacion)}
+                      </div>
+                      <h3 className='card-title'>{resena.titulo}</h3>
+                      <p className='card-content'>{resena.opinion}</p>
+                    </div>
+                  ))}
                 </div>
-                <p className="etiqueta text-muted">Clientes Satisfechos</p>
-              </div>
-              <div className="card-opinion rounded p-1 text-center bg-white shadow-lg">
-                <h3 className="valorR text-success">{resenas.length}</h3>
-                <div className="icono-comentario text-success">💬</div>
-                <p className="etiqueta text-muted">Reseñas Totales</p>
-              </div>
+              )}
             </>
+          )}
+
+          {/* ── Formulario: accesible sin login ── */}
+          {activeTab === 'Agregar Reseña' && (
+            <div className='review-box'>
+              <h2>¿Cómo calificarías tu experiencia?</h2>
+              <div className='left-column'>
+                <div className='star-rating'>
+                  {[...Array(5)].map((_, index) => (
+                    <span
+                      key={index}
+                      className={
+                        index < (hover || rating) ? 'star selected' : 'star'
+                      }
+                      onClick={() => handleRating(index)}
+                      onMouseEnter={() => setHover(index + 1)}
+                      onMouseLeave={() => setHover(0)}
+                    >
+                      ★
+                    </span>
+                  ))}
+                  <p className='rating-text'>
+                    {hover > 0
+                      ? ratingLabels[hover - 1]
+                      : rating > 0
+                        ? ratingLabels[rating - 1]
+                        : 'Selecciona una calificación'}
+                  </p>
+                </div>
+                <label>¿Cuándo fuiste?</label>
+                <select value={date} onChange={(e) => setDate(e.target.value)}>
+                  <option value=''>Seleccione una opción</option>
+                  <option value='Enero'>Enero</option>
+                  <option value='Febrero'>Febrero</option>
+                  <option value='Marzo'>Marzo</option>
+                </select>
+                <label>¿Con quién fuiste?</label>
+                <div className='group-selection'>
+                  {groups.map((g) => (
+                    <button
+                      key={g}
+                      className={group === g ? 'selected' : ''}
+                      onClick={() => setGroup(g)}
+                    >
+                      {g}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className='right-column'>
+                <label>Título de tu opinión</label>
+                <input
+                  type='text'
+                  placeholder='Cuéntanos un poco sobre tu experiencia'
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+                <label>Escribe tu opinión</label>
+                <textarea
+                  placeholder='Escribe tu reseña...'
+                  value={review}
+                  onChange={(e) => {
+                    if (e.target.value.length <= maxChars)
+                      setReview(e.target.value);
+                  }}
+                  style={{
+                    borderColor:
+                      review.length > 0 && review.length < minChars
+                        ? 'red'
+                        : '#ccc',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    outline: 'none',
+                    padding: '8px',
+                    width: '100%',
+                    borderRadius: '4px',
+                  }}
+                />
+                <div style={{ fontSize: '0.9em', marginTop: '4px' }}>
+                  Caracteres: {review.length}/{maxChars}
+                  {review.length === maxChars && (
+                    <span style={{ color: 'red', marginLeft: '8px' }}>
+                      Has alcanzado el máximo permitido.
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className='button-container'>
+                <button type='submit' onClick={handleSubmit}>
+                  Enviar Reseña
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </div>
-
-      {/* Pestañas */}
-      <div className="op-container">
-        <ul className="nav">
-          <li>
-            <button className={`tab-op ${activeTab === 'Mosaico' ? 'active' : ''}`} onClick={() => setActiveTab('Mosaico')}>
-              <AlignJustify /> Mosaico
-            </button>
-          </li>
-          <li>
-            <button className={`tab-op ${activeTab === 'Lista' ? 'active' : ''}`} onClick={() => setActiveTab('Lista')}>
-              <LayoutGrid /> Lista
-            </button>
-          </li>
-          <li>
-            <button className={`tab-op ${activeTab === 'Agregar Reseña' ? 'active' : ''}`} onClick={() => setActiveTab('Agregar Reseña')}>
-              <CirclePlus /> Agregar Reseña
-            </button>
-          </li>
-        </ul>
-      </div>
-
-      {/* Contenido pestañas */}
-      <div className="tab-content w-75">
-        {loading ? (
-          activeTab === 'Lista' ? (
-            <div className="card-list-container">
-              {[...Array(resenas.length || 3)].map((_, i) => (
-                <div key={i} className="card skeleton-card p-3" style={{ height: 'auto' }}>
-                  <div className="d-flex align-items-center gap-3 mb-2">
-                    <div className="skeleton-avatar" />
-                    <div className="w-100 d-flex justify-content-between align-items-center">
-                      <div><div className="skeleton-line medium" /><div className="skeleton-line short" /></div>
-                      <div className="skeleton-badge" />
-                    </div>
-                  </div>
-                  <div className="skeleton-stars" />
-                  <div className="skeleton-line long" />
-                  <div className="skeleton-line medium" />
-                  <div className="skeleton-line short" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="card-grid-container">
-              {[...Array(resenas.length || 3)].map((_, i) => (
-                <div key={i} className="card skeleton-card p-3" style={{ height: 'auto' }}>
-                  <div className="d-flex align-items-center gap-3 mb-2">
-                    <div className="skeleton-avatar" />
-                    <div className="w-100 d-flex justify-content-between align-items-center">
-                      <div><div className="skeleton-line medium" /><div className="skeleton-line short" /></div>
-                      <div className="skeleton-badge" />
-                    </div>
-                  </div>
-                  <div className="skeleton-stars" />
-                  <div className="skeleton-line long" />
-                  <div className="skeleton-line medium" />
-                  <div className="skeleton-line short" />
-                </div>
-              ))}
-            </div>
-          )
-        ) : (
-          <>
-            {activeTab === 'Mosaico' && (
-              <div className="card-grid-container">
-                {resenas.map((resena) => (
-                  <div key={resena.id} className="card" style={{
-                    '--status-color': getStatusColor(resena.status),
-                    '--status-color-opacity': getStatusColorWithOpacity(resena.status, 0.3),
-                  }}>
-                    <div className="card-user">
-                      <img src={resena.userPhotoUrl} alt="Usuario" />
-                      <div className="card-user-info">
-                        <span className="card-user-name">{resena.userName}</span>
-                        <span className="card-user-date">{resena.fechaVisita} · {resena.acompanante}</span>
-                      </div>
-                      <span className="card-user-badge">{resena.status}</span>
-                    </div>
-                    <div className="card-stars">{'★'.repeat(resena.calificacion)}{'☆'.repeat(5 - resena.calificacion)}</div>
-                    <h3 className="card-title">{resena.titulo}</h3>
-                    <p className="card-content">{resena.opinion}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {activeTab === 'Lista' && (
-              <div className="card-list-container">
-                {resenas.map((resena) => (
-                  <div key={resena.id} className="card" style={{ '--status-color': getStatusColor(resena.status) }}>
-                    <div className="card-user">
-                      <img src={resena.userPhotoUrl} alt="Usuario" />
-                      <div className="card-user-info">
-                        <span className="card-user-name">{resena.userName}</span>
-                        <span className="card-user-date">{resena.fechaVisita} · {resena.acompanante}</span>
-                      </div>
-                      <span className="card-user-badge">{resena.status}</span>
-                    </div>
-                    <div className="card-stars">{'★'.repeat(resena.calificacion)}{'☆'.repeat(5 - resena.calificacion)}</div>
-                    <h3 className="card-title">{resena.titulo}</h3>
-                    <p className="card-content">{resena.opinion}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
-
-        {/* ── Formulario: accesible sin login ── */}
-        {activeTab === 'Agregar Reseña' && (
-          <div className="review-box">
-            <h2>¿Cómo calificarías tu experiencia?</h2>
-            <div className="left-column">
-              <div className="star-rating">
-                {[...Array(5)].map((_, index) => (
-                  <span
-                    key={index}
-                    className={index < (hover || rating) ? 'star selected' : 'star'}
-                    onClick={() => handleRating(index)}
-                    onMouseEnter={() => setHover(index + 1)}
-                    onMouseLeave={() => setHover(0)}
-                  >★</span>
-                ))}
-                <p className="rating-text">
-                  {hover > 0 ? ratingLabels[hover - 1] : rating > 0 ? ratingLabels[rating - 1] : 'Selecciona una calificación'}
-                </p>
-              </div>
-              <label>¿Cuándo fuiste?</label>
-              <select value={date} onChange={(e) => setDate(e.target.value)}>
-                <option value="">Seleccione una opción</option>
-                <option value="Enero">Enero</option>
-                <option value="Febrero">Febrero</option>
-                <option value="Marzo">Marzo</option>
-              </select>
-              <label>¿Con quién fuiste?</label>
-              <div className="group-selection">
-                {groups.map((g) => (
-                  <button key={g} className={group === g ? 'selected' : ''} onClick={() => setGroup(g)}>
-                    {g}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="right-column">
-              <label>Título de tu opinión</label>
-              <input
-                type="text"
-                placeholder="Cuéntanos un poco sobre tu experiencia"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              <label>Escribe tu opinión</label>
-              <textarea
-                placeholder="Escribe tu reseña..."
-                value={review}
-                onChange={(e) => { if (e.target.value.length <= maxChars) setReview(e.target.value); }}
-                style={{
-                  borderColor: review.length > 0 && review.length < minChars ? 'red' : '#ccc',
-                  borderWidth: '1px', borderStyle: 'solid', outline: 'none',
-                  padding: '8px', width: '100%', borderRadius: '4px',
-                }}
-              />
-              <div style={{ fontSize: '0.9em', marginTop: '4px' }}>
-                Caracteres: {review.length}/{maxChars}
-                {review.length === maxChars && (
-                  <span style={{ color: 'red', marginLeft: '8px' }}>Has alcanzado el máximo permitido.</span>
-                )}
-              </div>
-            </div>
-            <div className="button-container">
-              <button type="submit" onClick={handleSubmit}>Enviar Reseña</button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+    </>
   );
 };
 

@@ -7,7 +7,7 @@ import imagen4 from '../assets/image/image4.png';
 import imagen5 from '../assets/image/image5.jpg';
 import { Link } from 'react-router-dom';
 
-const images = [imagen5];
+const images = [imagen1];
 
 const Portada = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -58,32 +58,67 @@ const Portada = () => {
     
   };
 
-  return (
-    <header className="hero">
-      <img 
-        src={images[currentIndex]} 
-        alt="Portada" 
-      className="hero-image" 
-        loading="eager"
-      />
+ return (
+  <header className="hero">
 
-      {/* <div className="hero-boxes">
-        {renderBoxes()}
-      </div> */}
+    <img
+      src={images[currentIndex]}
+      alt="Isla Holbox"
+      className="hero-image"
+      loading="eager"
+    />
 
-      <div className="hero-overlay">
-        <h1>Isla Holbox</h1>
-        <h2>
+    <div className="hero-overlay">
+
+      <div className="hero-content">
+
+        <span className="hero-eyebrow">
+          HOLBOX · QUINTANA ROO
+        </span>
+
+        <h1>
+          ISLA HOLBOX
+        </h1>
+
+        <p className="hero-description">
           It all begins with the destination. Holbox Island has an amazing fishery, 
           and well known as a world class tarpon fishing destination where you can 
           regularly find migratory giants upwards of 100lbs
-        </h2>
-        <Link className="btn-reservar" to="/reservaciones/steps/1">
-          Reservar Ahora
-        </Link>
+        </p>
+
+        <div className="hero-actions">
+
+          <Link
+            className="btn-reservar"
+            to="/reservaciones/steps/1"
+          >
+            RESERVAR AHORA
+            <span className="btn-arrow">↗</span>
+          </Link>
+
+          <Link
+            className="btn-guia"
+            to="/#guia"
+          >
+            CONOCE TU GUÍA
+          </Link>
+
+        </div>
+
       </div>
-    </header>
-  );
+
+      <div className="hero-bottom">
+        <span className="hero-bottom-line"></span>
+
+        <span className="hero-bottom-text">
+          PESCA DE CLASE MUNDIAL
+        </span>
+      </div>
+
+    </div>
+
+  </header>
+);
 };
 
 export default Portada;

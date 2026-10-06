@@ -32,19 +32,10 @@ import { loadStripe } from '@stripe/stripe-js';
 import { ReservaProvider } from './context/ReservaContext';
 import { PerfilUsuario } from './components/MiPerfil.jsx';
 import { GalleryProvider } from './context/GalleryContext';
+import Terms from './views/terms.jsx';
 import UploadInfoPesca from './components/admin/uploadInfoPesca.jsx';
+import Privacy from './views/Privacy .jsx';
 
-const stripePromise = loadStripe(
-  'pk_test_51Til0cELVk22If2vpoTvG0ObDWxrKqSc4Wq7mgUuRwrSFzaqHjAyoeREzs8LrofTB7mIctv65r3SBmwAAtoWOODF00SPuxPC9r'
-);
-
-stripePromise
-  .then((stripe) => {
-    console.log('Stripe cargado correctamente:', !!stripe);
-  })
-  .catch((error) => {
-    console.error('Error al cargar Stripe:', error);
-  });
 
 function App() {
   return (
@@ -79,6 +70,8 @@ const AppContent = () => {
         <Route path='/pesca' element={<Articles />} />
         <Route path='/prueba' element={<Reservaciones />} />
         <Route path='/MiPerfil' element={<PerfilUsuario />} />
+        <Route path="/Terminos y Condiciones" element={<Terms />} />
+         <Route path="/Politica de Privacidad" element={<Privacy />} />
         <Route
           path='/galerias'
           element={
@@ -91,9 +84,9 @@ const AppContent = () => {
           path='/reservaciones/steps/:step'
           element={
             <ReservaProvider>
-              <Elements stripe={stripePromise}>
+          
                 <ReservationStep key={location.pathname} />
-              </Elements>
+             
             </ReservaProvider>
           }
         />
