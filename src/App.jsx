@@ -84,7 +84,7 @@ const AppContent = () => {
           element={
             <ReservaProvider>
           
-                <ReservationStep key={location.pathname} />
+                <ReservationStep />
              
             </ReservaProvider>
           }

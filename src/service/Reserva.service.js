@@ -1,8 +1,12 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const crearReserva = async (reservaData) => {
+export const crearReserva = async (reservaData, reservationToken) => {
   if (!reservaData) {
     throw new Error('No se proporcionaron los datos de la reserva');
+  }
+
+  if (!reservationToken) {
+    throw new Error('No hay una sesión de reserva activa. Intenta nuevamente.');
   }
 
   const controller = new AbortController();
@@ -13,6 +17,7 @@ export const crearReserva = async (reservaData) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${reservationToken}`,
       },
       body: JSON.stringify(reservaData),
       signal: controller.signal,
@@ -42,7 +47,7 @@ export const crearReserva = async (reservaData) => {
       );
     }
 
-    if (error.message.includes('Failed to fetch')) {
+    if (error.message?.includes('Failed to fetch')) {
       throw new Error('No fue posible conectar con el servidor.');
     }
 
@@ -50,6 +55,35 @@ export const crearReserva = async (reservaData) => {
   } finally {
     clearTimeout(timeoutId);
   }
+};
+
+
+export const crearSesionReserva = async () => {
+    const response = await fetch(
+        `${API_URL}/api/reservas/session`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            'No se pudo iniciar la sesión temporal de reserva'
+        );
+    }
+
+    const data = await response.json();
+
+    if (!data.success || !data.token || !data.expiresAt) {
+        throw new Error(
+            'La respuesta del servidor no contiene una sesión válida'
+        );
+    }
+
+    return data;
 };
 
 export const capturarPagoPayPal = async (orderId, token) => {
@@ -127,6 +161,7 @@ export const capturarPagoPayPal = async (orderId, token) => {
       : new Error('Error desconocido al capturar el pago');
   }
 };
+
 export const buscarReservaPorCodigo = async (codigo) => {
   if (!codigo) {
     throw new Error('Código de reserva no proporcionado');

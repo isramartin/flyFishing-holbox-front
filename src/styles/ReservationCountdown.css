@@ -1,0 +1,189 @@
+
+.reservation-countdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  margin: 0;
+
+  border-radius: 12px;
+  
+  color: #102235;
+  transition: border-color 0.25s ease;
+}
+
+.reservation-countdown__main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.reservation-countdown__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #102235;
+  color: #d5b16e;
+  font-size: 22px;
+}
+
+.reservation-countdown__content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.reservation-countdown__label {
+  color: #718096;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  line-height: 1.4;
+}
+
+.reservation-countdown__time {
+  color: #102235;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.reservation-countdown__progress {
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #d1d5db;
+}
+
+/* Progreso restante */
+.reservation-countdown__progress-fill {
+  height: 100%;
+  width: 0;
+  background: #0979e1;
+  border-radius: inherit;
+  transition: width 1s linear, background-color 0.25s ease;
+}
+
+
+.reservation-countdown__message {
+  color: #718096;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* Último minuto */
+.reservation-countdown--urgent {
+  border-color: #e8d2ad;
+}
+
+.reservation-countdown--urgent .reservation-countdown__time {
+  color: #a86e24;
+}
+
+.reservation-countdown--urgent .reservation-countdown__progress-fill {
+  background: #c88735;
+}
+
+.reservation-countdown--idle .reservation-countdown__progress {
+  background: #d1d5db;
+}
+
+.reservation-countdown--idle .reservation-countdown__progress-fill {
+  width: 0;
+  background: #d1d5db;
+}
+
+/* Último minuto: progreso naranja, pista gris */
+.reservation-countdown--urgent .reservation-countdown__progress {
+  background: #d1d5db;
+}
+
+.reservation-countdown--urgent .reservation-countdown__progress-fill {
+  background: #c88735;
+}
+
+/* Sesión vencida: barra vacía y estado rojo */
+.reservation-countdown--expired .reservation-countdown__progress {
+  background: #d1d5db;
+}
+
+.reservation-countdown--expired .reservation-countdown__progress-fill {
+  width: 0;
+  background: #c94343;
+}
+
+/* Sesión vencida */
+/* .reservation-countdown--expired {
+  border-color: #edcaca;
+  background: #fffafa;
+} */
+
+.reservation-countdown--expired .reservation-countdown__icon {
+  background: #a93636;
+  color: #fff;
+}
+
+.reservation-countdown--expired .reservation-countdown__time {
+  color: #a93636;
+}
+
+.reservation-countdown--expired .reservation-countdown__progress-fill {
+  background: #c94343;
+}
+
+/* Dentro de la cabecera de pasos */
+.reservation-progress-header > .reservation-countdown {
+  align-self: center;
+}
+
+
+.reservation-countdown--idle {
+  opacity: 0.9;
+}
+
+.reservation-countdown--idle .reservation-countdown__icon {
+  color: #c6a15b;
+  background: #102235;
+}
+
+.reservation-countdown--idle .reservation-countdown__time {
+  color: #102235;
+}
+
+.reservation-countdown--idle .reservation-countdown__progress-fill {
+  width: 0;
+}
+
+.reservation-countdown--idle .reservation-countdown__message {
+  color: #64748b;
+}
+
+
+@media (max-width: 480px) {
+  .reservation-countdown {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .reservation-countdown__icon {
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+  }
+
+  .reservation-countdown__time {
+    font-size: 24px;
+  }
+}

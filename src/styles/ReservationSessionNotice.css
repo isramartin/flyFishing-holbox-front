@@ -1,0 +1,48 @@
+
+.reservation-session-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  margin: 12px 0;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  animation: noticeAppear 0.25s ease-out;
+}
+
+.reservation-session-notice--info {
+  color: #174a7e;
+  background: #edf6ff;
+  border: 1px solid #c8e2ff;
+}
+
+.reservation-session-notice--error {
+  color: #842029;
+  background: #fff0f0;
+  border: 1px solid #f3c4c7;
+}
+
+.reservation-session-notice__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-weight: 700;
+  background: rgb(255 255 255 / 70%);
+}
+
+@keyframes noticeAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
