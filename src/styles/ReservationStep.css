@@ -896,23 +896,116 @@
   box-shadow: 0 0 0 3px rgba(185, 154, 97, 0.13);
 }
 
-/* =========================================
-   PASO 1 — RESERVA PREMIUM
-========================================= */
 
-.step-one {
+/* ========================================
+   ENCABEZADO UNIFICADO DE LOS PASOS
+======================================== */
+
+.unified-step-header {
   box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
   width: 100%;
-  padding: 26px;
+  padding: 25px;
+  margin-bottom: 24px;
   color: #142b40;
-  background: #fff;
-  border: 1px solid #e4e0d8;
+  background: #fffdfa;
+  border: 1px solid #e5dfd4;
   border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(20, 43, 64, 0.04);
   font-family: var(--font-sans);
 }
 
-/* Encabezado */
+.unified-step-header-content {
+  min-width: 0;
+}
+
+.unified-step-eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: #b98942;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.unified-step-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  margin: 0;
+  color: #142b40;
+  font-family: var(--font-serif);
+  font-size: clamp(24px, 2.5vw, 30px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+}
+
+.unified-step-title svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: #b98942;
+  stroke-width: 1.8;
+}
+
+.unified-step-description {
+  margin: 7px 0 0;
+  color: #78838a;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.unified-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 9px 13px;
+  color: #147b78;
+  background: #edf7f4;
+  border-radius: 30px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+}
+
+@media (max-width: 600px) {
+  .unified-step-header {
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+
+  .unified-step-title {
+    font-size: 25px;
+  }
+
+  .unified-step-description {
+    font-size: 12px;
+  }
+}
+
+/* =========================================
+   PASO 1 — RESERVA / DISEÑO DE REFERENCIA
+========================================= */
+
+.step-one-booking {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0;
+  color: #142b40;
+  background: #fff;
+  border: 0;
+  box-shadow: none;
+  font-family: var(--font-sans);
+}
 
 .step-one-header {
   display: flex;
@@ -930,137 +1023,126 @@
   letter-spacing: 0.22em;
 }
 
-.step-one-heading h2 {
-  margin: 0;
-  color: #102a43;
-  font-family: var(--font-serif);
-  font-size: clamp(28px, 3vw, 34px);
-  font-weight: 500;
-  letter-spacing: -0.035em;
-  line-height: 1.2;
+/* Ocultar los elementos del diseño anterior que no aparecen
+   en la referencia: encabezado del paso, tour y pie de confianza. */
+
+.step-one-booking > .step-one-header,
+.step-one-booking > .step-one-divider,
+.step-one-booking > .tour-option,
+.step-one-booking > .step-one-footer {
+  display: none;
 }
 
-.step-one-heading > p {
-  margin: 8px 0 0;
-  color: #78818a;
-  font-size: 12px;
-  line-height: 1.6;
-}
+/* Distribución principal */
 
-.reservation-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  flex-shrink: 0;
-  padding: 8px 12px;
-  color: #267b76;
-  background: #edf7f4;
-  border-radius: 30px;
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 0.07em;
-}
-
-.step-one-divider {
-  height: 1px;
-  margin: 22px 0 19px;
-  background: #ebe7e0;
-}
-
-/* Tarjeta del tour */
-
-.tour-option {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  margin: 0 0 20px;
-  padding: 14px 16px;
-  background: #eef4fb;
-  border: 1px solid #cddded;
-  border-left: 3px solid #142b40;
-  border-radius: 11px;
-}
-
-.tour-option-main {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  min-width: 0;
-}
-
-.tour-option-main > svg {
-  flex-shrink: 0;
-  color: #142b40;
-}
-
-.tour-option-copy h3 {
-  margin: 0;
-  color: #142b40;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.tour-option-copy p {
-  margin: 4px 0 0;
-  color: #718091;
-  font-size: 10px;
-  line-height: 1.5;
-}
-
-.tour-option-badge {
-  flex-shrink: 0;
-  padding: 5px 11px;
-  color: #31465b;
-  background: #fff;
-  border-radius: 20px;
-  font-size: 8px;
-  font-weight: 700;
-}
-
-/* Calendario y panel */
-
-.tour-content {
+.booking-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-columns: minmax(0, 2.85fr) minmax(270px, 1fr);
   align-items: stretch;
   gap: 16px;
   width: 100%;
 }
 
-.calendar-container,
-.tour-info {
+/* Tarjetas */
+
+.booking-calendar,
+.booking-sidebar {
   min-width: 0;
   box-sizing: border-box;
-  padding: 19px;
-  background: #fcfbf9;
-  border: 1px solid #ebe2d5;
-  border-radius: 14px;
+  padding: 16px 17px;
+  background: #fcf9f3;
+  border: 1px solid #e8ddce;
+  border-radius: 15px;
   box-shadow: none;
 }
 
-/* Calendario */
+/* ========================================
+   TARIFAS DEL TOUR
+======================================== */
 
-.calendar-container .react-calendar {
+.tour-pricing-options {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tour-pricing-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 145px;
+  padding: 8px 12px;
+
+  border-radius: 10px;
+}
+
+.tour-pricing-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  color: #bd801e;
+  border-radius: 8px;
+}
+
+.tour-pricing-copy > p {
+  margin: 6px 0 0;
+  color: #7b858d;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+
+.tour-pricing-item > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tour-pricing-item span {
+  color: #78818a;
+  font-size: 9px;
+}
+
+.tour-pricing-item strong {
+  color: #102a43;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.tour-pricing-item strong small {
+  color: #89929a;
+  font-family: var(--font-sans);
+  font-size: 8px;
+}
+
+/* =========================================
+   CALENDARIO
+========================================= */
+
+.booking-calendar .react-calendar {
   width: 100%;
   max-width: 100%;
   padding: 0;
   background: transparent;
-  border: none;
+  border: 0;
   font-family: var(--font-sans);
 }
 
-.calendar-container .react-calendar__navigation {
+.booking-calendar .react-calendar__navigation {
   display: flex;
   align-items: center;
-  gap: 7px;
-  height: 35px;
-  margin: 0 0 16px;
+  gap: 6px;
+  height: 34px;
+  margin: 0 0 13px;
 }
 
-.calendar-container .react-calendar__navigation button {
-  min-width: 32px;
-  height: 32px;
+.booking-calendar .react-calendar__navigation button {
+  min-width: 30px;
+  height: 30px;
   padding: 0;
   color: #142b40;
   background: transparent;
@@ -1069,17 +1151,17 @@
   font-size: 17px;
 }
 
-.calendar-container .react-calendar__navigation button:enabled:hover {
+.booking-calendar .react-calendar__navigation button:enabled:hover {
   color: #bd801e;
-  background: #f3eee5;
+  background: #f2ece2;
 }
 
-.calendar-container .react-calendar__navigation button:disabled {
-  color: #d0cec8;
+.booking-calendar .react-calendar__navigation button:disabled {
+  color: #c8c7c2;
   cursor: not-allowed;
 }
 
-.calendar-container .react-calendar__navigation__label {
+.booking-calendar .react-calendar__navigation__label {
   flex: 1;
   color: #102a43;
   background: transparent !important;
@@ -1089,12 +1171,12 @@
   text-transform: capitalize;
 }
 
-.calendar-container .react-calendar__month-view__weekdays {
-  margin-bottom: 8px;
+.booking-calendar .react-calendar__month-view__weekdays {
+  margin-bottom: 7px;
   text-align: center;
 }
 
-.calendar-container .react-calendar__month-view__weekdays abbr {
+.booking-calendar .react-calendar__month-view__weekdays abbr {
   color: #7c858c;
   font-size: 9px;
   font-weight: 800;
@@ -1102,97 +1184,162 @@
   text-transform: uppercase;
 }
 
-.calendar-container .react-calendar__month-view__days {
+.booking-calendar .react-calendar__month-view__days {
   row-gap: 3px;
 }
 
-.calendar-container .react-calendar__month-view__days__day--neighboringMonth {
+.booking-calendar .react-calendar__month-view__days__day--neighboringMonth {
   color: #c7c9c8 !important;
 }
 
-.calendar-container .react-calendar__tile {
+.booking-calendar .react-calendar__tile {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 38px;
+  height: 37px;
   padding: 3px 0 7px;
   color: #52616d;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 8px;
-  font-size: 11px;
+  border-radius: 9px;
+  font-size: 10px;
   font-weight: 500;
   transition:
     background-color 0.18s ease,
     color 0.18s ease;
 }
 
-.calendar-container .react-calendar__tile:enabled:hover {
+.booking-calendar .react-calendar__tile:enabled:hover {
   color: #142b40;
-  background: #f2eee6;
+  background: #f1eadf;
 }
 
-.calendar-container .react-calendar__tile:enabled:focus-visible {
+.booking-calendar .react-calendar__tile:enabled:focus-visible {
   outline: 2px solid #c8943e;
   outline-offset: 1px;
 }
 
-.calendar-container .react-calendar__tile--now {
-  background: #f6f0e4;
+.booking-calendar .react-calendar__tile--now {
+  background: #f5efe3;
   border-color: #e4d1ac;
   color: #142b40;
   font-weight: 700;
 }
 
-.calendar-container .react-calendar__tile--active,
-.calendar-container .react-calendar__tile--active:enabled:hover {
+/* Fecha seleccionada */
+
+.booking-calendar .react-calendar__tile--active:not(.fecha-eliminada),
+.booking-calendar .react-calendar__tile--active:not(.fecha-eliminada):enabled:hover {
   color: #fff !important;
-  background: #102a3d !important;
-  border-color: #102a3d !important;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(16, 42, 61, 0.13);
+  background: #102638 !important;
+  border-color: #102638 !important;
+  border-radius: 11px;
+  box-shadow: none;
   font-weight: 800;
 }
 
-.calendar-container .react-calendar__tile::after {
+/* Rango de fechas seleccionado */
+
+.booking-calendar .react-calendar__tile--range:not(.fecha-eliminada) {
+  color: #fff !important;
+  background: #102638 !important;
+  border-color: #102638 !important;
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.booking-calendar .react-calendar__tile--rangeStart:not(.fecha-eliminada),
+.booking-calendar .react-calendar__tile--rangeEnd:not(.fecha-eliminada) {
+  color: #fff !important;
+  background: #102638 !important;
+  border-radius: 10px;
+}
+
+.booking-calendar .react-calendar__tile::after {
   position: absolute;
   bottom: 3px;
   left: 50%;
   width: 4px;
   height: 4px;
-  content: '';
+  content: "";
   background: transparent;
   border-radius: 50%;
   transform: translateX(-50%);
 }
 
-.calendar-container .react-calendar__tile.disponible::after {
+
+.booking-calendar .react-calendar__tile.disponible::after {
   background: #62b978;
 }
 
-.calendar-container .react-calendar__tile.dia-ocupado-parcial::after {
+.booking-calendar .react-calendar__tile.dia-ocupado-parcial::after {
   background: #e6ad4d;
 }
 
-.calendar-container .react-calendar__tile.dia-ocupado-completo {
+.booking-calendar .react-calendar__tile.dia-ocupado-completo {
   color: #c7c9c8 !important;
-  background: #f4f3f0;
+  background: #f3f1ed;
   cursor: not-allowed;
 }
 
-.calendar-container .react-calendar__tile.dia-ocupado-completo::after {
+.booking-calendar .react-calendar__tile.dia-ocupado-completo::after {
   background: #c7c9c8;
 }
 
-.calendar-container .react-calendar__tile:disabled {
+.booking-calendar .react-calendar__tile:disabled {
   cursor: not-allowed;
 }
 
-.calendar-container .react-calendar__tile--active::after {
+.booking-calendar .react-calendar__tile--active:not(.fecha-eliminada)::after,
+.booking-calendar .react-calendar__tile--range:not(.fecha-eliminada)::after {
   background: #e8c77f !important;
 }
+
+
+/* =========================================
+   FECHAS DENTRO DEL RANGO QUE SE OMITEN
+========================================= */
+
+.booking-calendar .react-calendar__tile.fecha-omitida,
+.booking-calendar .react-calendar__tile.fecha-omitida:enabled,
+.booking-calendar .react-calendar__tile.fecha-omitida:enabled:hover,
+.booking-calendar .react-calendar__tile.fecha-omitida:enabled:focus,
+.booking-calendar .react-calendar__tile.fecha-omitida.react-calendar__tile--active,
+.booking-calendar .react-calendar__tile.fecha-omitida.react-calendar__tile--range,
+.booking-calendar .react-calendar__tile.fecha-omitida.react-calendar__tile--rangeStart,
+.booking-calendar .react-calendar__tile.fecha-omitida.react-calendar__tile--rangeEnd {
+  color: #ffffff !important;
+  background: #d63928 !important;
+  border: 1px solid #fb3c3c !important;
+  border-radius: 9px;
+  font-weight: 800;
+  text-decoration: line-through;
+  box-shadow: none !important;
+}
+
+/* Punto inferior de las fechas omitidas */
+.booking-calendar .react-calendar__tile.fecha-omitida::after {
+  background: #ffffff !important;
+}
+
+/* =========================================
+   FECHAS DISPONIBLES DENTRO DEL RANGO
+========================================= */
+
+.booking-calendar .react-calendar__tile.fecha-incluida,
+.booking-calendar .react-calendar__tile.fecha-incluida.react-calendar__tile--active,
+.booking-calendar .react-calendar__tile.fecha-incluida.react-calendar__tile--range,
+.booking-calendar .react-calendar__tile.fecha-incluida.react-calendar__tile--rangeStart,
+.booking-calendar .react-calendar__tile.fecha-incluida.react-calendar__tile--rangeEnd {
+  color: #fff !important;
+  background: #102638;
+  border-radius: 9px;
+  font-weight: 800;
+  box-shadow: none !important;
+}
+
 
 /* Leyenda */
 
@@ -1200,9 +1347,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px 13px;
-  margin-top: 15px;
-  padding-top: 13px;
-  border-top: 1px solid #e9e3da;
+  margin-top: 13px;
+  padding-top: 12px;
+  border-top: 1px solid #e6ddd0;
   color: #7b858c;
   font-size: 9px;
 }
@@ -1220,43 +1367,62 @@
   border-radius: 50%;
 }
 
-.dot.available,
-.available {
+.dot.available {
   background: #62b978;
 }
 
-.dot.partial,
-.partial {
+.dot.partial {
   background: #e6ad4d;
 }
 
-.dot.full,
-.full {
+.dot.full {
   background: #c7c9c8;
 }
 
-/* Panel de selección */
-
-.tour-info {
-  background: #fcfbf9;
-}
-
-.selected-details {
-  display: flex;
-  flex-direction: column;
-  gap: 17px;
-}
-
-.tour-info .form-group {
-  margin: 0;
-  text-align: left;
-}
-
-.tour-info .form-group label {
+.remove-date-button {
   display: flex;
   align-items: center;
-  gap: 7px;
-  margin: 0 0 9px;
+  justify-content: center;
+  width: 23px;
+  height: 23px;
+  padding: 0;
+  margin-left: auto;
+  color: #a34b43;
+  background: #f9e8e5;
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.remove-date-button:hover {
+  color: #fff;
+  background: #c94f45;
+  transform: scale(1.08);
+}
+/* =========================================
+   PANEL DERECHO
+========================================= */
+
+.booking-sidebar {
+  background: #fff;
+  padding: 13px;
+}
+
+.booking-sidebar-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.booking-section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: #b77719;
   font-size: 9px;
   font-weight: 800;
@@ -1265,188 +1431,392 @@
   text-transform: uppercase;
 }
 
-.tour-info .form-group label .icon-style {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  color: #bd801e;
-}
-
-.tour-info .form-group input,
-.tour-info .form-group select {
-  display: block;
-  width: 100%;
-  min-height: 38px;
-  box-sizing: border-box;
-  padding: 9px 12px;
-  color: #142b40;
-  background: #fff;
-  border: 1px solid #e7dfd3;
-  border-radius: 11px;
-  font-family: var(--font-sans);
-  font-size: 11px;
-}
-
-.tour-info .form-group input:disabled {
-  color: #142b40;
-  background: #fff;
-  opacity: 1;
-  cursor: default;
-}
-
-.tour-info .form-group select {
+.single-day-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #687782;
+  font-size: 9px;
+  white-space: nowrap;
   cursor: pointer;
 }
 
-.tour-info .form-group input:focus,
-.tour-info .form-group select:focus {
+.single-day-toggle input,
+.duration-bulk-options input {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: #102638;
+  cursor: pointer;
+}
+
+/* Inicio y fin */
+
+.date-range-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.range-date-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  min-height: 56px;
+  box-sizing: border-box;
+  padding: 9px 10px;
+  background: #f2f8f5;
+  border: 1px solid #d5e5dd;
+  border-radius: 12px;
+}
+
+.range-date-box label {
+  margin-bottom: 5px;
+  color: #75858b;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+}
+
+.range-date-box span {
+  color: #102a43;
+  font-size: 11px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.range-date-disabled {
+  background: #f8f8f6;
+  border-color: #eeece6;
+}
+
+.range-date-disabled span {
+  color: #a1a8aa;
+  font-weight: 500;
+}
+
+.booking-selection-summary {
+  min-height: 15px;
+  margin: 11px 0;
+  color: #718091;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.booking-sidebar-divider {
+  height: 1px;
+  margin: 0 0 13px;
+  background: #e9e3da;
+}
+
+/* Duración */
+
+.duration-section {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.duration-segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  padding: 3px;
+  background: #f0f2ee;
+  border-radius: 11px;
+}
+
+.duration-segmented button {
+  min-width: 0;
+  padding: 9px 4px;
+  color: #718091;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.duration-segmented button.active {
+  color: #102a43;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(20, 43, 64, 0.07);
+}
+
+.duration-segmented button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.duration-bulk-options {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.duration-bulk-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #52616d;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+/* Personas */
+
+.booking-guests-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.booking-guests-section > label {
+  cursor: pointer;
+}
+
+.booking-guests-section select {
+  display: block;
+  width: 100%;
+  min-height: 36px;
+  box-sizing: border-box;
+  padding: 8px 11px;
+  color: #142b40;
+  background: #fcfbf9;
+  border: 1px solid #e7dfd3;
+  border-radius: 11px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.booking-guests-section select:focus {
   outline: none;
   border-color: #c8943e;
   box-shadow: 0 0 0 3px rgba(200, 148, 62, 0.11);
 }
 
-/* Precio */
+/* =========================================
+   TUS FECHAS
+========================================= */
 
-.tour-price-summary {
-  margin-top: 1px;
-  padding-top: 14px;
-  border-top: 1px solid #e9e3da;
+.selected-dates-section {
+  margin-top: 13px;
+  padding: 13px 0 16px;
+  border-top: 1px solid #ebe2d5;
+  border-bottom: 1px solid #ebe2d5;
 }
 
-.tour-price-label {
-  margin-bottom: 5px;
-  color: #87919a;
-  font-size: 8px;
-  letter-spacing: 0.07em;
+.selected-dates-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 11px;
 }
 
-.tour-price {
-  color: #102a43;
-  font-family: var(--font-serif);
-  font-size: 25px;
-  line-height: 1.2;
-}
-
-.tour-price span {
-  color: #89929a;
-  font-family: var(--font-sans);
+.individual-settings-label {
+  color: #84909a;
   font-size: 9px;
 }
 
-/* Seguridad */
-
-.tour-info .security-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 0;
-  padding-top: 13px;
-  border-top: 1px solid #e9e3da;
-}
-
-.tour-info .security-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  flex: 0 0 32px;
-  color: #398a7d;
-  background: #edf7f3;
-  border-radius: 9px;
-}
-
-.tour-info .security-text h4 {
-  margin: 0;
-  color: #47675d;
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.tour-info .security-text p {
-  margin: 3px 0 0;
-  color: #7d888b;
+.empty-selected-dates {
+  margin: 12px 0 0;
+  color: #84909a;
   font-size: 10px;
 }
 
-/* Pie de confianza */
-
-.step-one-footer {
+.selected-dates-chips {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px 20px;
-  margin-top: 16px;
-  padding-top: 15px;
-  border-top: 1px solid #ebe7e0;
+  gap: 9px;
 }
 
-.step-one-footer span {
+.selected-date-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  color: #82909a;
-  font-size: 8px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  gap: 8px;
+  min-height: 37px;
+  padding: 4px 5px 4px 7px;
+  background: #fff;
+  border: 1px solid #e6d9c7;
+  border-radius: 24px;
+  box-shadow: 0 2px 5px rgba(20, 43, 64, 0.03);
 }
 
-.step-one-footer svg {
-  color: #39978d;
+.selected-date-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  color: #fff;
+  background: #102638;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 800;
 }
 
-/* Adaptación móvil */
+.selected-date-month {
+  color: #52616d;
+  font-size: 10px;
+  white-space: nowrap;
+}
 
-@media (max-width: 680px) {
-  .step-one {
-    padding: 18px;
-    border-radius: 12px;
-  }
+.selected-date-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: #f0f2ee;
+  border-radius: 18px;
+}
 
-  .step-one-header {
+.selected-date-actions button {
+  padding: 5px 7px;
+  color: #718091;
+  background: transparent;
+  border: 0;
+  border-radius: 14px;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.selected-date-actions button.active {
+  color: #102a43;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(20, 43, 64, 0.06);
+}
+
+
+/* =========================================
+   TOTAL DESTACADO
+========================================= */
+
+.tour-total-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 2.5dvh;
+  margin-bottom: 19px;
+  padding: 14px 15px;
+  background: #102a3d;
+  border: 1px solid #102a3d;
+  border-radius: 12px;
+}
+
+.tour-total-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tour-total-info > span {
+  color: #e8c77f;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.tour-total-info small {
+  color: #c0ccd3;
+  font-size: 9px;
+}
+
+.tour-total-amount {
+  color: #fff;
+  font-family: var(--font-serif);
+  font-size: 27px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tour-total-amount span {
+  margin-left: 4px;
+  color: #e8c77f;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 650px) {
+  .tour-pricing-strip {
+    align-items: flex-start;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
   }
 
-  .step-one-heading h2 {
-    font-size: 29px;
+  .tour-pricing-options {
+    width: 100%;
   }
 
-  .reservation-badge {
-    align-self: flex-start;
+  .tour-pricing-item {
+    flex: 1;
+    min-width: 0;
   }
 
-  .tour-content {
+  .tour-total-amount {
+    font-size: 23px;
+  }
+}
+
+@media (max-width: 760px) {
+  .booking-layout {
     grid-template-columns: minmax(0, 1fr);
-    gap: 14px;
+    gap: 12px;
   }
 
-  .calendar-container,
-  .tour-info {
-    padding: 16px;
-  }
-
-  .calendar-container .react-calendar__tile {
-    height: 42px;
-    font-size: 12px;
-  }
-
-  .tour-option {
+  .booking-calendar,
+  .booking-sidebar {
     padding: 13px;
   }
 
-  .tour-option-badge {
-    font-size: 8px;
+  .booking-calendar .react-calendar__tile {
+    height: 39px;
   }
 
-  .tour-price {
-    font-size: 24px;
+  .booking-sidebar-heading {
+    flex-wrap: wrap;
   }
 
-  .step-one-footer {
-    gap: 12px;
+  .selected-dates-chips {
+    gap: 7px;
   }
 }
+
+@media (max-width: 420px) {
+  .booking-calendar .react-calendar__navigation__label {
+    font-size: 16px !important;
+  }
+
+  .booking-calendar .react-calendar__tile {
+    height: 35px;
+    font-size: 10px;
+  }
+
+  .selected-date-chip {
+    gap: 6px;
+  }
+
+  .selected-date-actions button {
+    padding: 5px 6px;
+  }
+}
+
 
 /* ==================================================
    PASO 2 — DATOS PERSONALES

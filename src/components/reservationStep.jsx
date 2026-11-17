@@ -51,6 +51,7 @@ import PageHeader from './PageHeader';
 import imagen1 from '../assets/image/image1.png';
 import ReservationCountdown from './ReservationCountdown';
 import ReservationSessionNotice from './ReservationSessionNotice';
+import Alert from './Alert';
 
 const steps = [
   'Fecha y Hora',
@@ -100,6 +101,16 @@ export const ReservationStep = () => {
 
   const [mostrarAvisoInicio, setMostrarAvisoInicio] = useState(true);
   const [mostrarAvisoExpiracion, setMostrarAvisoExpiracion] = useState(false);
+
+  const [singleDayMode, setSingleDayMode] = useState(true);
+  const [rangeStart, setRangeStart] = useState(null);
+  const [rangeEnd, setRangeEnd] = useState(null);
+  const [dateModes, setDateModes] = useState({});
+  const [rangoBloqueado, setRangoBloqueado] = useState(false);
+
+  const [confirmacionRango, setConfirmacionRango] = useState(null);
+  const confirmacionPendienteRef = useRef(false);
+  const [calendarRenderKey, setCalendarRenderKey] = useState(0);
 
   // const reserva = await buscarReservaPorCodigo(codigoBusqueda);
 
@@ -417,9 +428,15 @@ export const ReservationStep = () => {
   };
 
   const nextStep = async () => {
-    if (stepNumber === 1 && !data.date) {
-      setError('Por favor selecciona una fecha');
-      return;
+    if (stepNumber === 1) {
+      const tieneFechas = singleDayMode
+        ? Boolean(data.date)
+        : (data.dates || []).length > 0;
+
+      if (!tieneFechas) {
+        setError('Por favor selecciona al menos una fecha.');
+        return;
+      }
     }
 
     if (stepNumber === 2 && (!data.name || !data.email || !data.phone)) {
@@ -437,19 +454,63 @@ export const ReservationStep = () => {
           error: null,
         }));
 
+        // Obtener las fechas seleccionadas
+        const fechasSeleccionadasActuales = singleDayMode
+          ? data.date
+            ? [data.date]
+            : []
+          : (data.dates || [])
+              .map((item) => item.date)
+              .filter(Boolean)
+              .sort((a, b) => a.localeCompare(b));
+
+        // Validar que existan fechas
+        if (fechasSeleccionadasActuales.length === 0) {
+          throw new Error('Debes seleccionar al menos una fecha.');
+        }
+
+        // Obtener los extremos del rango
+        const fechaInicio = fechasSeleccionadasActuales[0];
+        const fechaFin =
+          fechasSeleccionadasActuales[fechasSeleccionadasActuales.length - 1];
+
+        // Construir las fechas con su modalidad
+        const fechas = fechasSeleccionadasActuales.map((fecha) => {
+          const modalidad =
+            dateModes[fecha] ||
+            (singleDayMode ? data.time : 'full_day') ||
+            'full_day';
+
+          return {
+            fecha,
+            duracion: modalidad === 'half_day' ? 'MEDIO_DIA' : 'COMPLETO',
+          };
+        });
+
+        // Estructura que espera el backend
         const reservaData = {
-          fechaReserva: data.date,
-          hora: data.time,
+          fechaReserva: fechaInicio,
+
+          rangos: [
+            {
+              fechaInicio,
+              fechaFin,
+              fechas,
+            },
+          ],
+
           numeroPersonas: Number(data.guests),
           nombreCompleto: data.name,
           email: data.email,
           numeroTelefono: data.phone,
-          precio: 2,
+
           equipo: {
-            alquilar: data.alquilarEquipo,
-            precio: data.alquilarEquipo ? 500 : 0,
+            alquilar: Boolean(data.alquilarEquipo),
+            precio: data.alquilarEquipo ? 200 : 0,
           },
         };
+
+        console.log('RESERVA QUE SE ENVIARÁ AL BACKEND:', reservaData);
 
         const response = await crearReserva(
           reservaData,
@@ -625,10 +686,193 @@ export const ReservationStep = () => {
     return `${year}-${month}-${day}`;
   };
 
+  const parseFechaLocal = (fecha) => {
+    if (!fecha) return null;
+
+    const [year, month, day] = fecha.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  };
+
+  const obtenerFechasDelRango = (inicio, fin) => {
+    if (!inicio || !fin) return [];
+
+    const fechas = [];
+    const actual = parseFechaLocal(inicio);
+    const ultima = parseFechaLocal(fin);
+
+    while (actual <= ultima) {
+      fechas.push(formatFechaISO(actual));
+      actual.setDate(actual.getDate() + 1);
+    }
+
+    return fechas;
+  };
+
+  const obtenerFechasDisponiblesDelRango = (inicio, fin) => {
+    if (!inicio || !fin) return [];
+
+    const fechasRango = obtenerFechasDelRango(inicio, fin);
+
+    return fechasRango.filter((fecha) => {
+      const ocupacion = fechasOcupadas.find((f) => f.fecha === fecha);
+
+      // Si la fecha no tiene registros, está disponible.
+      if (!ocupacion) return true;
+
+      // Si tiene un lugar ocupado, todavía queda uno disponible.
+      if (ocupacion.cantidad === 1) return true;
+
+      // Si tiene dos o más reservas, se omite.
+      return ocupacion.cantidad < 2;
+    });
+  };
+
+  const fechasSeleccionadas = singleDayMode
+    ? data.date
+      ? [data.date]
+      : []
+    : (data.dates || []).map((item) => item.date);
+
+  const eliminarFechaSeleccionada = (fecha) => {
+    // Obtener las fechas que permanecen seleccionadas
+    const nuevasFechas = (data.dates || [])
+      .filter((item) => item.date !== fecha)
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    // Actualizar las fechas de la reserva
+    setData((prev) => ({
+      ...prev,
+      date: nuevasFechas[0]?.date || '',
+      dates: nuevasFechas,
+    }));
+
+    // Actualizar el inicio y el fin según las fechas restantes
+    if (nuevasFechas.length > 0) {
+      setRangeStart(nuevasFechas[0].date);
+      setRangeEnd(nuevasFechas[nuevasFechas.length - 1].date);
+
+      // Si queda una sola fecha, permitir comenzar otro rango
+      setRangoBloqueado(nuevasFechas.length > 1);
+    } else {
+      // Si ya no quedan fechas, limpiar la selección
+      setRangeStart(null);
+      setRangeEnd(null);
+      setRangoBloqueado(false);
+    }
+
+    // Eliminar la modalidad de la fecha que se quitó
+    setDateModes((prev) => {
+      const nuevosModos = { ...prev };
+      delete nuevosModos[fecha];
+      return nuevosModos;
+    });
+
+    // Actualizar la representación visual del calendario
+    setCalendarRenderKey((prev) => prev + 1);
+  };
+
+  const cambiarModoSeleccion = (soloUnDia) => {
+    setSingleDayMode(soloUnDia);
+    setError(null);
+
+    if (soloUnDia) {
+      const fecha = rangeStart || data.date || formatFechaISO(new Date());
+      const fechaDate = parseFechaLocal(fecha);
+
+      setSelectedDate(fechaDate);
+      setData((prev) => ({
+        ...prev,
+        date: fecha,
+        dates: [],
+        time: dateModes[fecha] || prev.time || 'full_day',
+      }));
+      setRangeStart(fecha);
+      setRangeEnd(null);
+    } else {
+      const fecha = data.date || formatFechaISO(selectedDate);
+
+      setRangeStart(fecha);
+      setRangeEnd(null);
+      setData((prev) => ({
+        ...prev,
+        date: fecha,
+        dates: [],
+      }));
+    }
+  };
+
+  const actualizarModalidadFecha = (fecha, modalidad) => {
+    setDateModes((prev) => ({
+      ...prev,
+      [fecha]: modalidad,
+    }));
+
+    setData((prev) => {
+      if (singleDayMode) {
+        return {
+          ...prev,
+          date: fecha,
+          time: modalidad,
+        };
+      }
+
+      return {
+        ...prev,
+        dates: (prev.dates || []).map((item) =>
+          item.date === fecha ? { ...item, mode: modalidad } : item
+        ),
+      };
+    });
+  };
+
+  const totalEstimado = fechasSeleccionadas.reduce((total, fecha) => {
+    const modalidad =
+      dateModes[fecha] ||
+      (singleDayMode ? data.time : 'full_day') ||
+      'full_day';
+
+    return total + (modalidad === 'half_day' ? 350 : 500);
+  }, 0); // * Number(data.guests || 1)// ;
+
+  const formatoUSD = (cantidad) =>
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(cantidad);
+
   const filteredItems =
     activeCategory.toLowerCase() === 'todos los artículos'
       ? items
       : items.filter((item) => item.category === activeCategory);
+
+  const StepHeader = ({
+    eyebrow,
+    title,
+    description,
+    icon: Icon,
+    badge,
+    extra,
+  }) => (
+    <header className='unified-step-header'>
+      <div className='unified-step-header-content'>
+        <span className='unified-step-eyebrow'>{eyebrow}</span>
+
+        <h2 className='unified-step-title'>
+          {Icon && <Icon aria-hidden='true' />}
+          <span>{title}</span>
+        </h2>
+
+        {description && (
+          <p className='unified-step-description'>{description}</p>
+        )}
+      </div>
+
+      {extra && <div className='unified-step-extra'>{extra}</div>}
+
+      {badge && <span className='unified-step-badge'>{badge}</span>}
+    </header>
+  );
 
   return (
     <div className='reserva-container'>
@@ -945,76 +1189,298 @@ export const ReservationStep = () => {
             ) : (
               <>
                 {stepNumber === 1 && (
-                  <div className='step-one'>
-                    <div className='step-one-header'>
-                      <div className='step-one-heading'>
-                        <span className='step-eyebrow'>
-                          PASO 01 · DISPONIBILIDAD
-                        </span>
+                  <div className='step-one step-one-booking'>
+                    {/* CALENDARIO Y PANEL DE RESERVA */}
 
-                        <h2>Elige cuándo vivirlo</h2>
+                    <StepHeader
+                      eyebrow='PASO 01 · DISPONIBILIDAD'
+                      title='Elige cuándo vivirlo'
+                      description='Selecciona tus fechas y la duración de tu aventura.'
+                      icon={CalendarCheck}
+                      badge='RESERVA PROTEGIDA'
+                      extra={
+                        <div className='tour-pricing-options'>
+                          <article className='tour-pricing-item'>
+                            <div className='tour-pricing-icon'>
+                              <Clock size={18} />
+                            </div>
 
-                        <p>
-                          Selecciona tu fecha y hora para planear tu aventura.
-                        </p>
-                      </div>
+                            <div className='tour-pricing-copy'>
+                              <span>DÍA COMPLETO</span>
 
-                      <div className='reservation-badge'>
-                        <Lock size={14} />
-                        <span>RESERVA PROTEGIDA</span>
-                      </div>
-                    </div>
+                              <strong>
+                                $500 <small>USD</small>
+                              </strong>
+                            </div>
+                          </article>
 
-                    <div className='step-one-divider' />
+                          <article className='tour-pricing-item'>
+                            <div className='tour-pricing-icon'>
+                              <Clock size={18} />
+                            </div>
 
-                    <div className='tour-option'>
-                      <div className='tour-option-main'>
-                        <MapPin size={18} />
+                            <div className='tour-pricing-copy'>
+                              <span>MEDIO DÍA</span>
 
-                        <div className='tour-option-copy'>
-                          <h3>Fly Fishing Holbox</h3>
-                          <p>Experiencia privada · Desde $1,000 MXN</p>
+                              <strong>
+                                $350 <small>USD</small>
+                              </strong>
+                            </div>
+                          </article>
                         </div>
-                      </div>
+                      }
+                    />
 
-                      <span className='tour-option-badge'>Más reservado</span>
-                    </div>
-
-                    <div className='tour-content'>
-                      <div className='calendar-container'>
+                    <div className='booking-layout'>
+                      {/* CALENDARIO */}
+                      <section className='calendar-container booking-calendar'>
                         <Calendar
-                          onChange={handleDateChange}
-                          value={selectedDate}
+                          key={calendarRenderKey}
+                          selectRange={!singleDayMode}
+                          // Detectar el primer clic cuando ya existe un rango bloqueado
+                          onClickDay={(date) => {
+                            if (
+                              singleDayMode ||
+                              !rangoBloqueado ||
+                              !rangeStart ||
+                              !rangeEnd ||
+                              confirmacionRango
+                            ) {
+                              return;
+                            }
+
+                            const fechaClicada = formatFechaISO(date);
+
+                            // Si el usuario intenta comenzar otro rango, pedir confirmación
+                            if (fechaClicada !== rangeStart) {
+                              confirmacionPendienteRef.current = true;
+                              setConfirmacionRango({ inicio: fechaClicada });
+                            }
+                          }}
+                          onChange={(value) => {
+                            // Evitar que Calendar procese el clic que abrió la confirmación
+                            if (confirmacionPendienteRef.current) {
+                              return;
+                            }
+
+                            // ==========================================
+                            // MODO: SELECCIÓN DE UN SOLO DÍA
+                            // ==========================================
+                            if (singleDayMode) {
+                              if (Array.isArray(value)) return;
+
+                              const fecha = formatFechaISO(value);
+
+                              setSelectedDate(value);
+                              setRangeStart(fecha);
+                              setRangeEnd(null);
+
+                              setData((prev) => ({
+                                ...prev,
+                                date: fecha,
+                                dates: [],
+                                time: dateModes[fecha] || 'full_day',
+                              }));
+
+                              return;
+                            }
+
+                            if (!Array.isArray(value) || !value[0]) return;
+
+                            const inicio = value[0]
+                              ? formatFechaISO(value[0])
+                              : null;
+
+                            const fin = value[1]
+                              ? formatFechaISO(value[1])
+                              : null;
+
+                            // ==========================================
+                            // SELECCIÓN DEL INICIO
+                            // ==========================================
+                            if (!fin) {
+                              setRangeStart(inicio);
+                              setRangeEnd(null);
+
+                              setData((prev) => ({
+                                ...prev,
+                                date: inicio,
+                                dates: [],
+                              }));
+
+                              return;
+                            }
+
+                            // ==========================================
+                            // SELECCIÓN DEL RANGO COMPLETO
+                            // ==========================================
+                            setRangeStart(inicio);
+                            setRangeEnd(fin);
+
+                            const fechas = obtenerFechasDisponiblesDelRango(
+                              inicio,
+                              fin
+                            );
+
+                            const modalidadesActuales = { ...dateModes };
+
+                            fechas.forEach((fecha) => {
+                              if (!modalidadesActuales[fecha]) {
+                                modalidadesActuales[fecha] = 'full_day';
+                              }
+                            });
+
+                            setDateModes(modalidadesActuales);
+
+                            setData((prev) => ({
+                              ...prev,
+                              date: fechas[0] || '',
+                              dates: fechas.map((date) => ({
+                                date,
+                                mode: modalidadesActuales[date] || 'full_day',
+                              })),
+                            }));
+
+                            setRangoBloqueado(true);
+
+                            // ==========================================
+                            // AVISO DE FECHAS SIN DISPONIBILIDAD
+                            // ==========================================
+                            const cantidadOriginal = obtenerFechasDelRango(
+                              inicio,
+                              fin
+                            ).length;
+
+                            if (fechas.length < cantidadOriginal) {
+                              addAlert(
+                                'Las fechas sin disponibilidad completa se omitieron automáticamente.',
+                                'info'
+                              );
+                            }
+                          }}
+                          value={
+                            singleDayMode
+                              ? selectedDate
+                              : rangeStart && rangeEnd
+                                ? [
+                                    parseFechaLocal(rangeStart),
+                                    parseFechaLocal(rangeEnd),
+                                  ]
+                                : rangeStart
+                                  ? [
+                                      parseFechaLocal(rangeStart),
+                                      parseFechaLocal(rangeStart),
+                                    ]
+                                  : null
+                          }
                           locale='es-ES'
                           minDate={new Date()}
                           tileDisabled={({ date, view }) => {
-                            if (view === 'month') {
-                              const fecha = formatFechaISO(date);
-
-                              return fechasOcupadas.some(
-                                (f) => f.fecha === fecha && f.cantidad >= 2
-                              );
-                            }
-
-                            return false;
-                          }}
-                          tileClassName={({ date, view }) => {
-                            if (view !== 'month') return;
+                            if (view !== 'month') return false;
 
                             const fecha = formatFechaISO(date);
+
+                            return fechasOcupadas.some(
+                              (f) => f.fecha === fecha && f.cantidad >= 2
+                            );
+                          }}
+                          tileClassName={({ date, view }) => {
+                            if (view !== 'month') return null;
+
+                            const fecha = formatFechaISO(date);
+
                             const match = fechasOcupadas.find(
                               (f) => f.fecha === fecha
                             );
 
+                            if (!singleDayMode && rangeStart && rangeEnd) {
+                              const dentroDelRango =
+                                fecha >= rangeStart && fecha <= rangeEnd;
+
+                              if (dentroDelRango) {
+                                // Fecha completamente ocupada: se omite automáticamente
+                                if (match && match.cantidad >= 2) {
+                                  return 'fecha-omitida';
+                                }
+
+                                // Comprobar si el usuario eliminó manualmente la fecha
+                                const incluidaEnReserva = (
+                                  data.dates || []
+                                ).some((item) => item.date === fecha);
+
+                                if (!incluidaEnReserva) {
+                                  // Recuperar su estado original y conservar su puntito
+                                  if (!match) {
+                                    return 'fecha-eliminada disponible';
+                                  }
+
+                                  if (match.cantidad === 1) {
+                                    return 'fecha-eliminada dia-ocupado-parcial';
+                                  }
+
+                                  return 'fecha-eliminada disponible';
+                                }
+
+                                return 'fecha-incluida';
+                              }
+                            }
+
+                            // Comportamiento original fuera del rango
                             if (!match) return 'disponible';
-                            if (match.cantidad >= 2)
+
+                            if (match.cantidad >= 2) {
                               return 'dia-ocupado-completo';
-                            if (match.cantidad === 1)
+                            }
+
+                            if (match.cantidad === 1) {
                               return 'dia-ocupado-parcial';
+                            }
 
                             return 'disponible';
                           }}
                         />
+
+                        {confirmacionRango && (
+                          <Alert
+                            type='warning'
+                            message='Ya tienes un rango de fechas seleccionado. ¿Deseas reemplazarlo por uno nuevo?'
+                            confirmText='Aceptar'
+                            cancelText='Rechazar'
+                            onConfirm={() => {
+                              const { inicio } = confirmacionRango;
+
+                              confirmacionPendienteRef.current = false;
+                              setConfirmacionRango(null);
+
+                              setDateModes((prev) => {
+                                const nuevosModos = { ...prev };
+
+                                (data.dates || []).forEach(({ date }) => {
+                                  delete nuevosModos[date];
+                                });
+
+                                return nuevosModos;
+                              });
+
+                              setRangeStart(inicio);
+                              setRangeEnd(null);
+                              setRangoBloqueado(false);
+
+                              setData((prev) => ({
+                                ...prev,
+                                date: inicio,
+                                dates: [],
+                              }));
+                            }}
+                            onCancel={() => {
+                              confirmacionPendienteRef.current = false;
+                              setConfirmacionRango(null);
+
+                              // Reiniciar el calendario para recuperar la selección visual anterior
+                              setCalendarRenderKey((prev) => prev + 1);
+                            }}
+                          />
+                        )}
 
                         <div className='calendar-legend'>
                           <div>
@@ -1032,114 +1498,299 @@ export const ReservationStep = () => {
                             No disponible
                           </div>
                         </div>
-                      </div>
+                      </section>
 
-                      <div className='tour-info'>
-                        <div className='selected-details'>
-                          <div className='form-group'>
-                            <label>
-                              <CalendarCheck className='icon-style' />
-                              Fecha seleccionada
-                            </label>
+                      {/* PANEL DERECHO */}
+                      <aside className='tour-info booking-sidebar'>
+                        <div className='booking-sidebar-heading'>
+                          <span className='booking-section-label'>
+                            TIPO DE RESERVA
+                          </span>
 
+                          <label className='single-day-toggle'>
                             <input
-                              type='text'
-                              value={data.date || 'Seleccione una fecha'}
-                              disabled
+                              type='checkbox'
+                              checked={singleDayMode}
+                              onChange={(e) => {
+                                const soloUnDia = e.target.checked;
+
+                                cambiarModoSeleccion(soloUnDia);
+                              }}
                             />
+
+                            <span>Solo un día</span>
+                          </label>
+                        </div>
+
+                        {/* FECHA DE INICIO Y FIN */}
+                        <div className='date-range-fields'>
+                          <div className='range-date-box'>
+                            <label>INICIO</label>
+                            <span>
+                              {rangeStart
+                                ? rangeStart.split('-').reverse().join('/')
+                                : 'Seleccionar'}
+                            </span>
                           </div>
 
-                          <div className='form-group'>
-                            <label>
-                              <Clock className='icon-style' />
-                              Hora
-                            </label>
-
-                            <select
-                              value={data.time}
-                              onChange={(e) =>
-                                updateData('time', e.target.value)
-                              }
-                            >
-                              <option value='09:00'>09:00 AM</option>
-                              <option value='10:00'>10:00 AM</option>
-                              <option value='11:00'>11:00 AM</option>
-                              <option value='12:00'>12:00 PM</option>
-                            </select>
-                          </div>
-
-                          <div className='form-group'>
-                            <label>
-                              <UsersRound className='icon-style' />
-                              Número de personas
-                            </label>
-
-                            <select
-                              value={data.guests}
-                              onChange={(e) =>
-                                updateData('guests', e.target.value)
-                              }
-                            >
-                              <option value='1'>1 persona</option>
-                              <option value='2'>2 personas</option>
-                              <option value='3'>3 personas</option>
-                            </select>
-                          </div>
-
-                          <div className='tour-price-summary'>
-                            <div className='tour-price-label'>
-                              TOTAL ESTIMADO
-                            </div>
-
-                            <div className='tour-price-row'>
-                              <div className='tour-price'>
-                                $
-                                {(
-                                  1000 * Number(data.guests || 1)
-                                ).toLocaleString('en-US')}
-                                <span> MXN</span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className='security-info'>
-                            <div className='security-icon'>
-                              <Lock size={18} />
-                            </div>
-
-                            <div className='security-text'>
-                              <h4>Tu información es segura</h4>
-                              <p>Reserva con confianza.</p>
-                            </div>
+                          <div
+                            className={`range-date-box ${
+                              singleDayMode ? 'range-date-disabled' : ''
+                            }`}
+                          >
+                            <label>FIN</label>
+                            <span>
+                              {singleDayMode
+                                ? 'Mismo día'
+                                : rangeEnd
+                                  ? rangeEnd.split('-').reverse().join('/')
+                                  : 'Seleccionar'}
+                            </span>
                           </div>
                         </div>
+
+                        <p className='booking-selection-summary'>
+                          {singleDayMode
+                            ? rangeStart
+                              ? 'Una fecha seleccionada'
+                              : 'Selecciona una fecha en el calendario'
+                            : rangeStart && rangeEnd
+                              ? `${fechasSeleccionadas.length} días seleccionados`
+                              : 'Selecciona el inicio y el fin'}
+                        </p>
+
+                        {/* DURACIÓN */}
+                        <div className='booking-sidebar-divider' />
+
+                        <section className='duration-section'>
+                          <span className='booking-section-label'>
+                            DURACIÓN
+                          </span>
+
+                          {singleDayMode ? (
+                            <div className='duration-segmented'>
+                              <button
+                                type='button'
+                                className={
+                                  (dateModes[rangeStart] || 'full_day') ===
+                                  'half_day'
+                                    ? 'active'
+                                    : ''
+                                }
+                                onClick={() =>
+                                  rangeStart &&
+                                  actualizarModalidadFecha(
+                                    rangeStart,
+                                    'half_day'
+                                  )
+                                }
+                                disabled={!rangeStart}
+                              >
+                                Medio día
+                              </button>
+
+                              <button
+                                type='button'
+                                className={
+                                  (dateModes[rangeStart] || 'full_day') ===
+                                  'full_day'
+                                    ? 'active'
+                                    : ''
+                                }
+                                onClick={() =>
+                                  rangeStart &&
+                                  actualizarModalidadFecha(
+                                    rangeStart,
+                                    'full_day'
+                                  )
+                                }
+                                disabled={!rangeStart}
+                              >
+                                Día completo
+                              </button>
+                            </div>
+                          ) : (
+                            <div className='duration-bulk-options'>
+                              <div className='duration-segmented'>
+                                <button
+                                  type='button'
+                                  className={
+                                    (dateModes[rangeStart] || 'full_day') ===
+                                    'half_day'
+                                      ? 'active'
+                                      : ''
+                                  }
+                                  onClick={() =>
+                                    rangeStart &&
+                                    actualizarModalidadFecha(
+                                      rangeStart,
+                                      'half_day'
+                                    )
+                                  }
+                                  disabled={!rangeStart}
+                                >
+                                  Tods medio día
+                                </button>
+
+                                <button
+                                  type='button'
+                                  className={
+                                    (dateModes[rangeStart] || 'full_day') ===
+                                    'full_day'
+                                      ? 'active'
+                                      : ''
+                                  }
+                                  onClick={() =>
+                                    rangeStart &&
+                                    actualizarModalidadFecha(
+                                      rangeStart,
+                                      'full_day'
+                                    )
+                                  }
+                                  disabled={!rangeStart}
+                                >
+                                  Todos día completo
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </section>
+
+                        {/* PERSONAS */}
+                        <section className='booking-guests-section'>
+                          <label
+                            className='booking-section-label'
+                            htmlFor='booking-guests'
+                          >
+                            <UsersRound size={14} />
+                            PERSONAS
+                          </label>
+
+                          <select
+                            id='booking-guests'
+                            value={data.guests}
+                            onChange={(e) =>
+                              updateData('guests', e.target.value)
+                            }
+                          >
+                            <option value='1'>1 persona</option>
+                            <option value='2'>2 personas</option>
+                            <option value='3'>3 personas</option>
+                          </select>
+                        </section>
+
+                        <div className='tour-total-card'>
+                          <div className='tour-total-info'>
+                            <span>TOTAL ESTIMADO</span>
+                            <small>
+                              {fechasSeleccionadas.length} día(s) ·{' '}
+                              {data.guests || 1} persona(s)
+                            </small>
+                          </div>
+
+                          <div className='tour-total-amount'>
+                            ${totalEstimado.toLocaleString('en-US')}
+                            <span>USD</span>
+                          </div>
+                        </div>
+                      </aside>
+                    </div>
+
+                    {/* FECHAS SELECCIONADAS: SIEMPRE VISIBLE */}
+                    <section
+                      className={`selected-dates-section ${
+                        singleDayMode ? 'selected-dates-inactive' : ''
+                      }`}
+                    >
+                      <div className='selected-dates-heading'>
+                        <span className='booking-section-label'>
+                          TUS FECHAS
+                        </span>
+
+                        <span className='individual-settings-label'>
+                          Ajuste individual
+                        </span>
                       </div>
-                    </div>
 
-                    <div className='step-one-footer'>
-                      <span>
-                        <Check size={14} />
-                        Confirmación inmediata
-                      </span>
+                      {singleDayMode || fechasSeleccionadas.length === 0 ? (
+                        <p className='empty-selected-dates'>
+                          Selecciona un rango en el calendario para ver tus
+                          fechas.
+                        </p>
+                      ) : (
+                        <div className='selected-dates-chips'>
+                          {fechasSeleccionadas.map((fecha, index) => (
+                            <article className='selected-date-chip' key={fecha}>
+                              <span className='selected-date-number'>
+                                {parseFechaLocal(fecha)?.getDate() ?? index + 1}
+                              </span>
 
-                      <span>
-                        <ShieldCheck size={14} />
-                        Pago seguro
-                      </span>
+                              <span className='selected-date-month'>
+                                {parseFechaLocal(fecha)?.toLocaleDateString(
+                                  'es-MX',
+                                  {
+                                    month: 'short',
+                                    year: 'numeric',
+                                  }
+                                ) || fecha}
+                              </span>
 
-                      <span>
-                        <MapPin size={14} />
-                        Holbox, México
-                      </span>
-                    </div>
+                              <div className='selected-date-actions'>
+                                <button
+                                  type='button'
+                                  className={
+                                    dateModes[fecha] === 'half_day'
+                                      ? 'active'
+                                      : ''
+                                  }
+                                  onClick={() =>
+                                    actualizarModalidadFecha(fecha, 'half_day')
+                                  }
+                                >
+                                  ½ día
+                                </button>
+
+                                <button
+                                  type='button'
+                                  className={
+                                    (dateModes[fecha] || 'full_day') ===
+                                    'full_day'
+                                      ? 'active'
+                                      : ''
+                                  }
+                                  onClick={() =>
+                                    actualizarModalidadFecha(fecha, 'full_day')
+                                  }
+                                >
+                                  Día
+                                </button>
+                              </div>
+
+                              <button
+                                type='button'
+                                className='remove-date-button'
+                                onClick={() => eliminarFechaSeleccionada(fecha)}
+                                aria-label={`Eliminar fecha ${fecha}`}
+                                title='Eliminar fecha'
+                              >
+                                ×
+                              </button>
+                            </article>
+                          ))}
+                        </div>
+                      )}
+                    </section>
                   </div>
                 )}
 
                 {stepNumber === 2 && (
                   <div>
-                    <h2>
-                      <FileText /> Datos Personales
-                    </h2>
+                    <StepHeader
+                      eyebrow='PASO 02 · TUS DATOS'
+                      title='Cuéntanos sobre ti'
+                      description='Necesitamos tus datos para preparar tu reservación.'
+                      icon={UserRound}
+                    />
                     <div className='form-group'>
                       <label>
                         <UserRound className='icon-style' /> Nombre Completo
@@ -1204,25 +1855,14 @@ export const ReservationStep = () => {
                 {stepNumber === 3 && (
                   <div className='step-three'>
                     {/* Encabezado */}
-                    <div className='step-three-header'>
-                      <div>
-                        <span className='step-three-eyebrow'>
-                          INCLUYE Y AGREGA
-                        </span>
 
-                        <h2>Adicionales para tu tour</h2>
-
-                        <p>
-                          Selecciona los complementos que harán de tu día en el
-                          mar una experiencia inolvidable.
-                        </p>
-                      </div>
-
-                      <span className='step-three-badge'>
-                        <ShieldCheck size={13} />
-                        TODO PREPARADO
-                      </span>
-                    </div>
+                    <StepHeader
+                      eyebrow='PASO 03 · PERSONALIZA TU EXPERIENCIA'
+                      title='Adicionales para tu tour'
+                      description='Selecciona los complementos que harán de tu día en el mar una experiencia inolvidable.'
+                      icon={ShoppingBag}
+                      badge='TODO PREPARADO'
+                    />
 
                     <div className='step-three-divider' />
 
@@ -1415,21 +2055,12 @@ export const ReservationStep = () => {
                     )}
 
                     {/* Encabezado */}
-                    <header className='step-four-header'>
-                      <span className='step-four-eyebrow'>
-                        PASO 04 · REVISIÓN FINAL
-                      </span>
-
-                      <h2>
-                        <FileCheck aria-hidden='true' />
-                        Confirma tu reservación
-                      </h2>
-
-                      <p>
-                        Revisa los detalles de tu experiencia antes de continuar
-                        al pago.
-                      </p>
-                    </header>
+                    <StepHeader
+                      eyebrow='PASO 04 · REVISIÓN FINAL'
+                      title='Confirma tu reservación'
+                      description='Revisa los detalles de tu experiencia antes de continuar al pago.'
+                      icon={FileCheck}
+                    />
 
                     {/* Datos de la reserva */}
                     <section className='reservation-summary'>
@@ -1673,26 +2304,13 @@ export const ReservationStep = () => {
                     {!paymentCompleted ? (
                       <>
                         {/* Encabezado */}
-                        <header className='payment-page-header'>
-                          <span className='payment-eyebrow'>
-                            PASO FINAL · CONFIRMACIÓN
-                          </span>
-
-                          <h2 className='confirmation-title'>
-                            Completa tu pago
-                          </h2>
-
-                          <p className='confirmation-subtitle'>
-                            Tu aventura está reservada. Confirma el pago de
-                            forma segura y prepárate para vivir Holbox desde el
-                            mar.
-                          </p>
-
-                          <span className='reservation-status'>
-                            <ShieldCheck size={15} aria-hidden='true' />
-                            Reserva registrada
-                          </span>
-                        </header>
+                        <StepHeader
+                          eyebrow='PASO FINAL · CONFIRMACIÓN'
+                          title='Completa tu pago'
+                          description='Confirma tu pago de forma segura y prepárate para vivir Holbox desde el mar.'
+                          icon={ShieldCheck}
+                          badge='RESERVA REGISTRADA'
+                        />
 
                         {/* Distribución: detalles y pago */}
                         <div className='payment-layout'>

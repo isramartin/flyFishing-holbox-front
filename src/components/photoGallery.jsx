@@ -1,9 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  getAllGaleria,
-  updateFavorito,
-  descargarImagen,
-} from '../service/galeria.service';
+import { updateFavorito, descargarImagen } from '../service/galeria.service';
 import { X, ArrowDownToLine, Heart, HeartOff, Link } from 'lucide-react';
 import { useAlert } from './AlertManager';
 import { useGallery } from '../context/GalleryContext';
@@ -14,52 +10,37 @@ const PhotoGallery = () => {
   const [showModal, setShowModal] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoverIndex, setHoverIndex] = useState(null);
-  const [photos, setPhotos] = useState([]);
-  const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
   const isScrolling = useRef(false);
   const { addAlert } = useAlert();
   const [skeletonHeights, setSkeletonHeights] = useState([]);
+  const { photos, setPhotos, loading, refreshPhotos } = useGallery();
 
-  useEffect(() => {
-    const fetchPhotos = async () => {
-      try {
-        setLoading(true);
-        setSkeletonHeights(
-          Array.from(
+ useEffect(() => {
+    setSkeletonHeights(
+        Array.from(
             { length: 12 },
-            () => Math.floor(Math.random() * 150) + 200 // alturas entre 200 y 350px
-          )
-        );
-        const data = await getAllGaleria();
-        setPhotos(data);
-      } catch (error) {
-        console.error('Error fetching photos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPhotos();
-  }, []);
+            () => Math.floor(Math.random() * 150) + 200
+        )
+    );
+}, []);
 
   const handleToggleFavorito = async (photoId, currentFavorito) => {
     try {
-      // Actualizar el favorito en backend
-      await updateFavorito(photoId, !currentFavorito);
-      // Actualizar estado local para refrescar la UI
-      setPhotos((prevPhotos) =>
-        prevPhotos.map((photo) =>
-          photo.id === photoId
-            ? { ...photo, favorito: !currentFavorito }
-            : photo
-        )
-      );
+        await updateFavorito(photoId, !currentFavorito);
+
+        setPhotos((prevPhotos) =>
+            prevPhotos.map((photo) =>
+                photo.id === photoId
+                    ? { ...photo, favorito: !currentFavorito }
+                    : photo
+            )
+        );
+
     } catch (error) {
-      console.error('Error al actualizar favorito:', error);
-      // Puedes agregar alertas o notificaciones aquí si quieres
+        console.error('Error al actualizar favorito:', error);
     }
-  };
+};
 
   const handleDescarga = async (id) => {
     try {

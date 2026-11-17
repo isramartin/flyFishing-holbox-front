@@ -2,26 +2,35 @@ const API_URL = import.meta.env.VITE_API_URL;
 console.log('URL', API_URL);
 
 export const getAllGaleria = async () => {
-  try {
-    const response = await fetch(`${API_URL}/api/galeria/All`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        // Si necesitas autenticación:
-        // 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      },
-    });
+    try {
+        console.log('Consultando:', `${API_URL}/api/galeria/All`);
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error al obtener la galería');
+        const response = await fetch(`${API_URL}/api/galeria/All`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+
+        console.log('Estado HTTP:', response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || 'Error al obtener la galería');
+        }
+
+        const data = await response.json();
+
+        console.log('Respuesta completa del backend:', data);
+        console.log('¿Es un arreglo?', Array.isArray(data));
+        console.log('Cantidad de fotografías:', data?.length);
+
+        return data;
+
+    } catch (error) {
+        console.error('Error en getAllGaleria:', error);
+        throw error;
     }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error en getAllGaleria:', error);
-    throw error;
-  }
 };
 
 export const updateFavorito = async (id, favorito) => {
