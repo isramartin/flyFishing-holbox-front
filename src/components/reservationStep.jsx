@@ -111,6 +111,7 @@ export const ReservationStep = () => {
   const [confirmacionRango, setConfirmacionRango] = useState(null);
   const confirmacionPendienteRef = useRef(false);
   const [calendarRenderKey, setCalendarRenderKey] = useState(0);
+  const [fechaPendiente, setFechaPendiente] = useState(null);
 
   // const reserva = await buscarReservaPorCodigo(codigoBusqueda);
 
@@ -154,6 +155,132 @@ export const ReservationStep = () => {
     };
   });
 
+  const manejarCambioCalendario = (value, omitirValidacionSesion = false) => {
+    if (!reservaIniciada && !omitirValidacionSesion) {
+      setFechaPendiente(value);
+      setMostrarAvisoSesion(true);
+      return;
+    }
+
+                            // Evitar que Calendar procese el clic que abrió la confirmación
+                            if (confirmacionPendienteRef.current) {
+                              return;
+                            }
+
+                            // ==========================================
+                            // MODO: SELECCIÓN DE UN SOLO DÍA
+                            // ==========================================
+                            if (singleDayMode) {
+                              if (Array.isArray(value)) return;
+
+                              const fecha = formatFechaISO(value);
+
+                              setSelectedDate(value);
+                              setRangeStart(fecha);
+                              setRangeEnd(null);
+
+                              setData((prev) => ({
+                                ...prev,
+                                date: fecha,
+                                dates: [],
+                                time: dateModes[fecha] || 'full_day',
+                              }));
+
+                              return;
+                            }
+
+                            if (!Array.isArray(value) || !value[0]) return;
+
+                            const inicio = value[0]
+                              ? formatFechaISO(value[0])
+                              : null;
+
+                            const fin = value[1]
+                              ? formatFechaISO(value[1])
+                              : null;
+
+                            // ==========================================
+                            // SELECCIÓN DEL INICIO
+                            // ==========================================
+                            if (!fin) {
+                              setRangeStart(inicio);
+                              setRangeEnd(null);
+
+                              setData((prev) => ({
+                                ...prev,
+                                date: inicio,
+                                dates: [],
+                              }));
+
+                              return;
+                            }
+
+                            // ==========================================
+                            // SELECCIÓN DEL RANGO COMPLETO
+                            // ==========================================
+                            setRangeStart(inicio);
+                            setRangeEnd(fin);
+
+                            const fechas = obtenerFechasDisponiblesDelRango(
+                              inicio,
+                              fin
+                            );
+
+                            const modalidadesActuales = { ...dateModes };
+
+                            fechas.forEach((fecha) => {
+                              if (!modalidadesActuales[fecha]) {
+                                modalidadesActuales[fecha] = 'full_day';
+                              }
+                            });
+
+                            setDateModes(modalidadesActuales);
+
+                            setData((prev) => ({
+                              ...prev,
+                              date: fechas[0] || '',
+                              dates: fechas.map((date) => ({
+                                date,
+                                mode: modalidadesActuales[date] || 'full_day',
+                              })),
+                            }));
+
+                            setRangoBloqueado(true);
+
+                            // ==========================================
+                            // AVISO DE FECHAS SIN DISPONIBILIDAD
+                            // ==========================================
+                            const cantidadOriginal = obtenerFechasDelRango(
+                              inicio,
+                              fin
+                            ).length;
+
+                            if (fechas.length < cantidadOriginal) {
+                              addAlert(
+                                'Las fechas sin disponibilidad completa se omitieron automáticamente.',
+                                'info'
+                              );
+                            }
+  };
+
+  const confirmarInicioSesion = async () => {
+    const iniciada = await iniciarReserva();
+
+    if (!iniciada) return;
+
+    setMostrarAvisoSesion(false);
+    addAlert(
+      '¡Sesión iniciada! Dispones de 10 minutos para completar tu reserva.',
+      'success'
+    );
+
+    if (fechaPendiente) {
+      const seleccionPendiente = fechaPendiente;
+      setFechaPendiente(null);
+      manejarCambioCalendario(seleccionPendiente, true);
+    }
+  };
+
   const iniciarReserva = async () => {
     try {
       setIniciandoReserva(true);
@@ -175,7 +302,7 @@ export const ReservationStep = () => {
 
         setReservaIniciada(true);
         console.log('✅ Sesión vigente reutilizada');
-        return;
+        return true;
       }
 
       // No existe una sesión vigente: crearla ahora.
@@ -221,9 +348,12 @@ export const ReservationStep = () => {
 
       console.log('✅ Reserva iniciada. Temporizador activado.');
       console.log('⏰ Vencimiento:', new Date(expiresAt).toLocaleString());
+      return true;
     } catch (error) {
       console.error('❌ No se pudo iniciar la reserva:', error);
       setSessionError(error.message || 'No fue posible iniciar la reserva.');
+      addAlert(error.message || 'No fue posible iniciar la reserva.', 'error');
+      return false;
     } finally {
       setIniciandoReserva(false);
     }
@@ -1159,35 +1289,15 @@ export const ReservationStep = () => {
           </div>
 
           <div className='tour-details'>
-            {!sessionLoading && (
-              <>
-                {!reservaIniciada && mostrarAvisoInicio && (
-                  <ReservationSessionNotice
-                    type='info'
-                    visible={true}
-                    message='Inicia tu reserva para comenzar la cuenta regresiva de 10 minutos.'
-                  />
-                )}
-
-                {mostrarAvisoExpiracion && (
-                  <ReservationSessionNotice
-                    type='error'
-                    visible={true}
-                    message='El tiempo de tu reserva ha terminado. Inicia nuevamente para continuar.'
-                  />
-                )}
-              </>
+            {!sessionLoading && mostrarAvisoExpiracion && (
+              <ReservationSessionNotice
+                type='error'
+                visible={true}
+                message='El tiempo de tu reserva ha terminado. Inicia nuevamente para continuar.'
+              />
             )}
 
-            {!reservaIniciada ? (
-              <ReservationSessionNotice
-                showStartPanel={true}
-                onStart={iniciarReserva}
-                starting={iniciandoReserva}
-                sessionError={sessionError}
-              />
-            ) : (
-              <>
+            <>
                 {stepNumber === 1 && (
                   <div className='step-one step-one-booking'>
                     {/* CALENDARIO Y PANEL DE RESERVA */}
@@ -1239,6 +1349,16 @@ export const ReservationStep = () => {
                           selectRange={!singleDayMode}
                           // Detectar el primer clic cuando ya existe un rango bloqueado
                           onClickDay={(date) => {
+                            // El primer clic debe solicitar el inicio de sesión,
+                            // incluso cuando el calendario está seleccionando rangos.
+                            if (!reservaIniciada) {
+                              setFechaPendiente(
+                                singleDayMode ? date : [date, null]
+                              );
+                              setMostrarAvisoSesion(true);
+                              return;
+                            }
+
                             if (
                               singleDayMode ||
                               !rangoBloqueado ||
@@ -1257,107 +1377,7 @@ export const ReservationStep = () => {
                               setConfirmacionRango({ inicio: fechaClicada });
                             }
                           }}
-                          onChange={(value) => {
-                            // Evitar que Calendar procese el clic que abrió la confirmación
-                            if (confirmacionPendienteRef.current) {
-                              return;
-                            }
-
-                            // ==========================================
-                            // MODO: SELECCIÓN DE UN SOLO DÍA
-                            // ==========================================
-                            if (singleDayMode) {
-                              if (Array.isArray(value)) return;
-
-                              const fecha = formatFechaISO(value);
-
-                              setSelectedDate(value);
-                              setRangeStart(fecha);
-                              setRangeEnd(null);
-
-                              setData((prev) => ({
-                                ...prev,
-                                date: fecha,
-                                dates: [],
-                                time: dateModes[fecha] || 'full_day',
-                              }));
-
-                              return;
-                            }
-
-                            if (!Array.isArray(value) || !value[0]) return;
-
-                            const inicio = value[0]
-                              ? formatFechaISO(value[0])
-                              : null;
-
-                            const fin = value[1]
-                              ? formatFechaISO(value[1])
-                              : null;
-
-                            // ==========================================
-                            // SELECCIÓN DEL INICIO
-                            // ==========================================
-                            if (!fin) {
-                              setRangeStart(inicio);
-                              setRangeEnd(null);
-
-                              setData((prev) => ({
-                                ...prev,
-                                date: inicio,
-                                dates: [],
-                              }));
-
-                              return;
-                            }
-
-                            // ==========================================
-                            // SELECCIÓN DEL RANGO COMPLETO
-                            // ==========================================
-                            setRangeStart(inicio);
-                            setRangeEnd(fin);
-
-                            const fechas = obtenerFechasDisponiblesDelRango(
-                              inicio,
-                              fin
-                            );
-
-                            const modalidadesActuales = { ...dateModes };
-
-                            fechas.forEach((fecha) => {
-                              if (!modalidadesActuales[fecha]) {
-                                modalidadesActuales[fecha] = 'full_day';
-                              }
-                            });
-
-                            setDateModes(modalidadesActuales);
-
-                            setData((prev) => ({
-                              ...prev,
-                              date: fechas[0] || '',
-                              dates: fechas.map((date) => ({
-                                date,
-                                mode: modalidadesActuales[date] || 'full_day',
-                              })),
-                            }));
-
-                            setRangoBloqueado(true);
-
-                            // ==========================================
-                            // AVISO DE FECHAS SIN DISPONIBILIDAD
-                            // ==========================================
-                            const cantidadOriginal = obtenerFechasDelRango(
-                              inicio,
-                              fin
-                            ).length;
-
-                            if (fechas.length < cantidadOriginal) {
-                              addAlert(
-                                'Las fechas sin disponibilidad completa se omitieron automáticamente.',
-                                'info'
-                              );
-                            }
-                          }}
+                          onChange={manejarCambioCalendario}
                           value={
                             singleDayMode
                               ? selectedDate
@@ -1439,6 +1459,20 @@ export const ReservationStep = () => {
                             return 'disponible';
                           }}
                         />
+
+                        {mostrarAvisoSesion && (
+                          <Alert
+                            type='warning'
+                            message='Para seleccionar esta fecha necesitas iniciar tu reserva. ¿Deseas comenzar ahora? Al aceptar, tendrás 10 minutos para completar el proceso.'
+                            confirmText={iniciandoReserva ? 'Iniciando...' : 'Sí, iniciar reserva'}
+                            cancelText='Ahora no'
+                            onConfirm={confirmarInicioSesion}
+                            onCancel={() => {
+                              setMostrarAvisoSesion(false);
+                              setFechaPendiente(null);
+                            }}
+                          />
+                        )}
 
                         {confirmacionRango && (
                           <Alert
@@ -1783,6 +1817,8 @@ export const ReservationStep = () => {
                   </div>
                 )}
 
+               {(reservaIniciada || (stepNumber === 5 && paymentCompleted)) && (
+                  <>
                 {stepNumber === 2 && (
                   <div>
                     <StepHeader
@@ -2526,6 +2562,18 @@ export const ReservationStep = () => {
                                         );
 
                                         setPaymentCompleted(true);
+
+                                        // El pago terminó correctamente: cerrar la sesión temporal.
+                                        sessionStorage.removeItem('reservationToken');
+                                        sessionStorage.removeItem('reservationSessionId');
+                                        sessionStorage.removeItem('reservationExpiresAt');
+
+                                        setReservationSession(null);
+                                        setReservaIniciada(false);
+
+                                        console.log(
+                                          '🔒 Sesión de reserva eliminada después del pago.'
+                                        );
                                       } catch (error) {
                                         console.error(
                                           '❌ Error al capturar PayPal:',
@@ -2691,8 +2739,9 @@ export const ReservationStep = () => {
                     )}
                   </div>
                 )}
+                  </>
+                )}
               </>
-            )}
 
             {reservaIniciada && reservationSession && (
               <div className='step-buttons'>
